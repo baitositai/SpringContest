@@ -1,7 +1,6 @@
 #pragma once
 #include "../framework.h"
 #include "../Application.h"
-#include "../Utility/StaticSingleton.h"
 #include "../Common/Fader.h"
 #include "../Common/Vector2.h"
 #include "../Scene/TitleScene.h"
