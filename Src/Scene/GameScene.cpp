@@ -4,6 +4,9 @@
 #include "../Manager/TextManager.h"
 #include "../Utility/Utility.h"
 #include "../Object/ObjectBase.h"
+#include "../Object/Character/Player.h"
+#include "../Object/ObjectManager.h"
+
 
 GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 {
@@ -22,6 +25,14 @@ void GameScene::Load(void)
 	//非同期読み込みをtrueにする
 	SetUseASyncLoadFlag(true);
 
+	//プレイヤー
+	player_ = std::make_shared<Player>();
+	player_->Load();
+
+	//オブジェクト
+	obj_ = std::make_unique<ObjectManager>();
+	obj_->Load();
+
 
 	obj_ = std::make_unique<ObjectBase>();
 	obj_->Load();
@@ -34,10 +45,13 @@ void GameScene::Load(void)
 
 	//カメラ
 	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
+	mainCamera->SetTargetPos(LOCAL_CAMERA_POS);
 }
 
 void GameScene::Init(void)
 {
+	player_->Init();
+	obj_->Init();
 	obj_->Init();
 }
 
@@ -85,6 +99,9 @@ void GameScene::LoadingUpdate(InputManager& ins)
 
 void GameScene::NormalUpdate(InputManager& ins)
 {
+	player_->Update();
+	obj_->Update();
+
 	obj_->Update();
 
 	//シーン遷移
@@ -103,7 +120,16 @@ void GameScene::LoadingDraw(void)
 
 void GameScene::NormalDraw(void)
 {
+	DrawBox(
+	0, 0,
+	Application::SCREEN_SIZE_X,
+	Application::SCREEN_SIZE_Y,
+	0x00ffff,
+	true);
+
 	//各種オブジェクト描画処理
+	obj_->Draw();
+	player_->Draw();
 	obj_->Draw();
 
 	//デバッグ描画

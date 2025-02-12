@@ -2,11 +2,15 @@
 #include "../framework.h"
 #include "SceneBase.h"
 
-class ObjectBase;
+class Player;
+class ObjectManager;
 
 class GameScene : public SceneBase
 {
 public:
+
+	//カメラ位置
+	static constexpr VECTOR LOCAL_CAMERA_POS = { 0, 150, -200 };
 
 	// コンストラクタ
 	GameScene(SceneManager& manager);
@@ -21,6 +25,10 @@ public:
 	void Release(void) override;
 
 private:	
+
+	//インスタンス生成
+	std::shared_ptr<Player> player_;
+	std::unique_ptr<ObjectManager> obj_;
 
 	std::unique_ptr<ObjectBase> obj_;
 

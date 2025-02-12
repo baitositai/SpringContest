@@ -68,6 +68,9 @@ public:
 	// 追従対象の設定
 	void SetFollow(const Transform* follow);
 
+	//ターゲットの位置を設定
+	void SetTargetPos(const VECTOR& pos);
+
 private:
 
 	// カメラが追従対象とするTransform
