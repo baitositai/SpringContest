@@ -3,10 +3,8 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/TextManager.h"
 #include "../Utility/Utility.h"
-#include "../Object/ObjectBase.h"
 #include "../Object/Character/Player.h"
 #include "../Object/ObjectManager.h"
-
 
 GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 {
@@ -15,6 +13,9 @@ GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 
 	//描画関数のセット
 	drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
+
+	player_ = nullptr;
+	objs_ = nullptr;
 }
 
 void GameScene::Load(void)
@@ -30,12 +31,8 @@ void GameScene::Load(void)
 	player_->Load();
 
 	//オブジェクト
-	obj_ = std::make_unique<ObjectManager>();
-	obj_->Load();
-
-
-	obj_ = std::make_unique<ObjectBase>();
-	obj_->Load();
+	objs_ = std::make_unique<ObjectManager>();
+	objs_->Load();
 
 	//フォント
 	loadFont_ = CreateFontToHandle(
@@ -51,8 +48,7 @@ void GameScene::Load(void)
 void GameScene::Init(void)
 {
 	player_->Init();
-	obj_->Init();
-	obj_->Init();
+	objs_->Init();
 }
 
 void GameScene::Update(InputManager& input)
@@ -100,9 +96,7 @@ void GameScene::LoadingUpdate(InputManager& ins)
 void GameScene::NormalUpdate(InputManager& ins)
 {
 	player_->Update();
-	obj_->Update();
-
-	obj_->Update();
+	objs_->Update();
 
 	//シーン遷移
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
@@ -128,9 +122,8 @@ void GameScene::NormalDraw(void)
 	true);
 
 	//各種オブジェクト描画処理
-	obj_->Draw();
 	player_->Draw();
-	obj_->Draw();
+	objs_->Draw();
 
 	//デバッグ描画
 	DebagDraw();

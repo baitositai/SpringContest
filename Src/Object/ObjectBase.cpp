@@ -1,6 +1,7 @@
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SceneManager.h"
 #include "ObjectBase.h"
+#include "../Manager/ScrollManager.h"
 
 ObjectBase::ObjectBase(void)
 	: resMng_(ResourceManager::GetInstance()),
@@ -18,32 +19,41 @@ void ObjectBase::Load(void)
 
 void ObjectBase::Init(void)
 {
+	
+	//X座標生成をランダムにしたいよ
+	//最初に乱数の初期値を設定する
+	int SRand(0);
+
+	float posX;
+	posX = GetRand(100);
+
 	//とりあえずのZ軸座標設定
-	transform_.pos = { 100.0f,0.0f,200.0f };
+	transform_.pos = { posX,0.0f,200.0f };
 }
 
 void ObjectBase::Update(void)
 {
+	auto& scr = ScrollManager::GetInstance();
+
 	//Z軸移動関連
 
 	//前後移動
-	if (CheckHitKey(KEY_INPUT_S))
-	{
-		transform_.pos.z = transform_.pos.z - 5.f;
-	}
-	else if (CheckHitKey(KEY_INPUT_A))
+	
+	transform_.pos.z = transform_.pos.z + scr.GetScrollSpeed();
+	
+	/*else if (CheckHitKey(KEY_INPUT_A))
 	{
 		transform_.pos.z = transform_.pos.z + 5.f;
-	}
+	}*/
 	//左右移動
-	if (CheckHitKey(KEY_INPUT_A))
+	/*if (CheckHitKey(KEY_INPUT_A))
 	{
 		transform_.pos.x = transform_.pos.x - 5.f;
 	}
 	else if (CheckHitKey(KEY_INPUT_D))
 	{
 		transform_.pos.x = transform_.pos.x - 5.f;
-	}
+	}*/
 
 }
 

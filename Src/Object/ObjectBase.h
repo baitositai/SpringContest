@@ -1,4 +1,5 @@
 #pragma once
+#include "../framework.h"
 #include "Common/Transform.h"
 class ResourceManager;
 class SceneManager;
@@ -12,16 +13,14 @@ public:
 	ObjectBase(void);
 
 	// デストラクタ
-	virtual ~ObjectBase(void);
+	~ObjectBase(void);
 
-	virtual void Load(void);
-	virtual void Init(void);
-	virtual void Update(void);
-	virtual void Draw(void);
+	void Load(void);
+	void Init(void);
+	void Update(void);
+	void Draw(void);
 
 	const Transform& GetTransform(void) const;
-
-
 
 protected:
 

@@ -1,4 +1,8 @@
 #pragma once
+#include "../framework.h"
+
+class ObjectBase;
+
 class ObjectManager
 {
 public:
@@ -13,6 +17,8 @@ public:
 	void Release();
 
 private:
+
+	std::shared_ptr<ObjectBase> obj_;
 
 };
 

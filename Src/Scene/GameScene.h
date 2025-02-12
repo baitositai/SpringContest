@@ -28,9 +28,7 @@ private:
 
 	//インスタンス生成
 	std::shared_ptr<Player> player_;
-	std::unique_ptr<ObjectManager> obj_;
-
-	std::unique_ptr<ObjectBase> obj_;
+	std::unique_ptr<ObjectManager> objs_;
 
 	//Update関数
 	void LoadingUpdate(InputManager& ins);
