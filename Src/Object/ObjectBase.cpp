@@ -19,46 +19,31 @@ void ObjectBase::Load(void)
 
 void ObjectBase::Init(void)
 {
-	
-	//X座標生成をランダムにしたいよ
-	//最初に乱数の初期値を設定する
-	int SRand(0);
-
+	//X軸関連
+	int SRand(0);				//乱数のはじめの数字を指定する
 	float posX;
-	posX = GetRand(100);
+	posX = GetRand(100);		//0から100までのランダムの数値を生成
 
-	//とりあえずのZ軸座標設定
+	//オブジェクトの初期位置(とりあえず一つだけ)
+	//X軸:初期位置ランダム
+	//Y軸:高さ調節したのち固定
+	//Z軸:ゲーム画面を調節したのち固定
 	transform_.pos = { posX,0.0f,200.0f };
 }
 
 void ObjectBase::Update(void)
 {
+	//シングルトンでスクロール情報を取得
 	auto& scr = ScrollManager::GetInstance();
 
 	//Z軸移動関連
-
-	//前後移動
-	
+	//後退のみ実施する//後退速度はScrManagが管理する
 	transform_.pos.z = transform_.pos.z + scr.GetScrollSpeed();
-	
-	/*else if (CheckHitKey(KEY_INPUT_A))
-	{
-		transform_.pos.z = transform_.pos.z + 5.f;
-	}*/
-	//左右移動
-	/*if (CheckHitKey(KEY_INPUT_A))
-	{
-		transform_.pos.x = transform_.pos.x - 5.f;
-	}
-	else if (CheckHitKey(KEY_INPUT_D))
-	{
-		transform_.pos.x = transform_.pos.x - 5.f;
-	}*/
-
 }
 
 void ObjectBase::Draw(void)
 {
+	//デバッグ用として3Dの球体を描画する
 	DrawSphere3D(transform_.pos, 20.0f, 10, 0xffff00, 0xffff00, true);
 }
 
