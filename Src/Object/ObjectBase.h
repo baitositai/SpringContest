@@ -14,12 +14,14 @@ public:
 	// デストラクタ
 	virtual ~ObjectBase(void);
 
-	virtual void Load(void) = 0;
-	virtual void Init(void) = 0;
-	virtual void Update(void) = 0;
-	virtual void Draw(void) = 0;
+	virtual void Load(void);
+	virtual void Init(void);
+	virtual void Update(void);
+	virtual void Draw(void);
 
 	const Transform& GetTransform(void) const;
+
+
 
 protected:
 

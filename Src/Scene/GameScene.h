@@ -2,6 +2,8 @@
 #include "../framework.h"
 #include "SceneBase.h"
 
+class ObjectBase;
+
 class GameScene : public SceneBase
 {
 public:
@@ -19,6 +21,8 @@ public:
 	void Release(void) override;
 
 private:	
+
+	std::unique_ptr<ObjectBase> obj_;
 
 	//Updateä÷êî
 	void LoadingUpdate(InputManager& ins);

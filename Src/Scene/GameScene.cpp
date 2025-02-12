@@ -3,6 +3,7 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/TextManager.h"
 #include "../Utility/Utility.h"
+#include "../Object/ObjectBase.h"
 
 GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 {
@@ -21,6 +22,10 @@ void GameScene::Load(void)
 	//非同期読み込みをtrueにする
 	SetUseASyncLoadFlag(true);
 
+
+	obj_ = std::make_unique<ObjectBase>();
+	obj_->Load();
+
 	//フォント
 	loadFont_ = CreateFontToHandle(
 		TextManager::GetInstance().GetFontName(TextManager::FONT_TYPE::HANAZOME).c_str(),
@@ -33,7 +38,7 @@ void GameScene::Load(void)
 
 void GameScene::Init(void)
 {
-
+	obj_->Init();
 }
 
 void GameScene::Update(InputManager& input)
@@ -80,6 +85,8 @@ void GameScene::LoadingUpdate(InputManager& ins)
 
 void GameScene::NormalUpdate(InputManager& ins)
 {
+	obj_->Update();
+
 	//シーン遷移
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
 	{
@@ -97,6 +104,7 @@ void GameScene::LoadingDraw(void)
 void GameScene::NormalDraw(void)
 {
 	//各種オブジェクト描画処理
+	obj_->Draw();
 
 	//デバッグ描画
 	DebagDraw();
@@ -104,11 +112,11 @@ void GameScene::NormalDraw(void)
 
 void GameScene::DebagDraw()
 {
-	//デバッグ系の描画はここに書く
-	DrawBox(
-		0, 0,
-		Application::SCREEN_SIZE_X,
-		Application::SCREEN_SIZE_Y,
-		0xfff000,
-		true);
+	////デバッグ系の描画はここに書く
+	//DrawBox(
+	//	0, 0,
+	//	Application::SCREEN_SIZE_X,
+	//	Application::SCREEN_SIZE_Y,
+	//	0xfff000,
+	//	true);
 }
