@@ -4,8 +4,6 @@ struct PS_INPUT
 {
 	float4 Position : SV_POSITION; // 座標( プロジェクション空間 )
 	float4 Diffuse : COLOR0; // ディフューズカラー
-	
-    float4 Spe : COLOR1;
 	float2 TexCoords0 : TEXCOORD0; // テクスチャ座標
 };
 

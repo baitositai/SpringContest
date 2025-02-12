@@ -166,7 +166,7 @@ void PixelShader::InitPS()
 	std::string path = "Data/Shader/";
 	std::string fileName;
 
-	auto loadPS = [&](PS_TYPE type, std::string fName)
+	auto loadPS = [&](PS_TYPE type, std::string fName) 
 	{
 		fileName = path + fName;
 		psMap_.emplace(std::make_pair(type, LoadPixelShader(fileName.c_str())));
@@ -177,8 +177,8 @@ void PixelShader::InitPS()
 	loadPS(PS_TYPE::FADE_TEXTURE, "FadeTextrure.cso");
 	loadPS(PS_TYPE::COL_TX, "ColorTex.cso");
 
-	//fileName = L"x64/Debug/ColorTex.cso";
-	//psMap_.emplace(std::make_pair(PS_TYPE::COL_TX, LoadPixelShader(fileName.c_str())));
+	/*fileName = L"x64/Debug/ColorTex.cso";
+	psMap_.emplace(std::make_pair(PS_TYPE::COL_TX, LoadPixelShader(fileName.c_str())));*/
 }
 
 const int& PixelShader::SearchPS(const PS_TYPE& ps) const

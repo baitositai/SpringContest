@@ -14,6 +14,10 @@ TitleScene::TitleScene(SceneManager& manager) :SceneBase(manager)
 	deg_ = -1.0f;
 	ex_ = -1.0f;
 	exSpeed_ = -1.0f;
+	mesFont_ = -1;
+
+	int i = -1;
+	for (auto& img : imgTexts_) { img = &i; }
 
 	//更新関数のセット
 	updataFunc_ = [&](InputManager& input) {LoadingUpdate(input); };
