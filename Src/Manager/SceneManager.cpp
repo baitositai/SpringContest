@@ -1,6 +1,7 @@
 #include "../framework.h"
 #include "../Application.h"
 #include "../Common/Fader.h"
+#include "../Shader/PixelShader.h"
 #include "ResourceManager.h"
 #include "Camera.h"
 #include "../Scene/TitleScene.h"
@@ -13,6 +14,8 @@ void SceneManager::Init(void)
 
 	sceneId_ = SCENE_ID::TITLE;
 	waitSceneId_ = SCENE_ID::NONE;
+
+	//PixelShader::GetInstance().Init();
 
 	fader_ = std::make_unique<Fader>();
 	fader_->Init();

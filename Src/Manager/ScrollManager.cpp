@@ -2,10 +2,7 @@
 
 ScrollManager::ScrollManager()
 {
-}
-
-ScrollManager::~ScrollManager()
-{
+	scrollSpeed_ = -1.0f;
 }
 
 void ScrollManager::Init()
@@ -19,4 +16,14 @@ void ScrollManager::Update()
 
 void ScrollManager::Release()
 {
+}
+
+float ScrollManager::GetScrollSpeed() const
+{
+	return scrollSpeed_;
+}
+
+void ScrollManager::ChangeScrollSpeed(const float speed)
+{
+	scrollSpeed_ += speed;
 }

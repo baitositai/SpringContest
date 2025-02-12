@@ -67,7 +67,7 @@ private:
 	float exSpeed_;
 
 	//相対座標
-	VECTOR rPos_[VERTEXS];
+	//VECTOR rPos_[VERTEXS];
 
 	// メッシュ用情報
 	struct MeshText

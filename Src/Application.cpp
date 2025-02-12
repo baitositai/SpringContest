@@ -41,6 +41,7 @@ void Application::Init(void)
 	ChangeWindowMode(true);
 
 	// DxLib‚Ì‰Šú‰»
+	SetOutApplicationLogValidFlag(TRUE);  // ƒƒOo—Í‚ğ—LŒø‰»
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
 	isInitFail_ = false;
 	if (DxLib_Init() == -1)
