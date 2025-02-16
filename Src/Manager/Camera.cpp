@@ -70,6 +70,11 @@ void Camera::SetFollow(const Transform* follow)
 	followTransform_ = follow;
 }
 
+void Camera::SetTargetPos(const VECTOR& pos)
+{
+	targetPos_ = pos;
+}
+
 VECTOR Camera::GetPos(void) const
 {
 	return pos_;

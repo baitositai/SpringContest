@@ -92,7 +92,6 @@ void Fader::Update(void)
 
 void Fader::Draw(void)
 {
-
 	switch (state_)
 	{
 	case STATE::NONE:
@@ -110,7 +109,6 @@ void Fader::Draw(void)
 		);
 		break;
 	}
-
 }
 
 void Fader::SetFadeColor(unsigned int color)
