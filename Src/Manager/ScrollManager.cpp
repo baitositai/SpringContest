@@ -23,3 +23,13 @@ void ScrollManager::ChangeScrollSpeed(const float speed)
 {
 	scrollSpeed_ += speed;
 }
+
+float ScrollManager::GetScrollSpeed() const
+{
+	return scrollSpeed_;
+}
+
+void ScrollManager::ChangeScrollSpeed(const float speed)
+{
+	scrollSpeed_ += speed;
+}

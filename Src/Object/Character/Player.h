@@ -155,3 +155,4 @@ private:
 	//ƒ^ƒbƒNƒ‹
 	void Tackle();
 };
+

@@ -22,7 +22,7 @@ Player::Player()
 	stateChanges_.emplace(STATE::DEATH, std::bind(&Player::ChangeStateDeath, this));
 }
 
-void Player::Load() 
+void Player::Load()
 {
 	// ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
 	InitModel();
@@ -186,7 +186,7 @@ void Player::Tackle()
 void Player::DebagDraw()
 {
 	DrawSphere3D(
-		trans_.pos,
+	trans_.pos,
 		radius_,
 		20,
 		0xff0000,
