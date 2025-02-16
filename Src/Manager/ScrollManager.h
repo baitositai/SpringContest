@@ -27,23 +27,11 @@ public:
 	//スクロール終了ライン
 	static constexpr float SCROLL_FINISH_LINE = -200.0f;
 
-	//加速
-	static constexpr float ACC_SPEED = 2.0f;
-
-	//減速
-	static constexpr float DEC_SPEED = -2.0f;
-
 	ScrollManager();
 	~ScrollManager() = default;
 
 	void Init();
 	void Update();
-
-	//スクロールスピードを返す
-	float GetScrollSpeed()const;
-
-	//スピードの変更
-	void ChangeScrollSpeed(const float speed);
 
 	//スクロールスピードを返す
 	float GetScrollSpeed()const;
