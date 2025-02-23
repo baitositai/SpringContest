@@ -28,7 +28,7 @@ public:
 	void Release();
 
 	//オブジェクトを返す
-	const std::vector<std::unique_ptr<ObjectBase>>& GetObjects() const;
+	inline const std::vector<std::unique_ptr<ObjectBase>>& GetObjects() const { return objs_; }
 
 private:
 

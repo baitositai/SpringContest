@@ -8,18 +8,23 @@ Player::Player()
 {
 	animationController_ = nullptr;
 	state_ = STATE::NONE;
+	aliveState_ = ALIVE_STATE::NONE;
 	moveSpeed_ = -1.0f;
 	isJump_ = false;
 	stepJump_ = -1.0f;
 	life_ = -1;
 	pow_ = -1;
 	radius_ = -1.0f;
-	isTackle_ = false;
-	tackleTime_ = 0.0f;
+	tackleTime_ = -1.0f;
+	damageTime_ = -1.0f;
 
 	stateChanges_.emplace(STATE::NONE, std::bind(&Player::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::ALIVE, std::bind(&Player::ChangeStateAlive, this));
 	stateChanges_.emplace(STATE::DEATH, std::bind(&Player::ChangeStateDeath, this));
+
+	aliveStateChanges_.emplace(ALIVE_STATE::RUN, std::bind(&Player::ChanageAliveStateRun, this));
+	aliveStateChanges_.emplace(ALIVE_STATE::TACKLE, std::bind(&Player::ChanageAliveStateTackle, this));
+	aliveStateChanges_.emplace(ALIVE_STATE::DAMAGE, std::bind(&Player::ChanageAliveStateDamage, this));
 }
 
 void Player::Load()
@@ -42,9 +47,12 @@ void Player::Init()
 	pow_ = DEFAULT_POWER;
 	life_ = DEFAULT_LIFE;
 	radius_ = RADIUS;
+	tackleTime_ = 0.0f;
+	damageTime_ = 0.0f;
 
 	//初期状態
 	ChangeState(STATE::ALIVE);
+	ChangeAliveState(ALIVE_STATE::RUN);
 }
 
 void Player::Update()
@@ -86,15 +94,12 @@ void Player::AddPower(const int& pow)
 	}
 }
 
-void Player::SetIsTackle(const bool& isTackle)
+void Player::ChangeAliveState(const ALIVE_STATE& state)
 {
-	isTackle_ = isTackle;
+	aliveState_ = state;
 
-	//タックルの時間設定とアニメーションの再生
-	if (isTackle_) {
-		animationController_->Play((int)ANIM_TYPE::TACKLE);
-		tackleTime_ = TACKLE_TIME;
-	}
+	// 各状態遷移の初期処理
+	aliveStateChanges_[aliveState_]();
 }
 
 void Player::InitModel(void)
@@ -141,7 +146,7 @@ void Player::Process()
 	if (ins.IsTrgDown(KEY_INPUT_SPACE)) 
 	{ 
 		isJump_ = true; 
-		if (!isTackle_) { animationController_->Play((int)ANIM_TYPE::JUMP); }
+		if (aliveState_ != ALIVE_STATE::TACKLE ) { animationController_->Play((int)ANIM_TYPE::JUMP); }
 	}
 }
 
@@ -164,11 +169,13 @@ void Player::Jump(void)
 	}
 }
 
+void Player::Run()
+{
+	//特別処理はなし
+}
+
 void Player::Tackle()
 {
-	//タックル中以外は処理を行わない
-	if (!isTackle_) { return; }
-
 	//時間を減らす
 	tackleTime_ -= SceneManager::GetInstance().GetDeltaTime();
 
@@ -179,7 +186,28 @@ void Player::Tackle()
 		//時間の初期化
 		tackleTime_ = 0.0f;
 		//タックルを終了
-		SetIsTackle(false);
+		ChangeAliveState(ALIVE_STATE::RUN);
+	}
+}
+
+void Player::Damage()
+{
+	//時間を減らす
+	damageTime_ -= SceneManager::GetInstance().GetDeltaTime();
+
+	//モデルの色を変える
+	//MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
+	if(static_cast<int>(damageTime_ * 10.0f) % 2 == 0) { MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 0.0f, 0.0f, 1.0f)); }
+	else { MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 1.0f, 1.0f, 1.0f)); }
+
+	//時間になった時
+	if (damageTime_ <= 0.0f) {
+		//モデルの色を通常に戻す
+		MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
+		//時間の初期化
+		damageTime_ = 0.0f;
+		//タックルを終了
+		ChangeAliveState(ALIVE_STATE::RUN);
 	}
 }
 
@@ -225,6 +253,29 @@ void Player::ChangeStateDeath(void)
 	animationController_->Play((int)ANIM_TYPE::DEATH, false);
 }
 
+void Player::ChanageAliveStateRun()
+{
+	aliveStateUpdate_ = std::bind(&Player::Run, this);
+}
+
+void Player::ChanageAliveStateTackle()
+{
+	aliveStateUpdate_ = std::bind(&Player::Tackle, this);
+
+	//アニメーションの再生
+	animationController_->Play((int)ANIM_TYPE::TACKLE);
+	
+	//タックルの時間設定
+	tackleTime_ = TACKLE_TIME;
+}
+
+void Player::ChanageAliveStateDamage()
+{
+	aliveStateUpdate_ = std::bind(&Player::Damage, this);
+
+	damageTime_ = DAMAGE_TIME;
+}
+
 void Player::UpdateNone(void)
 {
 }
@@ -237,8 +288,8 @@ void Player::UpdateAlive(void)
 	// ジャンプ処理
 	Jump();
 
-	//タックル
-	Tackle();
+	//生存状態別の更新
+	aliveStateUpdate_();
 }
 
 void Player::UpdateDeath(void)

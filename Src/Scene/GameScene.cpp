@@ -3,9 +3,11 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/TextManager.h"
 #include "../Manager/ScoreBank.h"
+#include "../Manager/ScrollManager.h"
 #include "../Utility/Utility.h"
 #include "../Object/Character/Player.h"
 #include "../Object/ScrollObject/ObjectManager.h"
+#include "../Object/TimeCount.h"
 
 GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 {
@@ -41,6 +43,10 @@ void GameScene::Load(void)
 	objs_ = std::make_unique<ObjectManager>();
 	objs_->Load();
 
+	//時間
+	time_ = std::make_unique<TimeCount>();
+	time_->Load();
+
 	//フォント
 	loadFont_ = CreateFontToHandle(
 		TextManager::GetInstance().GetFontName(TextManager::FONT_TYPE::HANAZOME).c_str(),
@@ -59,6 +65,9 @@ void GameScene::Init(void)
 
 	//オブジェクト初期化
 	objs_->Init();
+
+	//時間初期化
+	time_->Init();
 
 	//カウントダウンの設定
 	strCnt_ = COUNTDOWN;
@@ -163,6 +172,12 @@ void GameScene::StartUpdate(void)
 
 void GameScene::PlayUpdate(void)
 {
+	//時間経過処理
+	time_->Update();
+
+	//スクロール関係の処理
+	ScrollManager::GetInstance().Update();
+
 	//プレイヤーの更新
 	player_->Update();
 
@@ -180,8 +195,6 @@ void GameScene::RezaltUpdate(void)
 {
 	//プレイヤーの更新(アニメーション再生のため)
 	player_->Update();
-
-	//スコア表示などの処理を作る予定
 }
 
 void GameScene::LoadingDraw(void)
@@ -246,6 +259,7 @@ void GameScene::StartDraw()
 void GameScene::PlayDraw()
 {
 	//時間やスコア等のUIを描画予定
+	time_->Draw();
 }
 
 void GameScene::RezaltDraw()

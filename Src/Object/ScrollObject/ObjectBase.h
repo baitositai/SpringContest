@@ -35,7 +35,7 @@ public:
 	void ChangeState(STATE state);
 
 	//衝突判定後の処理
-	virtual void OnCollision(Player& player);
+	virtual void OnCollision(Player& player) = 0;
 
 	//トランスフォームを返す
 	inline const Transform& GetTransform(void) const { return transform_; }

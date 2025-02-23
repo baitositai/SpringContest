@@ -70,11 +70,6 @@ void ObjectManager::Release()
 {
 }
 
-const std::vector<std::unique_ptr<ObjectBase>>& ObjectManager::GetObjects() const
-{
-	return objs_;
-}
-
 void ObjectManager::ScrollStart()
 {
 	std::vector<ObjectBase*> noScrollObjs;

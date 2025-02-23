@@ -18,13 +18,11 @@ void Gimic::Load()
 void Gimic::OnCollision(Player& player)
 {
 	//プレイヤーにダメージ
+	player.ChangeAliveState(Player::ALIVE_STATE::DAMAGE);
 	player.AddLife(DAMAGE);
 
 	//スコア加算
 	ScoreBank::GetInstance().AddScore(SCORE);
-
-	//プレイヤーの状態がタックルの場合戻す
-	if (player.IsTackle()) { player.SetIsTackle(false); }
 
 	//状態を変更
 	ChangeState(STATE::HIT);

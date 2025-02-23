@@ -4,6 +4,7 @@
 
 class Player;
 class ObjectManager;
+class TimeCount;
 
 class GameScene : public SceneBase
 {
@@ -53,6 +54,7 @@ private:
 	//インスタンス生成
 	std::shared_ptr<Player> player_;
 	std::unique_ptr<ObjectManager> objs_;
+	std::unique_ptr<TimeCount> time_;
 
 	//更新関数
 	void LoadingUpdate(InputManager& ins);	//読み込み中処理

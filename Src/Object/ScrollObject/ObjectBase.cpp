@@ -58,10 +58,6 @@ void ObjectBase::ChangeState(STATE state)
 	stateChanges_[state_]();
 }
 
-void ObjectBase::OnCollision(Player& player)
-{
-}
-
 void ObjectBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&ObjectBase::UpdateNone, this);

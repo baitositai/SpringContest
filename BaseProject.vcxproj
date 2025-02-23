@@ -51,6 +51,7 @@
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\Utility.cpp" />
+    <ClCompile Include="Src\Object\TimeCount.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Manager\ScoreBank.h" />
@@ -87,6 +88,7 @@
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\Utility.h" />
     <ClInclude Include="Src\Utility\StaticSingleton.h" />
+    <ClInclude Include="Src\Object\TimeCount.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\HLSL\ColorTex.hlsl">

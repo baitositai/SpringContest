@@ -35,12 +35,24 @@ public:
 	//タックル時間
 	static constexpr float TACKLE_TIME = 1.5f;
 
+	//ダメージ時間
+	static constexpr float DAMAGE_TIME = 2.0f;
+
 	//状態
 	enum class STATE
 	{
 		NONE,
 		ALIVE,
 		DEATH,
+	};
+
+	//プレイヤーの生存状態
+	enum class ALIVE_STATE
+	{
+		NONE,
+		RUN,
+		TACKLE,
+		DAMAGE
 	};
 
 	//アニメーション種類
@@ -69,14 +81,11 @@ public:
 	//力を加える
 	void AddPower(const int& pow);
 
-	//タックル設定
-	void SetIsTackle(const bool& isTackle);
+	//生存状態の変更
+	void ChangeAliveState(const ALIVE_STATE & state);
 
 	//力を返す
 	inline const int& GetPower() const { return pow_; }
-
-	//タックル判定を返す
-	inline const bool& IsTackle() const { return isTackle_; }
 	
 	//衝突判定用半径を返す
 	inline const float& GetRadius() const { return radius_; }
@@ -84,16 +93,22 @@ public:
 	//状態を返す
 	inline const STATE& GetState() const { return state_; }
 
+	//生存状態を返す
+	inline const ALIVE_STATE& GetAliveState() const { return aliveState_; }
+
 	//トランスフォームを返す
 	inline const Transform& GetTransform(void) const { return trans_; }
 
 	//デバッグ描画
-	void DebagDraw();
+	void DebagDraw(); 
 
 private:
 
 	//状態
 	STATE state_;
+
+	//生存状態
+	ALIVE_STATE aliveState_;
 
 	//移動速度
 	float moveSpeed_;
@@ -113,20 +128,22 @@ private:
 	//衝突判定用半径
 	float radius_;
 
-	//タックル判定
-	bool isTackle_;
-
 	//タックル時間
 	float tackleTime_;
+
+	//ダメージ時間
+	float damageTime_;
 
 	//トランスフォーム
 	Transform trans_;
 
 	// 状態管理(状態遷移時初期処理)
 	std::map<STATE, std::function<void(void)>> stateChanges_;
+	std::map<ALIVE_STATE, std::function<void(void)>> aliveStateChanges_;
 
 	// 状態管理(更新ステップ)
 	std::function<void(void)> stateUpdate_;
+	std::function<void(void)> aliveStateUpdate_;
 
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
@@ -136,6 +153,10 @@ private:
 	void ChangeStateNone(void);
 	void ChangeStateAlive(void);
 	void ChangeStateDeath(void);
+
+	void ChanageAliveStateRun();
+	void ChanageAliveStateTackle();
+	void ChanageAliveStateDamage();
 
 	// 更新ステップ
 	void UpdateNone(void);
@@ -152,7 +173,9 @@ private:
 	//ジャンプ
 	void Jump(void);
 
-	//タックル
+	//生存状態別の更新処理
+	void Run();
 	void Tackle();
+	void Damage();
 };
 
