@@ -47,6 +47,9 @@ public:
 	inline const float& GetRadius()const { return radius_; }
 
 protected:
+	
+	//状態
+	STATE state_;
 
 	//デバッグ用カラー
 	int color_;
@@ -54,23 +57,20 @@ protected:
 	//半径
 	float radius_;
 
-public:
+	// モデル制御の基本情報
+	Transform transform_;	
+	
+	// シングルトン参照
+	ResourceManager& resMng_;
+	SceneManager& scnMng_;
 
-	//状態
-	STATE state_;
+private:
 
 	// 状態管理(状態遷移時初期処理)
 	std::map<STATE, std::function<void(void)>> stateChanges_;
 
 	// 状態管理(更新ステップ)
 	std::function<void(void)> stateUpdate_;
-
-	// シングルトン参照
-	ResourceManager& resMng_;
-	SceneManager& scnMng_;
-
-	// モデル制御の基本情報
-	Transform transform_;
 
 	// 状態遷移
 	void ChangeStateNone(void);
@@ -80,8 +80,11 @@ public:
 	// 更新ステップ
 	void UpdateNone(void);
 	void UpdateScroll(void);
-	void UpdateHit(void);
+	virtual void UpdateHit(void);
 
 	//位置のランダム決定
 	void DecideRandPos();
+
+	//モデルの初期化処理
+	virtual void InitModel() = 0;
 };

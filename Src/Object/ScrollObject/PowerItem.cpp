@@ -10,7 +10,7 @@ PowerItem::~PowerItem()
 {
 }
 
-void PowerItem::Load()
+void PowerItem::InitModel()
 {
 	color_ = 0x00bfff;
 }

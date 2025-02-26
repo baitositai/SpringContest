@@ -10,7 +10,7 @@ LifeItem::~LifeItem()
 {
 }
 
-void LifeItem::Load()
+void LifeItem::InitModel()
 {
 	color_ = 0xabff2f;
 }

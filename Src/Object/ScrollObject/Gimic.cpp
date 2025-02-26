@@ -10,7 +10,7 @@ Gimic::~Gimic()
 {
 }
 
-void Gimic::Load()
+void Gimic::InitModel()
 {
 	color_ = 0xb22222;
 }

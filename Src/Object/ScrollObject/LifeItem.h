@@ -14,7 +14,7 @@ public:
 	LifeItem();
 	~LifeItem();
 
-	void Load() override;
+	void InitModel() override;
 	void OnCollision(Player& player) override;
 
 private:

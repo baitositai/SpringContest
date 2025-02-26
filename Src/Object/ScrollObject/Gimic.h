@@ -14,7 +14,7 @@ public:
 	Gimic();
 	~Gimic();
 
-	void Load() override;
+	void InitModel() override;
 	void OnCollision(Player& player) override;
 
 private:

@@ -24,6 +24,8 @@ ObjectBase::~ObjectBase(void)
 void ObjectBase::Load(void)
 {
 	color_ = 0xffff00;
+
+	InitModel();
 }
 
 void ObjectBase::Init(void)
@@ -78,6 +80,7 @@ void ObjectBase::ChangeStateHit(void)
 
 void ObjectBase::UpdateNone(void)
 {
+
 }
 
 void ObjectBase::UpdateScroll(void)

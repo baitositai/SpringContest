@@ -26,6 +26,10 @@ void ResourceManager::Init(void)
 	//スカイドーム
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "SkyDome/Skydome.mv1");
 	resourcesMap_.emplace(SRC::SKY_DOME, std::move(res));
+
+	//敵
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Enemy/Zombie Cartoon_01.mv1");
+	resourcesMap_.emplace(SRC::ENEMY, std::move(res));
 }
 
 void ResourceManager::Release(void)
