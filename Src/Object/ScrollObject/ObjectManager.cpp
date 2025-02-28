@@ -19,9 +19,7 @@ void ObjectManager::Load()
 	for (int i = 0; i < GIMIC_CREATE_CNT; i++) {objs_.push_back(std::make_unique<Gimic>());}
 	for (int i = 0; i < LIFE_CREATE_CNT; i++) {objs_.push_back(std::make_unique<LifeItem>());}
 	for (int i = 0; i < POW_CREATE_CNT; i++) {objs_.push_back(std::make_unique<PowerItem>());}
-	for (auto& obj : objs_){
-		obj->Load();
-	}
+	for (auto& obj : objs_) { obj->Load(); }
 }
 
 void ObjectManager::Init()

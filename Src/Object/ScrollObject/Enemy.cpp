@@ -30,8 +30,6 @@ void Enemy::InitModel(void)
 
 void Enemy::Load()
 {
-	
-
 	ObjectBase::Load();
 	InitAnimation();
 }
