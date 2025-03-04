@@ -48,13 +48,6 @@ void GameScene::Load(void)
 	stageSpawn_ = 0;
 }
 
-	stages_.clear();
-
-	//‰Šú‰»
-	stageSpawnCounter_ = 0;
-	stageSpawn_ = 0;
-}
-
 void GameScene::Init(void)
 {
 
