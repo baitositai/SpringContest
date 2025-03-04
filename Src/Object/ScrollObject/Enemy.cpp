@@ -42,17 +42,14 @@ void Enemy::Update()
 
 void Enemy::UpdateHit()
 {
-
-	
 	cnt_ += scnMng_.GetDeltaTime();
-	transform_.pos = VSub(transform_.pos, {moveDirX_, -5.0f, -5.0f});
+	transform_.pos = VSub(transform_.pos, {moveDirX_, -SMASH_SPEED, -SMASH_SPEED });
 	
-	if (1.5f <= cnt_)
+	if (CHANGE_SECOND <= cnt_)
 	{
 		//状態を変える
 		ChangeState(STATE::NONE);
 	}
-	
 }
 
 void Enemy::InitAnimation(void)
@@ -60,22 +57,29 @@ void Enemy::InitAnimation(void)
 	//アニメーションの設定
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 	std::string path = Application::PATH_MODEL + "Enemy/Animation/";
-	/*animationController_->Add((int)ANIM_TYPE::IDLE, path + "", ANIM_SPEED);*/
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "ZombieRunning.mv1", ANIM_SPEED);
-	/*animationController_->Add((int)ANIM_TYPE::DEATH, path + "", ANIM_SPEED);*/
 
 	//初期状態
 	animationController_->Play((int)ANIM_TYPE::RUN);
 }
 
+void Enemy::ResetHitAnim()
+{
+	//アニメーション用変数を初期化
+	cnt_ = 0;
+	moveDirX_ = 0.0f;
 
+	//ランダムで値を設定
+	int posX = GetRand(10);
+
+	//判断
+	if (posX / 2){moveDirX_ = SMASH_SPEED;}
+	else { moveDirX_ = -SMASH_SPEED; }
+}
 
 void Enemy::Draw()
 {
-	if (state_==STATE::NONE)
-	{
-		return;
-	}
+	if (state_ == STATE::NONE) { return; }
 
 	//モデルの描画
 	MV1DrawModel(transform_.modelId);
@@ -84,11 +88,20 @@ void Enemy::Draw()
 
 void Enemy::OnCollision(Player& player)
 {
+	//プレイヤーがダメージの状態は処理を行わない
+	if (player.GetAliveState() == Player::ALIVE_STATE::DAMAGE) { return; }
+
 	//すでにタックル中
 	if (player.GetAliveState() == Player::ALIVE_STATE::TACKLE)
 	{
 		//スコア加算
 		ScoreBank::GetInstance().AddScore(HIT_SCORE);
+
+		//状態を変更
+		ChangeState(STATE::HIT);
+
+		//衝突アニメーションの初期化
+		ResetHitAnim();
 	}	
 	//パワーがある場合
 	else if (player.GetPower() > 0)
@@ -99,6 +112,12 @@ void Enemy::OnCollision(Player& player)
 
 		//スコア加算
 		ScoreBank::GetInstance().AddScore(HIT_SCORE);
+
+		//状態を変更
+		ChangeState(STATE::HIT);
+
+		//衝突アニメーションの初期化
+		ResetHitAnim();
 	}
 	else
 	{
@@ -108,25 +127,5 @@ void Enemy::OnCollision(Player& player)
 
 		//スコア加算
 		ScoreBank::GetInstance().AddScore(DAMAGE_SCORE);
-	}
-	//状態を変更
-	ChangeState(STATE::HIT);
-	
-	//カウントをリセット
-	cnt_ = 0;
-
-	moveDirX_ = 0.0f;
-
-	int posX;
-	
-	posX = GetRand(10);
-
-	if (posX / 2)
-	{
-		moveDirX_ = 5.0f;
-	}
-	else
-	{
-		moveDirX_ = -5.0f;
 	}
 }

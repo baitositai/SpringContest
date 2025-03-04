@@ -102,6 +102,14 @@ void Player::ChangeAliveState(const ALIVE_STATE& state)
 	aliveStateChanges_[aliveState_]();
 }
 
+void Player::SetKey(const int& right, const int& left, const int& jump, const int& tackle)
+{
+	key_.right_ = right;
+	key_.left_ = left;
+	key_.jump_ = jump;
+	key_.tackle_ = tackle;
+}
+
 void Player::InitModel(void)
 {
 	trans_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(
@@ -133,8 +141,8 @@ void Player::Process()
 	auto& ins = InputManager::GetInstance();
 
 	//ëÄçÏ
-	if (ins.IsNew(KEY_INPUT_A)) { trans_.pos.x -= moveSpeed_; }
-	else if (ins.IsNew(KEY_INPUT_D)) { trans_.pos.x += moveSpeed_; }
+	if (ins.IsNew(key_.left_)) { trans_.pos.x -= moveSpeed_; }
+	else if (ins.IsNew(key_.right_)) { trans_.pos.x += moveSpeed_; }
 
 	//à⁄ìÆêßå¿
 	float left = ScrollManager::MOVE_LIMIT_LEFT;
@@ -143,7 +151,7 @@ void Player::Process()
 	else if(trans_.pos.x < left) { trans_.pos.x = left; }
 
 	//ÉWÉÉÉìÉvèàóù
-	if (ins.IsTrgDown(KEY_INPUT_SPACE)) 
+	if (ins.IsTrgDown(key_.jump_)) 
 	{ 
 		isJump_ = true; 
 		if (aliveState_ != ALIVE_STATE::TACKLE ) { animationController_->Play((int)ANIM_TYPE::JUMP); }

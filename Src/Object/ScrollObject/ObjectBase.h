@@ -21,7 +21,7 @@ public:
 	};
 
 	// コンストラクタ
-	ObjectBase(void);
+	ObjectBase();
 
 	// デストラクタ
 	~ObjectBase(void);

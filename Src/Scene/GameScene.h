@@ -10,9 +10,6 @@ class GameScene : public SceneBase
 {
 public:
 
-	//ゲーム開始カウントダウン
-	static constexpr float COUNTDOWN = 3.0f;
-
 	//ゲーム中の状態
 	enum class STATE
 	{
@@ -20,6 +17,21 @@ public:
 		PLAY,	//プレイ
 		REZALT,	//結果
 	};
+
+	//プレイヤー人数
+	static constexpr int PLAYER_MAX = 2;
+
+	//ゲーム開始カウントダウン
+	static constexpr float COUNTDOWN = 3.0f;
+
+	//プレイヤーの初期位置
+	static constexpr VECTOR DEFAULT_PLAYER_POS = { 0,0,0 };
+
+	//プレイヤーの操作キー
+	static constexpr int RIGHT_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_D, KEY_INPUT_RIGHT };
+	static constexpr int LEFT_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_A, KEY_INPUT_LEFT };
+	static constexpr int JUMP_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_SPACE, KEY_INPUT_RETURN };
+	static constexpr int TACKLE_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_Q, KEY_INPUT_RSHIFT };
 
 	//カメラ位置
 	static constexpr VECTOR LOCAL_CAMERA_POS = { 0, 150, -200 };
@@ -38,6 +50,9 @@ public:
 
 private:	
 
+	//プレイヤー人数
+	int playNum_;
+
 	//開始カウント
 	float strCnt_;
 
@@ -52,8 +67,8 @@ private:
 	std::function<void(void)> stateGameDraw_;
 
 	//インスタンス生成
-	std::shared_ptr<Player> player_;
-	std::unique_ptr<ObjectManager> objs_;
+	std::vector<std::shared_ptr<Player>> players_;
+	std::vector<std::unique_ptr<ObjectManager>> objs_;
 	std::unique_ptr<TimeCount> time_;
 
 	//更新関数

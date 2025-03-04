@@ -17,6 +17,9 @@ void Gimic::InitModel()
 
 void Gimic::OnCollision(Player& player)
 {
+	//プレイヤーがダメージの状態は処理を行わない
+	if (player.GetAliveState() == Player::ALIVE_STATE::DAMAGE) { return; }
+
 	//プレイヤーにダメージ
 	player.ChangeAliveState(Player::ALIVE_STATE::DAMAGE);
 	player.AddLife(DAMAGE);

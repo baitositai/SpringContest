@@ -23,6 +23,12 @@ public:
 	//アニメーション速度
 	static constexpr float ANIM_SPEED = 40.0f;
 
+	//吹っ飛び速度
+	static constexpr float SMASH_SPEED = 5.0f;
+
+	//チェンジ時間
+	static constexpr float CHANGE_SECOND = 1.5f;
+
 
 	//アニメーション種類
 	enum class ANIM_TYPE
@@ -40,9 +46,14 @@ public:
 	void Load() override;
 	void Update()override;
 	void UpdateHit(void) override;
-	void InitAnimation(void);
-	void Draw() override;
+	void Draw() override;	
 	void OnCollision(Player& player) override;
+
+	//アニメーションの初期化処理
+	void InitAnimation(void);
+
+	//衝突アニメーション関係の初期化
+	void ResetHitAnim();
 
 private:
 

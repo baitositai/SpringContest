@@ -5,8 +5,10 @@
 #include "ResourceManager.h"
 #include "Camera.h"
 #include "../Scene/TitleScene.h"
+#include "../Scene/SelectScene.h"
 #include "../Scene/GameScene.h"
 #include "InputManager.h"
+#include "DataBank.h"
 #include "SceneManager.h"
 
 void SceneManager::Init(void)
@@ -20,8 +22,12 @@ void SceneManager::Init(void)
 	fader_ = std::make_unique<Fader>();
 	fader_->Init();
 
-	camera_ = std::make_shared<Camera>();
-	camera_->Init();
+	// カメラ
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		std::shared_ptr<Camera>c = std::make_shared<Camera>();
+		c->Init();
+		cameras_.push_back(std::move(c));
+	}
 
 	isSceneChanging_ = false;
 
@@ -30,9 +36,14 @@ void SceneManager::Init(void)
 
 	//メインスクリーンの作成
 	mainScreen_ = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
+	//VS用スクリーンを作成
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		halfScreen_[i] = MakeScreen(Application::SCREEN_HALF_X, Application::SCREEN_SIZE_Y, true);
+	}
 	
 	//スクリーン座標
 	screenPos_ = { 0,0};
+	screenCnt_ = 0;
 
 	// 3D用の設定
 	Init3D();
@@ -116,44 +127,19 @@ void SceneManager::Update(InputManager& ins)
 	preTime_ = nowTime;
 	totalTime_ += GetDeltaTime();
 	
-	// カメラ更新
-	camera_->Update();
-	
 	//フェード更新
 	Fade();
 	
 	//シーン更新
-	scenes_.front()->Update(ins);
-
+	scenes_.front()->Update(ins);	
+	
+	// カメラ更新
+	for (auto& c : cameras_) { c->Update(); }
 }
 
 void SceneManager::Draw(void)
 {
-	// 描画先グラフィック領域の指定
-	SetDrawingScreen(mainScreen_);
-
-	//シーン描画(最後尾から描画)
-	auto rit = scenes_.rbegin();
-	for (; rit != scenes_.rend(); rit++)
-	{
-		(*rit)->Draw();
-	}
-
-	//マウス描画
-	//auto& ins = InputManager::GetInstance();
-	//Vector2 m = ins.GetMousePos();
-	////DrawGraph(m.x, m.y, mouseImg_, true);
-	//DrawCircle(m.x, m.y, 3, 0xff0000, true);
-
-
-	// 暗転・明転
-	fader_->Draw();
-
-	// 描画先グラフィック領域の指定
-	SetDrawScreen(DX_SCREEN_BACK);
-	ClearDrawScreen();
-	DrawGraph(static_cast<int>(screenPos_.x), static_cast<int>(screenPos_.y), mainScreen_, true);
-
+	drawFunc_();
 }
 
 void SceneManager::Destroy(void)
@@ -188,10 +174,10 @@ float SceneManager::GetDeltaTime(void) const
 	return deltaTime_;
 }
 
-//カメラの取得
-std::weak_ptr<Camera> SceneManager::GetCamera(void) const
+// カメラの取得
+std::vector<std::shared_ptr<Camera>> SceneManager::GetCameras(void) const
 {
-	return camera_;
+	return cameras_;
 }
 
 void SceneManager::StartFadeIn(void)
@@ -211,24 +197,24 @@ void SceneManager::SetDrawingScreen(const int& screenID)
 	ClearDrawScreen();
 
 	//カメラ設定
-	camera_->SetBeforeDraw();
+	for (auto& c : cameras_) { c->SetBeforeDraw(); }
 }
 
 SceneManager::SceneManager(void)
 {
 	sceneId_ = SCENE_ID::NONE;
 	waitSceneId_ = SCENE_ID::NONE;
-
 	scenes_.clear();
-
 	isSceneChanging_ = false;
-
+	screenCnt_ = -1;
 	// デルタタイム
 	deltaTime_ = DELTA_TIME;
-	camera_ = nullptr;
+	cameras_.clear();
+
+	//描画関数のセット
+	drawFunc_ = std::bind(&SceneManager::NormalDraw, this);
 
 	Init();
-	
 }
 
 void SceneManager::ResetDeltaTime(void)
@@ -251,8 +237,14 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	case SCENE_ID::TITLE:
 		ChangeAllScene(std::make_shared<TitleScene>(*this));
 		break;
+	case SCENE_ID::SELECT:
+		ChangeAllScene(std::make_shared<SelectScene>(*this));
+		break;
 	case SCENE_ID::GAME:
 		ChangeAllScene(std::make_shared<GameScene>(*this));
+		//描画の切り替え
+		if (DataBank::GetInstance().Output().mode_ == MODE::VS) { drawFunc_ = std::bind(&SceneManager::VSPlayDraw, this); }
+		else { drawFunc_ = std::bind(&SceneManager::NormalDraw, this); }
 		break;
 	}
 
@@ -289,4 +281,55 @@ void SceneManager::Fade(void)
 		}
 		break;
 	}
+}
+
+void SceneManager::NormalDraw()
+{
+	// 描画先グラフィック領域の指定
+	SetDrawingScreen(mainScreen_);
+
+	//シーン描画(最後尾から描画)
+	auto rit = scenes_.rbegin();
+	for (; rit != scenes_.rend(); rit++)
+	{
+		(*rit)->Draw();
+	}
+
+	// 暗転・明転
+	fader_->Draw();
+
+	// 描画先グラフィック領域の指定
+	SetDrawScreen(DX_SCREEN_BACK);
+	ClearDrawScreen();
+	DrawGraph(static_cast<int>(screenPos_.x), static_cast<int>(screenPos_.y), mainScreen_, true);
+}
+
+void SceneManager::VSPlayDraw()
+{
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		//スクリーンカウント設定
+		screenCnt_ = i;
+
+		// 描画先グラフィック領域の指定
+		SetDrawingScreen(halfScreen_[i]);
+
+		//カメラの設定
+		cameras_[i]->SetBeforeDraw();
+
+		//シーン描画(最後尾から描画)
+		auto rit = scenes_.rbegin();
+		for (; rit != scenes_.rend(); rit++)
+		{
+			(*rit)->Draw();
+		}
+
+		// 暗転・明転
+		fader_->Draw();
+	}
+
+	// 描画先グラフィック領域の指定
+	SetDrawScreen(DX_SCREEN_BACK);
+	ClearDrawScreen();
+	DrawGraph(static_cast<int>(screenPos_.x), static_cast<int>(screenPos_.y), halfScreen_[0], true);
+	DrawGraph(static_cast<int>(screenPos_.x + Application::SCREEN_HALF_X), static_cast<int>(screenPos_.y), halfScreen_[1], true);
 }

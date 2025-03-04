@@ -15,10 +15,10 @@ ObjectManager::ObjectManager()
 void ObjectManager::Load()
 {
 	//最初に複数個オブジェクトを生成しておく
-	for (int i = 0; i < ENEMY_CREATE_CNT; i++) {objs_.push_back(std::make_unique<Enemy>());}
-	for (int i = 0; i < GIMIC_CREATE_CNT; i++) {objs_.push_back(std::make_unique<Gimic>());}
-	for (int i = 0; i < LIFE_CREATE_CNT; i++) {objs_.push_back(std::make_unique<LifeItem>());}
-	for (int i = 0; i < POW_CREATE_CNT; i++) {objs_.push_back(std::make_unique<PowerItem>());}
+	for (int i = 0; i < ENEMY_CREATE_CNT; i++) {objs_.push_back(std::make_unique<Enemy>());}	//敵
+	for (int i = 0; i < GIMIC_CREATE_CNT; i++) {objs_.push_back(std::make_unique<Gimic>());}	//ギミック
+	for (int i = 0; i < LIFE_CREATE_CNT; i++) {objs_.push_back(std::make_unique<LifeItem>());}	//体力回復アイテム
+	for (int i = 0; i < POW_CREATE_CNT; i++) {objs_.push_back(std::make_unique<PowerItem>());}	//パワーの回復アイテム
 	for (auto& obj : objs_) { obj->Load(); }
 }
 
@@ -29,6 +29,7 @@ void ObjectManager::Init()
 		obj->Init();
 	}
 
+	//オブジェクトのスクロールインターバル用ステップ
 	step_ = 0.0f;
 }
 
@@ -39,6 +40,7 @@ void ObjectManager::Update()
 
 	//スクロールさせるか調べる
 	if (step_ <= 0.0f) {
+		//スクロールを開始する処理をさせる
 		ScrollStart();
 	}
 
@@ -70,16 +72,19 @@ void ObjectManager::Release()
 
 void ObjectManager::ScrollStart()
 {
+	//スクロールしてないオブジェクト配列
 	std::vector<ObjectBase*> noScrollObjs;
 
 	// スクロールしていないオブジェクトを収集
 	for (auto& obj : objs_) {
+		//スクロールしていないオブジェクト
 		if (obj->GetState() == ObjectBase::STATE::NONE) {
+			//非スクロール配列に格納
 			noScrollObjs.push_back(obj.get());
 		}
 	}
 
-	// スクロールしていないオブジェクトがある場合、ランダムに選択
+	// スクロールしていないオブジェクト配列から、ランダムに1つ選択
 	if (!noScrollObjs.empty()) {
 		int index = rand() % noScrollObjs.size();
 		noScrollObjs[index]->ChangeState(ObjectBase::STATE::SCROLL);

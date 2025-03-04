@@ -4,7 +4,7 @@
 #include "../Character/Player.h"
 #include "ObjectBase.h"
 
-ObjectBase::ObjectBase(void)
+ObjectBase::ObjectBase()
 	: resMng_(ResourceManager::GetInstance()),
 	scnMng_(SceneManager::GetInstance())
 {
@@ -23,8 +23,10 @@ ObjectBase::~ObjectBase(void)
 
 void ObjectBase::Load(void)
 {
+	//デバッグ用カラー
 	color_ = 0xffff00;
 
+	//モデルの初期化
 	InitModel();
 }
 
@@ -42,12 +44,13 @@ void ObjectBase::Update(void)
 	// 更新ステップ
 	stateUpdate_();
 
+	//トランスフォームを更新
 	transform_.Update();
 }
 
 void ObjectBase::Draw(void)
 {
-	if (state_ == STATE::NONE) { return; }
+	if (state_ == STATE::NONE) { return; }	//非スクロール状態の場合描画しない
 	DrawSphere3D(transform_.pos, 20.0f, 10, color_, color_, true);
 }
 
@@ -80,13 +83,14 @@ void ObjectBase::ChangeStateHit(void)
 
 void ObjectBase::UpdateNone(void)
 {
-
+	//この状態のときは何も処理をしない
 }
 
 void ObjectBase::UpdateScroll(void)
 {
 	//スクロール
 	auto& scr = ScrollManager::GetInstance();
+	//Z値を減らしていく
 	transform_.pos.z -= scr.GetScrollSpeed();
 }
 

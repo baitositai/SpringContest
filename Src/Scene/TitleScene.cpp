@@ -108,7 +108,7 @@ void TitleScene::NormalUpdate(InputManager& ins)
 
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
 	{
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
 	}
 }
 

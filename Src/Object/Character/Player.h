@@ -67,6 +67,7 @@ public:
 		DEATH
 	};
 
+	//引数で初期位置を取得
 	Player();
 	~Player() = default;
 
@@ -83,6 +84,13 @@ public:
 
 	//生存状態の変更
 	void ChangeAliveState(const ALIVE_STATE & state);
+
+	//操作キーの設定
+	void SetKey(
+		const int& right, 
+		const int& left, 
+		const int& jump, 
+		const int& tackle);
 
 	//力を返す
 	inline const int& GetPower() const { return pow_; }
@@ -103,6 +111,15 @@ public:
 	void DebagDraw(); 
 
 private:
+
+	//操作キー
+	struct Key
+	{
+		int right_;
+		int left_;
+		int jump_;
+		int tackle_;
+	};
 
 	//状態
 	STATE state_;
@@ -136,6 +153,9 @@ private:
 
 	//トランスフォーム
 	Transform trans_;
+
+	//キー
+	Key key_;
 
 	// 状態管理(状態遷移時初期処理)
 	std::map<STATE, std::function<void(void)>> stateChanges_;

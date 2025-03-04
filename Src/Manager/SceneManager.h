@@ -10,9 +10,6 @@
 #include "InputManager.h"
 #include "Camera.h"
 
-// 推奨しませんが、どうしても使いたい方は
-#define mainCamera SceneManager::GetInstance().GetCamera().lock()
-
 class SceneBase;
 class InputManager;
 class Fader;
@@ -32,12 +29,24 @@ public:
 	//デルタタイム
 	static constexpr float DELTA_TIME = 1.0f / 60.0f;
 
+	//最大プレイ人数
+	static constexpr int PLAYER_MAX = 2;
+
 	// シーン管理用
 	enum class SCENE_ID
 	{
 		NONE,
 		TITLE,
+		SELECT,
 		GAME
+	};
+
+	//人数管理
+	enum class MODE
+	{
+		NONE,
+		MARASON,
+		VS,
 	};
 	
 	void Init(void);
@@ -90,7 +99,7 @@ public:
 	const int& GetMainScreen(void) const { return mainScreen_; }
 
 	// カメラの取得
-	std::weak_ptr<Camera> GetCamera(void) const;
+	std::vector<std::shared_ptr<Camera>> GetCameras(void) const;
 
 	//フェードイン開始
 	void StartFadeIn(void);
@@ -100,6 +109,9 @@ public:
 
 	//描画スクリーンのセット
 	void SetDrawingScreen(const int& screenID);
+
+	//描画スクリーンのカウントを返す
+	inline const int GetScreenCount()const { return screenCnt_; }
 
 private:
 
@@ -113,7 +125,7 @@ private:
 	std::unique_ptr<Fader> fader_;
 
 	// カメラ
-	std::shared_ptr<Camera>  camera_;
+	std::vector<std::shared_ptr<Camera>> cameras_;
 
 	// 現在実行中のシーン
 	std::list<std::shared_ptr<SceneBase>> scenes_;
@@ -130,6 +142,7 @@ private:
 
 	//メインスクリーン
 	int mainScreen_;
+	int halfScreen_[PLAYER_MAX];
 
 	//スクリーン座標
 	Vector2 screenPos_;
@@ -139,6 +152,12 @@ private:
 
 	//フレーム
 	int frame_;
+
+	//スクリーンカウント
+	int screenCnt_;
+
+	//描画用
+	std::function<void(void)> drawFunc_;
 	
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
@@ -154,5 +173,11 @@ private:
 
 	// フェード
 	void Fade(void);
+
+	// 通常の描画
+	void NormalDraw();
+
+	// VS用の描画
+	void VSPlayDraw();
 
 };

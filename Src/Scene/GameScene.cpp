@@ -3,6 +3,7 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/TextManager.h"
 #include "../Manager/ScoreBank.h"
+#include "../Manager/DataBank.h"
 #include "../Manager/ScrollManager.h"
 #include "../Utility/Utility.h"
 #include "../Object/Character/Player.h"
@@ -17,10 +18,11 @@ GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 	//描画関数のセット
 	drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
 
-	player_ = nullptr;
-	objs_ = nullptr;
+	players_.clear();
+	objs_.clear();
 	state_ = STATE::START;
-	strCnt_ = 0.0f;
+	strCnt_ = -1.0f;
+	playNum_ = -1;
 
 	stateChanges_.emplace(STATE::START, std::bind(&GameScene::ChangeStart, this));
 	stateChanges_.emplace(STATE::PLAY, std::bind(&GameScene::ChangePlay, this));
@@ -35,13 +37,23 @@ void GameScene::Load(void)
 	//非同期読み込みをtrueにする
 	SetUseASyncLoadFlag(true);
 
+	//人数設定
+	playNum_ = 1;
+	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS) { playNum_ = SceneManager::PLAYER_MAX; }
+
 	//プレイヤー
-	player_ = std::make_shared<Player>();
-	player_->Load();
+	for (int i = 0; i < playNum_; i++) {
+		auto player = std::make_shared<Player>();
+		player->Load();
+		players_.emplace_back(std::move(player));
+	}
 
 	//オブジェクト
-	objs_ = std::make_unique<ObjectManager>();
-	objs_->Load();
+	for (int i = 0; i < playNum_; i++) {
+		auto objs = std::make_unique<ObjectManager>();
+		objs->Load();
+		objs_.emplace_back(std::move(objs));
+	}
 
 	//時間
 	time_ = std::make_unique<TimeCount>();
@@ -53,18 +65,29 @@ void GameScene::Load(void)
 		LOAD_FONT_SIZE,
 		0);
 
-	//カメラ
-	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
-	mainCamera->SetTargetPos(LOCAL_CAMERA_POS);
+	//カメラの設定
+	auto cameras = SceneManager::GetInstance().GetCameras();
+	for (int i = 0; i < cameras.size(); i++)
+	{
+		cameras[i]->ChangeMode(Camera::MODE::FIXED_POINT);
+		cameras[i]->SetTargetPos(LOCAL_CAMERA_POS);
+	}
 }
 
 void GameScene::Init(void)
 {
 	//プレイヤー初期化
-	player_->Init();
+	for (int i = 0; i < playNum_; i++) { 
+		players_[i]->Init(); 
+		players_[i]->SetKey(
+			RIGHT_MOVE_KEY[i],
+			LEFT_MOVE_KEY[i],
+			JUMP_MOVE_KEY[i],
+			TACKLE_MOVE_KEY[i]);
+	}
 
 	//オブジェクト初期化
-	objs_->Init();
+	for (auto& objs : objs_) { objs->Init(); }
 
 	//時間初期化
 	time_->Init();
@@ -179,10 +202,10 @@ void GameScene::PlayUpdate(void)
 	ScrollManager::GetInstance().Update();
 
 	//プレイヤーの更新
-	player_->Update();
+	for (auto& player : players_) { player->Update(); }
 
 	//オブジェクトの更新
-	objs_->Update();
+	for (auto& objs : objs_) { objs->Update(); }
 
 	//衝突判定
 	Collision();
@@ -194,7 +217,14 @@ void GameScene::PlayUpdate(void)
 void GameScene::RezaltUpdate(void)
 {
 	//プレイヤーの更新(アニメーション再生のため)
-	player_->Update();
+	for (auto& player : players_) { player->Update(); }
+
+	//シーン遷移
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_SPACE))
+	{
+		SceneManager::GetInstance().
+			ChangeScene(SceneManager::SCENE_ID::TITLE);
+	}
 }
 
 void GameScene::LoadingDraw(void)
@@ -214,8 +244,8 @@ void GameScene::NormalDraw(void)
 
 	//各種オブジェクト描画処理
 	//※ステージは絶対プレイヤーより前の描画
-	player_->Draw();
-	objs_->Draw();
+	players_[sceneManager_.GetScreenCount()]->Draw();
+	objs_[sceneManager_.GetScreenCount()]->Draw();
 
 	//各状態ごとの描画
 	stateGameDraw_();
@@ -227,21 +257,23 @@ void GameScene::NormalDraw(void)
 void GameScene::Collision()
 {
 	//プレイヤーとオブジェクト同士の衝突処理
-	auto & objs = objs_->GetObjects();
-	for (auto& obj : objs)
-	{
-		//オブジェクトがNONEの場合処理をせず次へ回す
-		if (obj->GetState() == ObjectBase::STATE::NONE) { continue; }
-
-		//衝突判定
-		if (Utility::IsHitSpheres(
-			player_->GetTransform().pos,
-			player_->GetRadius(),
-			obj->GetTransform().pos,
-			obj->GetRadius()))
+	for (int i = 0; i < playNum_; i++) {
+		auto& objs = objs_[i]->GetObjects();
+		for (auto& obj : objs)
 		{
-			//衝突判定後の処理
-			obj->OnCollision(*player_);
+			//オブジェクトがNONEの場合処理をせず次へ回す
+			if (obj->GetState() == ObjectBase::STATE::NONE) { continue; }
+
+			//衝突判定
+			if (Utility::IsHitSpheres(
+				players_[i]->GetTransform().pos,
+				players_[i]->GetRadius(),
+				obj->GetTransform().pos,
+				obj->GetRadius()))
+			{
+				//衝突判定後の処理
+				obj->OnCollision(*players_[i]);
+			}
 		}
 	}
 }
@@ -282,15 +314,18 @@ void GameScene::RezaltDraw()
 
 void GameScene::DebagDraw()
 {
-	player_->DebagDraw();
+	for (int i = 0; i < playNum_; i++) {
+		players_[i]->DebagDraw();
+	}
 }
 
 void GameScene::CheckGameOver()
 {
 	//プレイヤーが死亡した場合
-	if (player_->GetState() == Player::STATE::DEATH)
-	{
-		//リザルトに移る
-		ChangeState(STATE::REZALT);
+	for (int i = 0; i < playNum_; i++) {
+		if (players_[i]->GetState() == Player::STATE::DEATH){
+			//リザルトに移る
+			ChangeState(STATE::REZALT);
+		}
 	}
 }
