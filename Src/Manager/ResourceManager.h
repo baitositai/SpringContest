@@ -31,6 +31,7 @@ public:
 		PLAYER,
 		STAGE,
 		SKY_DOME,
+		ENEMY
 	};
 
 	// ‰Šú‰»

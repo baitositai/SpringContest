@@ -14,6 +14,10 @@ TitleScene::TitleScene(SceneManager& manager) :SceneBase(manager)
 	deg_ = -1.0f;
 	ex_ = -1.0f;
 	exSpeed_ = -1.0f;
+	mesFont_ = -1;
+
+	int i = -1;
+	for (auto& img : imgTexts_) { img = &i; }
 
 	//更新関数のセット
 	updataFunc_ = [&](InputManager& input) {LoadingUpdate(input); };
@@ -104,7 +108,7 @@ void TitleScene::NormalUpdate(InputManager& ins)
 
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
 	{
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
 	}
 }
 

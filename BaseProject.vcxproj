@@ -19,13 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\DataBank.cpp" />
+    <ClCompile Include="Src\Scene\SelectScene.cpp" />
+    <ClCompile Include="Src\Manager\ScoreBank.cpp" />
+    <ClCompile Include="Src\Object\ScrollObject\Gimic.cpp" />
+    <ClCompile Include="Src\Object\ScrollObject\Enemy.cpp" />
+    <ClCompile Include="Src\Object\ScrollObject\LifeItem.cpp" />
+    <ClCompile Include="Src\Object\ScrollObject\PowerItem.cpp" />
+    <ClCompile Include="Src\Object\Character\Player.cpp" />
+    <ClCompile Include="Src\Object\ScrollObject\ObjectManager.cpp" />
     <ClCompile Include="Src\Manager\ScrollManager.cpp" />
     <ClCompile Include="Src\Object\Common\AnimationController.cpp" />
     <ClCompile Include="Src\Object\Common\Capsule.cpp" />
     <ClCompile Include="Src\Object\Common\Collider.cpp" />
+<<<<<<< HEAD
+    <ClCompile Include="Src\Object\ScrollObject\ObjectBase.cpp" />
+=======
     <ClCompile Include="Src\Object\ObjectBase.cpp" />
     <ClCompile Include="Src\Object\Stage\StageBase.cpp" />
     <ClCompile Include="Src\Object\Stage\StageDefault.cpp" />
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
     <ClCompile Include="Src\Shader\PixelShader.cpp" />
     <ClCompile Include="Src\FpsControl\FpsControl.cpp" />
     <ClCompile Include="Src\Common\Vector2F.cpp" />
@@ -46,15 +59,29 @@
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\Utility.cpp" />
+    <ClCompile Include="Src\Object\TimeCount.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\DataBank.h" />
+    <ClInclude Include="Src\Scene\SelectScene.h" />
+    <ClInclude Include="Src\Manager\ScoreBank.h" />
+    <ClInclude Include="Src\Object\ScrollObject\Gimic.h" />
+    <ClInclude Include="Src\Object\ScrollObject\Enemy.h" />
+    <ClInclude Include="Src\Object\ScrollObject\LifeItem.h" />
+    <ClInclude Include="Src\Object\ScrollObject\PowerItem.h" />
+    <ClInclude Include="Src\Object\Character\Player.h" />
+    <ClInclude Include="Src\Object\ScrollObject\ObjectManager.h" />
     <ClInclude Include="Src\Manager\ScrollManager.h" />
     <ClInclude Include="Src\Object\Common\AnimationController.h" />
     <ClInclude Include="Src\Object\Common\Capsule.h" />
     <ClInclude Include="Src\Object\Common\Collider.h" />
+<<<<<<< HEAD
+    <ClInclude Include="Src\Object\ScrollObject\ObjectBase.h" />
+=======
     <ClInclude Include="Src\Object\ObjectBase.h" />
     <ClInclude Include="Src\Object\Stage\StageBase.h" />
     <ClInclude Include="Src\Object\Stage\StageDefault.h" />
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
     <ClInclude Include="Src\Shader\PixelShader.h" />
     <ClInclude Include="Src\FpsControl\FpsControl.h" />
     <ClInclude Include="Src\Common\Vector2F.h" />
@@ -77,6 +104,7 @@
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\Utility.h" />
     <ClInclude Include="Src\Utility\StaticSingleton.h" />
+    <ClInclude Include="Src\Object\TimeCount.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\HLSL\ColorTex.hlsl">
@@ -178,6 +206,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -191,14 +220,22 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+<<<<<<< HEAD
+      <AdditionalIncludeDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalIncludeDirectories>
+=======
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+<<<<<<< HEAD
+      <AdditionalLibraryDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalLibraryDirectories>
+=======
       <AdditionalLibraryDirectories>C:\DxLib</AdditionalLibraryDirectories>
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
     </Link>
     <FxCompile>
       <ShaderModel>4.0_level_9_3</ShaderModel>
@@ -214,6 +251,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -231,7 +269,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+<<<<<<< HEAD
+      <AdditionalIncludeDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalIncludeDirectories>
+=======
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -240,7 +282,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+<<<<<<< HEAD
+      <AdditionalLibraryDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalLibraryDirectories>
+=======
       <AdditionalLibraryDirectories>C:\DxLib</AdditionalLibraryDirectories>
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

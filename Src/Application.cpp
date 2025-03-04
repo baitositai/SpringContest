@@ -32,7 +32,6 @@ Application& Application::GetInstance(void)
 
 void Application::Init(void)
 {
-
 	// アプリケーションの初期設定
 	SetWindowText("ここを見たなこの野郎");
 
@@ -41,6 +40,7 @@ void Application::Init(void)
 	ChangeWindowMode(true);
 
 	// DxLibの初期化
+	SetOutApplicationLogValidFlag(TRUE);  // ログ出力を有効化
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
 	isInitFail_ = false;
 	if (DxLib_Init() == -1)
@@ -68,6 +68,10 @@ void Application::Run(void)
 	auto& inputManager = InputManager::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 
+	MSG msg;
+	LONGLONG time = GetNowHiPerformanceCount();
+	LONGLONG temp_time;
+
 	//初期シーン
 	sceneManager.CreateScene(std::make_shared<TitleScene>(sceneManager));
 
@@ -77,12 +81,26 @@ void Application::Run(void)
 		//フレームレートを更新
 		if (!fps_->UpdateFrameRate()) continue;
 
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
 		//各種更新処理
 		inputManager.Update();
 		sceneManager.Update(inputManager);
 
 		//描画処理
-		sceneManager.Draw();
+		sceneManager.Draw();		
+		
+		temp_time = GetNowHiPerformanceCount();
+		while (temp_time - time < 1000000 / 60)
+		{
+			Sleep(0);
+			temp_time = GetNowHiPerformanceCount();
+		}
+		time = temp_time;
 
 		//フレームレート計算
 		fps_->CalcFrameRate();
@@ -96,7 +114,6 @@ void Application::Run(void)
 
 void Application::Destroy(void)
 {
-
 	InputManager::GetInstance().Destroy();
 	ResourceManager::GetInstance().Destroy();
 	SceneManager::GetInstance().Destroy();
@@ -110,7 +127,6 @@ void Application::Destroy(void)
 	}
 
 	delete instance_;
-
 }
 
 bool Application::IsInitFail(void) const
@@ -121,6 +137,19 @@ bool Application::IsInitFail(void) const
 bool Application::IsReleaseFail(void) const
 {
 	return isReleaseFail_;
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(hWnd, msg, wParam, lParam);
+	}
+	return 0;
 }
 
 Application::Application(void)
