@@ -71,6 +71,11 @@ private:
 	std::vector<std::unique_ptr<ObjectManager>> objs_;
 	std::unique_ptr<TimeCount> time_;
 
+	//インスタンス生成
+	std::vector<std::shared_ptr<Player>> players_;
+	std::vector<std::unique_ptr<ObjectManager>> objs_;
+	std::unique_ptr<TimeCount> time_;
+
 	//更新関数
 	void LoadingUpdate(InputManager& ins);	//読み込み中処理
 	void NormalUpdate(InputManager& ins);	//ゲーム中処理
@@ -89,6 +94,12 @@ private:
 	void StartUpdate(void);
 	void PlayUpdate(void);
 	void RezaltUpdate(void);
+	
+	//衝突判定
+	void Collision();
+
+	//デバッグ
+	void DebagDraw();
 
 	//描画ステップ
 	void StartDraw();
@@ -103,4 +114,7 @@ private:
 
 	//デバッグ
 	void DebagDraw();
+};
+	//ステージの数
+	int stageSpawn_;
 };
