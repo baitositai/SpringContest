@@ -1,3 +1,4 @@
+#include <DxLib.h>
 #include "StageBase.h"
 
 StageBase::StageBase(void)
