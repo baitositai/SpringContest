@@ -1,7 +1,6 @@
 #pragma once
 #include "../framework.h"
 #include "SceneBase.h"
-class StageBase;
 
 class Player;
 class ObjectManager;
@@ -104,21 +103,4 @@ private:
 
 	//デバッグ
 	void DebagDraw();
-<<<<<<< HEAD
 };
-=======
-
-	//ステージ
-	std::unique_ptr<StageBase> stage_;
-
-	//ステージの動的配列
-	std::vector<StageBase*> stages_;
-
-	//ステージの出現カウント
-	int stageSpawnCounter_;
-
-	//ステージの数
-	int stageSpawn_;
-};
-
->>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
