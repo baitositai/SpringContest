@@ -74,16 +74,21 @@ void GameScene::Load(void)
 		cameras[i]->ChangeMode(Camera::MODE::FIXED_POINT);
 		cameras[i]->SetTargetPos(LOCAL_CAMERA_POS);
 	}
-	//カメラ
-	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
 
-	//ステージの初期化
+	//ステージ関係-------------------------------------------------------------
+		//ステージの初期化
 	size_t sSize = stages_.size();
 	for (int i = 0; i < sSize; i++)
 	{
-		cameras[i]->ChangeMode(Camera::MODE::FIXED_POINT);
-		cameras[i]->SetTargetPos(LOCAL_CAMERA_POS);
+		stages_[i]->Release();
+		delete stages_[i];
 	}
+
+	stages_.clear();
+
+	//初期化
+	stageSpawnCounter_ = 0;
+	stageSpawn_ = 0;
 }
 
 void GameScene::Init(void)
@@ -219,75 +224,96 @@ void GameScene::PlayUpdate(void)
 	//オブジェクトの更新
 	for (auto& objs : objs_) { objs->Update(); }
 
+#pragma region ステージ更新処理
+	//ステージの更新処理は動的配列で回す
+	//出現しているアイテムはすべて更新する
+	size_t sSize = stages_.size();
+	for (int i = 0; i < sSize; i++)
+	{
+		stages_[i]->Update();
+
+	}
+
+	//ステージの出現カウントを増やす
+	++stageSpawnCounter_;
+
+	//出現カウントが指定値を超えたら
+	if (stageSpawn_ < 3)
+	{
+
+		stageSpawnCounter_ = 0;
+
+		//ステージを動的生成
+		//ポインタに何もささない上程を設定するときは
+		//nullptrをしようする
+		StageBase* newStage = nullptr;
+
+		//ステージの生成
+		int stageTypeMaxNum = static_cast<int>(StageBase::STAGE_TYPE::MAX) - 1;
+
+		//ステージのタイプをランダムで決定する
+		int newStageType = GetRand(stageTypeMaxNum);
+
+		//enmuで使用するためにステージのタイプに戻す
+		StageBase::STAGE_TYPE randType = static_cast<StageBase::STAGE_TYPE>(newStageType);
+
+		switch (randType)
+		{
+		case StageBase::STAGE_TYPE::STAGE:
+			newStage = new StageDefault();
+			break;
+		}
+
+		newStage->Init();
+
+		//出現座標
+		VECTOR spawnPos;
+
+		//ワーニング回避のために一旦初期化
+		spawnPos.x = 0;
+		spawnPos.y = 0;
+		spawnPos.z = 0;
+
+		//出現位置設定
+		switch (randType)
+		{
+		case StageBase::STAGE_TYPE::STAGE:
+			if (sSize == 0)
+			{
+				spawnPos.x = 1000;
+				spawnPos.y = -2000;
+				spawnPos.z = 2000;
+			}
+			if (sSize == 1)
+			{
+				spawnPos.x = 1000;
+				spawnPos.y = -2000;
+				spawnPos.z = 2000 + StageBase::SIZE_Z;
+			}
+			if (sSize == 2)
+			{
+				spawnPos.x = 1000;
+				spawnPos.y = -2000;
+				spawnPos.z = 2000 + StageBase::SIZE_Z * 2;
+			}
+			break;
+		}
+		//座標の設定
+		newStage->SetPos(spawnPos);
+
+		//動的配列に追加
+		stages_.push_back(newStage);
+
+		stageSpawn_++;
+	}
+#pragma endregion
+
 	//衝突判定
 	Collision();
 
-	//シーン遷移
-	if (ins.IsTrgDown(KEY_INPUT_RETURN))
-	{
-		SceneManager::GetInstance().
-			ChangeScene(SceneManager::SCENE_ID::TITLE);
-	}
-}
-
-void GameScene::ChangeState(STATE state)
-{
-	// 状態変更
-	state_ = state;
-
-	// 各状態遷移の初期処理
-	stateChanges_[state_]();
-}
-
-void GameScene::ChangeStart(void)
-{
-	stateGameUpdate_ = std::bind(&GameScene::StartUpdate, this);
-	stateGameDraw_ = std::bind(&GameScene::StartDraw, this);
-}
-
-void GameScene::ChangePlay(void)
-{
-	stateGameUpdate_ = std::bind(&GameScene::PlayUpdate, this);
-	stateGameDraw_ = std::bind(&GameScene::PlayDraw, this);
-}
-
-void GameScene::ChangeRezalt(void)
-{
-	stateGameUpdate_ = std::bind(&GameScene::RezaltUpdate, this);
-	stateGameDraw_ = std::bind(&GameScene::RezaltDraw, this);
-}
-
-void GameScene::StartUpdate(void)
-{
-	//カウントダウン
-	strCnt_ -= SceneManager::GetInstance().GetDeltaTime();
-
-	//時間になったら
-	if (strCnt_ <= 0.0f)
-	{
-		ChangeState(STATE::PLAY);
-	}
-}
-
-void GameScene::PlayUpdate(void)
-{
-	//時間経過処理
-	time_->Update();
-
-	//スクロール関係の処理
-	ScrollManager::GetInstance().Update();
-
-	//プレイヤーの更新
-	for (auto& player : players_) { player->Update(); }
-
-	//オブジェクトの更新
-	for (auto& objs : objs_) { objs->Update(); }
-
-	//衝突判定
-	Collision();
-
-	//ゲーム終了判定
+	//ゲームオーバー判定
 	CheckGameOver();
+
 }
 
 void GameScene::RezaltUpdate(void)
@@ -312,16 +338,25 @@ void GameScene::LoadingDraw(void)
 void GameScene::NormalDraw(void)
 {
 	DrawBox(
-	0, 0,
-	Application::SCREEN_SIZE_X,
-	Application::SCREEN_SIZE_Y,
-	0x00ffff,
-	true);
-
+		0, 0,
+		Application::SCREEN_SIZE_X,
+		Application::SCREEN_SIZE_Y,
+		0x00ffff,
+		true);
+	
+	//ステージの描画も動的配列でまわす形に変更
+	//出現しているアイテムすべてを描画する
+	size_t sSize = stages_.size();
+	for (int i = 0; i < sSize; i++)
+	{
+		stages_[i]->Draw();
+	}
 	//各種オブジェクト描画処理
-	//※ステージは絶対プレイヤーより前の描画
+	//※プレイヤーはステージより前の描画
 	players_[sceneManager_.GetScreenCount()]->Draw();
 	objs_[sceneManager_.GetScreenCount()]->Draw();
+
+
 
 	//各状態ごとの描画
 	stateGameDraw_();
@@ -364,41 +399,6 @@ void GameScene::StartDraw()
 		(int)strCnt_);
 }
 
-	//ステージの描画も動的配列でまわす形に変更
-	//出現しているアイテムすべてを描画する
-	size_t sSize = stages_.size();
-	for (int i = 0; i < sSize; i++)
-	{
-		stages_[i]->Draw();
-	}
-
-
-}
-
-void GameScene::Collision()
-{
-	//プレイヤーとオブジェクト同士の衝突処理
-	for (int i = 0; i < playNum_; i++) {
-		auto& objs = objs_[i]->GetObjects();
-		for (auto& obj : objs)
-		{
-			//オブジェクトがNONEの場合処理をせず次へ回す
-			if (obj->GetState() == ObjectBase::STATE::NONE) { continue; }
-
-			//衝突判定
-			if (Utility::IsHitSpheres(
-				players_[i]->GetTransform().pos,
-				players_[i]->GetRadius(),
-				obj->GetTransform().pos,
-				obj->GetRadius()))
-			{
-				//衝突判定後の処理
-				obj->OnCollision(*players_[i]);
-			}
-		}
-	}
-}
-
 void GameScene::RezaltDraw()
 {
 	int score = ScoreBank::GetInstance().GetScore();
@@ -422,36 +422,11 @@ void GameScene::PlayDraw()
 	time_->Draw();
 }
 
-void GameScene::RezaltDraw()
-{
-	int score = ScoreBank::GetInstance().GetScore();
-
-	DrawFormatString(
-		Application::SCREEN_HALF_X - 64,
-		Application::SCREEN_HALF_Y,
-		0x000000,
-		"GameOver");
-
-	DrawFormatString(
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y + 20,
-		0x000000,
-		"score = %d",
-		score);
-}
-
 void GameScene::DebagDraw()
 {
 	for (int i = 0; i < playNum_; i++) {
 		players_[i]->DebagDraw();
 	}
-	////デバッグ系の描画はここに書く
-	DrawBox(
-		0, 0,
-		Application::SCREEN_SIZE_X,
-		Application::SCREEN_SIZE_Y,
-		0xfff000,
-		true);
 }
 
 void GameScene::CheckGameOver()

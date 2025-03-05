@@ -20,6 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Manager\DataBank.cpp" />
+    <ClCompile Include="Src\Object\ScrollObject\ObjectBase.cpp" />
+    <ClCompile Include="Src\Object\Stage\StageBase.cpp" />
+    <ClCompile Include="Src\Object\Stage\StageDefault.cpp" />
     <ClCompile Include="Src\Scene\SelectScene.cpp" />
     <ClCompile Include="Src\Manager\ScoreBank.cpp" />
     <ClCompile Include="Src\Object\ScrollObject\Gimic.cpp" />
@@ -32,12 +35,6 @@
     <ClCompile Include="Src\Object\Common\AnimationController.cpp" />
     <ClCompile Include="Src\Object\Common\Capsule.cpp" />
     <ClCompile Include="Src\Object\Common\Collider.cpp" />
-    <ClCompile Include="Src\Object\ScrollObject\ObjectBase.cpp" />
-
-    <ClCompile Include="Src\Object\ObjectBase.cpp" />
-    <ClCompile Include="Src\Object\Stage\StageBase.cpp" />
-    <ClCompile Include="Src\Object\Stage\StageDefault.cpp" />
-
     <ClCompile Include="Src\Shader\PixelShader.cpp" />
     <ClCompile Include="Src\FpsControl\FpsControl.cpp" />
     <ClCompile Include="Src\Common\Vector2F.cpp" />
@@ -62,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Manager\DataBank.h" />
+    <ClInclude Include="Src\Object\ScrollObject\ObjectBase.h" />
+    <ClInclude Include="Src\Object\Stage\StageBase.h" />
+    <ClInclude Include="Src\Object\Stage\StageDefault.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Manager\ScoreBank.h" />
     <ClInclude Include="Src\Object\ScrollObject\Gimic.h" />
@@ -74,12 +74,6 @@
     <ClInclude Include="Src\Object\Common\AnimationController.h" />
     <ClInclude Include="Src\Object\Common\Capsule.h" />
     <ClInclude Include="Src\Object\Common\Collider.h" />
-
-    <ClInclude Include="Src\Object\ScrollObject\ObjectBase.h" />
-
-    <ClInclude Include="Src\Object\ObjectBase.h" />
-    <ClInclude Include="Src\Object\Stage\StageBase.h" />
-    <ClInclude Include="Src\Object\Stage\StageDefault.h" />
     <ClInclude Include="Src\Shader\PixelShader.h" />
     <ClInclude Include="Src\FpsControl\FpsControl.h" />
     <ClInclude Include="Src\Common\Vector2F.h" />
@@ -218,9 +212,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-
       <AdditionalIncludeDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalIncludeDirectories>
-
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -263,9 +255,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-
       <AdditionalIncludeDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalIncludeDirectories>
-
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -275,11 +265,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-
       <AdditionalLibraryDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalLibraryDirectories>
-
       <AdditionalLibraryDirectories>C:\DxLib</AdditionalLibraryDirectories>
-
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
