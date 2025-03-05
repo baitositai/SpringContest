@@ -73,6 +73,11 @@ private:
 	std::unique_ptr<TimeCount> time_;
 	std::unique_ptr<StageManager> stage_;
 
+	//インスタンス生成
+	std::vector<std::shared_ptr<Player>> players_;
+	std::vector<std::unique_ptr<ObjectManager>> objs_;
+	std::unique_ptr<TimeCount> time_;
+
 	//更新関数
 	void LoadingUpdate(InputManager& ins);	//読み込み中処理
 	void NormalUpdate(InputManager& ins);	//ゲーム中処理
@@ -103,6 +108,16 @@ private:
 	//ゲームオーバー判定
 	void CheckGameOver();
 
+	//状態遷移
+	void ChangeState(STATE state);
+	void ChangeStart(void);
+	void ChangePlay(void);
+	void ChangeRezalt(void);
+
+	//更新ステップ
+	void StartUpdate(void);
+	void PlayUpdate(void);
+	void RezaltUpdate(void);
 	//デバッグ
 	void DebagDraw();
 };

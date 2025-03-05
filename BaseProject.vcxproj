@@ -75,6 +75,11 @@
     <ClInclude Include="Src\Object\Common\AnimationController.h" />
     <ClInclude Include="Src\Object\Common\Capsule.h" />
     <ClInclude Include="Src\Object\Common\Collider.h" />
+
+    <ClInclude Include="Src\Object\ObjectBase.h" />
+    <ClInclude Include="Src\Object\Stage\StageBase.h" />
+    <ClInclude Include="Src\Object\Stage\StageDefault.h" />
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
     <ClInclude Include="Src\Shader\PixelShader.h" />
     <ClInclude Include="Src\FpsControl\FpsControl.h" />
     <ClInclude Include="Src\Common\Vector2F.h" />
@@ -214,6 +219,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+
       <AdditionalIncludeDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -257,6 +263,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+
       <AdditionalIncludeDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -267,6 +274,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+
       <AdditionalLibraryDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories>C:\DxLib</AdditionalLibraryDirectories>
     </Link>

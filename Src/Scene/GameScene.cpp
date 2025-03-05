@@ -6,6 +6,7 @@
 #include "../Manager/DataBank.h"
 #include "../Manager/ScrollManager.h"
 #include "../Utility/Utility.h"
+<<<<<<< HEAD
 #include "../Object/Character/Player.h"
 #include "../Object/ScrollObject/ObjectManager.h"
 #include "../Object/TimeCount.h"
@@ -70,6 +71,7 @@ void GameScene::Load(void)
 		LOAD_FONT_SIZE,
 		0);
 
+<<<<<<< HEAD
 	//カメラの設定
 	auto cameras = SceneManager::GetInstance().GetCameras();
 	for (int i = 0; i < cameras.size(); i++)
@@ -77,6 +79,24 @@ void GameScene::Load(void)
 		cameras[i]->ChangeMode(Camera::MODE::FIXED_POINT);
 		cameras[i]->SetTargetPos(LOCAL_CAMERA_POS);
 	}
+=======
+	//カメラ
+	mainCamera->ChangeMode(Camera::MODE::FIXED_POINT);
+
+	//ステージの初期化
+	size_t sSize = stages_.size();
+	for (int i = 0; i < sSize; i++)
+	{
+		cameras[i]->ChangeMode(Camera::MODE::FIXED_POINT);
+		cameras[i]->SetTargetPos(LOCAL_CAMERA_POS);
+	}
+
+	stages_.clear();
+
+	//初期化
+	stageSpawnCounter_ = 0;
+	stageSpawn_ = 0;
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
 }
 
 void GameScene::Init(void)
@@ -90,6 +110,9 @@ void GameScene::Init(void)
 			JUMP_MOVE_KEY[i],
 			TACKLE_MOVE_KEY[i]);
 	}
+
+	//オブジェクト初期化
+	for (auto& objs : objs_) { objs->Init(); }
 
 	//オブジェクト初期化
 	for (auto& objs : objs_) { objs->Init(); }
@@ -156,6 +179,73 @@ void GameScene::NormalUpdate(InputManager& ins)
 {
 	// 更新ステップ
 	stateGameUpdate_();
+
+	//シーン遷移
+	if (ins.IsTrgDown(KEY_INPUT_RETURN))
+	{
+		SceneManager::GetInstance().
+			ChangeScene(SceneManager::SCENE_ID::TITLE);
+	}
+}
+
+void GameScene::ChangeState(STATE state)
+{
+	// 状態変更
+	state_ = state;
+
+	// 各状態遷移の初期処理
+	stateChanges_[state_]();
+}
+
+void GameScene::ChangeStart(void)
+{
+	stateGameUpdate_ = std::bind(&GameScene::StartUpdate, this);
+	stateGameDraw_ = std::bind(&GameScene::StartDraw, this);
+}
+
+void GameScene::ChangePlay(void)
+{
+	stateGameUpdate_ = std::bind(&GameScene::PlayUpdate, this);
+	stateGameDraw_ = std::bind(&GameScene::PlayDraw, this);
+}
+
+void GameScene::ChangeRezalt(void)
+{
+	stateGameUpdate_ = std::bind(&GameScene::RezaltUpdate, this);
+	stateGameDraw_ = std::bind(&GameScene::RezaltDraw, this);
+}
+
+void GameScene::StartUpdate(void)
+{
+	//カウントダウン
+	strCnt_ -= SceneManager::GetInstance().GetDeltaTime();
+
+	//時間になったら
+	if (strCnt_ <= 0.0f)
+	{
+		ChangeState(STATE::PLAY);
+	}
+}
+
+void GameScene::PlayUpdate(void)
+{
+	//時間経過処理
+	time_->Update();
+
+	//スクロール関係の処理
+	ScrollManager::GetInstance().Update();
+
+	//プレイヤーの更新
+	for (auto& player : players_) { player->Update(); }
+
+	//オブジェクトの更新
+	for (auto& objs : objs_) { objs->Update(); }
+
+	//衝突判定
+	Collision();
+
+	}
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
 
 	//シーン遷移
 	if (ins.IsTrgDown(KEY_INPUT_RETURN))
@@ -329,9 +419,19 @@ void GameScene::PlayDraw()
 
 void GameScene::DebagDraw()
 {
+<<<<<<< HEAD
 	for (int i = 0; i < playNum_; i++) {
 		players_[i]->DebagDraw();
 	}
+=======
+	////デバッグ系の描画はここに書く
+	DrawBox(
+		0, 0,
+		Application::SCREEN_SIZE_X,
+		Application::SCREEN_SIZE_Y,
+		0xfff000,
+		true);
+>>>>>>> 2e3f2a964f8ab0512986127c62e45d1b4ceef81b
 }
 
 void GameScene::CheckGameOver()
