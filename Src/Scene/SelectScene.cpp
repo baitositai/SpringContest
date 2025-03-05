@@ -104,4 +104,7 @@ void SelectScene::NormalDraw(void)
 		Application::SCREEN_SIZE_Y,
 		0x00ffff,
 		true);
+
+	DrawFormatString(0, 0, 0xffffff, "1人プレイはSPACE");
+	DrawFormatString(0, 20, 0xffffff, "2人プレイはW");
 }

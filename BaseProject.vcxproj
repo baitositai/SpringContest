@@ -56,6 +56,7 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\Utility.cpp" />
     <ClCompile Include="Src\Object\TimeCount.cpp" />
+    <ClCompile Include="Src\Object\Stage\StageManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Manager\DataBank.h" />
@@ -97,6 +98,7 @@
     <ClInclude Include="Src\Utility\Utility.h" />
     <ClInclude Include="Src\Utility\StaticSingleton.h" />
     <ClInclude Include="Src\Object\TimeCount.h" />
+    <ClInclude Include="Src\Object\Stage\StageManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\HLSL\ColorTex.hlsl">
