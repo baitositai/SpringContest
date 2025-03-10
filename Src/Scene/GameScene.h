@@ -14,6 +14,7 @@ public:
 	//ゲーム中の状態
 	enum class STATE
 	{
+		NONE,
 		START,	//カウントダウン
 		PLAY,	//プレイ
 		REZALT,	//結果
@@ -48,6 +49,9 @@ public:
 	void Update(InputManager& input) override;
 	void Draw(void) override;
 	void Release(void) override;
+
+	//共通描画
+	void CommonDraw() override;
 
 private:	
 

@@ -47,6 +47,9 @@ public:
 	void Draw(void) override;
 	void Release(void) override;
 
+	//共通描画
+	void CommonDraw() override;
+
 private:	
 	// テキスト画像
 	int* imgTexts_[ALPHABET_IMG_NUM];

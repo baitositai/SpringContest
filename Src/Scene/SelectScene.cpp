@@ -52,6 +52,10 @@ void SelectScene::Release(void)
 	DeleteFontToHandle(loadFont_);
 }
 
+void SelectScene::CommonDraw()
+{
+}
+
 void SelectScene::LoadingUpdate(InputManager& ins)
 {
 	bool loadTimeOver = Utility::IsTimeOver(loadingTime_, LOADING_TIME);

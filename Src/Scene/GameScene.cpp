@@ -21,7 +21,7 @@ GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 
 	players_.clear();
 	objs_.clear();
-	state_ = STATE::START;
+	state_ = STATE::NONE;
 	strCnt_ = -1.0f;
 	playNum_ = -1;
 
@@ -126,6 +126,13 @@ void GameScene::Release(void)
 
 	//フォント削除
 	DeleteFontToHandle(loadFont_);
+}
+
+void GameScene::CommonDraw()
+{	
+	if (state_ == STATE::NONE) { return; }
+	//各状態ごとの描画
+	stateGameDraw_();
 }
 
 void GameScene::LoadingUpdate(InputManager& ins)
@@ -264,7 +271,7 @@ void GameScene::NormalDraw(void)
 	objs_[sceneManager_.GetScreenCount()]->Draw();
 
 	//各状態ごとの描画
-	stateGameDraw_();
+	//stateGameDraw_();
 
 	//デバッグ描画
 	DebagDraw();

@@ -293,6 +293,7 @@ void SceneManager::NormalDraw()
 	for (; rit != scenes_.rend(); rit++)
 	{
 		(*rit)->Draw();
+		(*rit)->CommonDraw();
 	}
 
 	// 暗転・明転
@@ -306,6 +307,7 @@ void SceneManager::NormalDraw()
 
 void SceneManager::VSPlayDraw()
 {
+	//分割画面を生成
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		//スクリーンカウント設定
 		screenCnt_ = i;
@@ -322,14 +324,24 @@ void SceneManager::VSPlayDraw()
 		{
 			(*rit)->Draw();
 		}
-
-		// 暗転・明転
-		fader_->Draw();
 	}
+
+	//全体の画面を作る
+	SetDrawingScreen(mainScreen_);
+
+	//分割した画面の描画
+	for (int i = 0; i < PLAYER_MAX; i++) 
+	{ DrawGraph(static_cast<int>(screenPos_.x) + Application::SCREEN_HALF_X * i, static_cast<int>(screenPos_.y), halfScreen_[i], true); }
+
+	//画面の共通部分を描画
+	auto rit = scenes_.rbegin();
+	for (; rit != scenes_.rend(); rit++) { (*rit)->CommonDraw(); }
+
+	// 暗転・明転
+	fader_->Draw();
 
 	// 描画先グラフィック領域の指定
 	SetDrawScreen(DX_SCREEN_BACK);
 	ClearDrawScreen();
-	DrawGraph(static_cast<int>(screenPos_.x), static_cast<int>(screenPos_.y), halfScreen_[0], true);
-	DrawGraph(static_cast<int>(screenPos_.x + Application::SCREEN_HALF_X), static_cast<int>(screenPos_.y), halfScreen_[1], true);
+	DrawGraph(static_cast<int>(screenPos_.x), static_cast<int>(screenPos_.y), mainScreen_, true);
 }

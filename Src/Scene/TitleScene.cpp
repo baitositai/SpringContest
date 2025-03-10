@@ -78,6 +78,10 @@ void TitleScene::Release(void)
 	DeleteFontToHandle(mesFont_);
 }
 
+void TitleScene::CommonDraw()
+{
+}
+
 void TitleScene::LoadingUpdate(InputManager& input)
 {
 	bool loadTimeOver = Utility::IsTimeOver(loadingTime_, LOADING_TIME);

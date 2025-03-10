@@ -18,6 +18,9 @@ public:
 	void Draw(void) override;
 	void Release(void) override;
 
+	//‘‚­‚±‚Æ‚È‚µ
+	void CommonDraw() override;
+
 private:
 
 	// XVŠÖ”

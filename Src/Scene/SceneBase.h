@@ -43,6 +43,9 @@ public:
 	// •`‰æˆ—
 	virtual void Draw(void) = 0;
 
+	// ‹¤’Ê•`‰æˆ—(‘Îí—p)
+	virtual void CommonDraw(void) = 0;
+
 	// ‰ğ•úˆ—
 	virtual void Release(void) = 0;
 
