@@ -69,6 +69,9 @@ void Player::Draw()
 {
 	// ƒ‚ƒfƒ‹‚Ì•`‰æ
 	MV1DrawModel(trans_.modelId);
+
+	DrawFormatString(0, 60, 0x000000, "%f", trans_.pos.z);
+
 }
 
 void Player::AddLife(const int& life)

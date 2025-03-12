@@ -23,6 +23,8 @@
     <ClCompile Include="Src\Object\ScrollObject\ObjectBase.cpp" />
     <ClCompile Include="Src\Object\Stage\StageBase.cpp" />
     <ClCompile Include="Src\Object\Stage\StageDefault.cpp" />
+    <ClCompile Include="Src\Object\Stage\StageLeft.cpp" />
+    <ClCompile Include="Src\Object\Stage\StageRight.cpp" />
     <ClCompile Include="Src\Scene\SelectScene.cpp" />
     <ClCompile Include="Src\Manager\ScoreBank.cpp" />
     <ClCompile Include="Src\Object\ScrollObject\Gimic.cpp" />
@@ -63,6 +65,8 @@
     <ClInclude Include="Src\Object\ScrollObject\ObjectBase.h" />
     <ClInclude Include="Src\Object\Stage\StageBase.h" />
     <ClInclude Include="Src\Object\Stage\StageDefault.h" />
+    <ClInclude Include="Src\Object\Stage\StageLeft.h" />
+    <ClInclude Include="Src\Object\Stage\StageRight.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Manager\ScoreBank.h" />
     <ClInclude Include="Src\Object\ScrollObject\Gimic.h" />

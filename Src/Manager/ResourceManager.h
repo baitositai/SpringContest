@@ -29,9 +29,11 @@ public:
 
 		//ƒ‚ƒfƒ‹
 		PLAYER,
-		STAGE,
 		SKY_DOME,
-		ENEMY
+		ENEMY,
+		STAGE,
+		STAGERIGHT,
+		STAGELEFT
 	};
 
 	// ‰Šú‰»

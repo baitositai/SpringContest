@@ -6,7 +6,7 @@ class ScrollManager : public StaticSingleton<ScrollManager>
 public:
 
 	//最低スクロールスピード
-	static constexpr float DEFAULRT_SCROLL_SPEED = 5.0f;
+	static constexpr float DEFAULRT_SCROLL_SPEED = 50.0f;
 
 	//最高スクロールスピード
 	static constexpr float MAX_SCROLL_SPEED = 50.0f;

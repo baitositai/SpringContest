@@ -1,11 +1,10 @@
-#include <DxLib.h>
-#include "StageDefault.h"
+#include "StageRight.h"
 
-void StageDefault::Init(void)
+void StageRight::Init(void)
 {
 	//const char* FILENAME[static_cast<int>(STAGE_TYPE::MAX)]
 	//{
-	//	"Data/Model/Stage/stage.mv1"
+	//	"Data/Model/Stage/stageRight.mv1"
 	//};
 
 	//for (int pl = 0; pl < static_cast<int>(STAGE_TYPE::MAX); pl++)
@@ -18,7 +17,7 @@ void StageDefault::Init(void)
 	//	}
 	//}
 
-	transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::STAGE));
-
+	transform_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::STAGERIGHT));
 	transform_.Update();
+	//type_ = STAGE_TYPE::STAGERIGHT;
 }

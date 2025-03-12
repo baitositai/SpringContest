@@ -19,10 +19,6 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Player/Player.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, std::move(res));
 
-	//ステージ
-	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Stage/MainPlanet.mv1");
-	resourcesMap_.emplace(SRC::STAGE, std::move(res));
-
 	//スカイドーム
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "SkyDome/Skydome.mv1");
 	resourcesMap_.emplace(SRC::SKY_DOME, std::move(res));
@@ -30,6 +26,20 @@ void ResourceManager::Init(void)
 	//敵
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Enemy/Zombie Cartoon_01.mv1");
 	resourcesMap_.emplace(SRC::ENEMY, std::move(res));
+
+	//ステージ
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Stage/stage.mv1");
+	resourcesMap_.emplace(SRC::STAGE, std::move(res));
+
+
+	//右側
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Stage/stageRight.mv1");
+	resourcesMap_.emplace(SRC::STAGERIGHT, std::move(res));
+
+	//左側
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Stage/stageLeft.mv1");
+	resourcesMap_.emplace(SRC::STAGELEFT, std::move(res));
+
 }
 
 void ResourceManager::Release(void)

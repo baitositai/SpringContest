@@ -1,5 +1,7 @@
 #pragma once
 #include <DxLib.h>
+#include "../Common/Transform.h"
+#include "../../Manager/ResourceManager.h"
 
 
 class StageBase
@@ -11,8 +13,8 @@ public:
 	enum class STAGE_TYPE
 	{
 		STAGE,			//通常ステージ
-		//STAGERIGHT,		//足場右側だけ
-		//STAGELEFT,		//足場左側だけ
+		STAGERIGHT,		//足場右側だけ
+		STAGELEFT,		//足場左側だけ
 		MAX
 	};
 
@@ -24,7 +26,8 @@ public:
 	void Update(void);
 	void Draw(void);
 	void Release(void);
-	void SetPos(VECTOR pos);
+	Transform GetTransform(void);
+	void SetPos(Transform pos);
 
 protected:
 
@@ -35,6 +38,6 @@ protected:
 	STAGE_TYPE type_;
 
 	//座標
-	VECTOR pos_;
+	Transform transform_;
 
 };

@@ -1,6 +1,8 @@
 #include "StageBase.h"
 #include "StageDefault.h"
 #include "StageManager.h"
+#include "StageLeft.h"
+#include "StageRight.h"
 
 StageManager::StageManager()
 {
@@ -35,10 +37,8 @@ void StageManager::Update()
 	for (int i = 0; i < sSize; i++)
 	{
 		stages_[i]->Update();
-	}
 
-	//ステージの出現カウントを増やす
-	++stageSpawnCounter_;
+	}
 
 	//出現カウントが指定値を超えたら
 	if (stageSpawn_ < 3)
@@ -65,17 +65,24 @@ void StageManager::Update()
 		case StageBase::STAGE_TYPE::STAGE:
 			newStage = new StageDefault();
 			break;
+		case StageBase::STAGE_TYPE::STAGELEFT:
+			newStage = new StageLeft();
+			break;
+		case StageBase::STAGE_TYPE::STAGERIGHT:
+			newStage = new StageRight();
+			break;
 		}
 
 		newStage->Init();
 
 		//出現座標
-		VECTOR spawnPos;
+		Transform spawnPos = newStage->GetTransform();
+		
 
 		//ワーニング回避のために一旦初期化
-		spawnPos.x = 0;
-		spawnPos.y = 0;
-		spawnPos.z = 0;
+		spawnPos.pos.x = 0;
+		spawnPos.pos.y = 0;
+		spawnPos.pos.z = 0;
 
 		//出現位置設定
 		switch (randType)
@@ -83,24 +90,25 @@ void StageManager::Update()
 		case StageBase::STAGE_TYPE::STAGE:
 			if (sSize == 0)
 			{
-				spawnPos.x = 1000;
-				spawnPos.y = -2000;
-				spawnPos.z = 2000;
+				spawnPos.pos.x = 1000;
+				spawnPos.pos.y = -1000;
+				spawnPos.pos.z = 2000;
 			}
 			if (sSize == 1)
 			{
-				spawnPos.x = 1000;
-				spawnPos.y = -2000;
-				spawnPos.z = 2000 + StageBase::SIZE_Z;
+				spawnPos.pos.x = 1000;
+				spawnPos.pos.y = -1000;
+				spawnPos.pos.z = 2000 + StageBase::SIZE_Z;
 			}
 			if (sSize == 2)
 			{
-				spawnPos.x = 1000;
-				spawnPos.y = -2000;
-				spawnPos.z = 2000 + StageBase::SIZE_Z * 2;
+				spawnPos.pos.x = 1000;
+				spawnPos.pos.y = -1000;
+				spawnPos.pos.z = 2000 + StageBase::SIZE_Z * 2;
 			}
 			break;
 		}
+
 		//座標の設定
 		newStage->SetPos(spawnPos);
 
@@ -109,6 +117,9 @@ void StageManager::Update()
 
 		stageSpawn_++;
 	}
+
+	CheckStagePos();
+	
 }
 
 void StageManager::Draw()
@@ -120,6 +131,7 @@ void StageManager::Draw()
 	{
 		stages_[i]->Draw();
 	}
+
 }
 
 void StageManager::Release()
@@ -129,4 +141,21 @@ void StageManager::Release()
 		stage->Release();
 		delete stage;
 	}
+}
+
+void StageManager::CheckStagePos()
+{
+
+	//出現しているステージすべてを確認する
+	size_t sSize = stages_.size();
+	for (int i = 0; i < sSize; i++)
+	{
+		if (stages_[i]->GetTransform().pos.z < -StageBase::SIZE_Z)
+		{
+			stages_.erase(stages_.begin() + i);
+			sSize--;
+			stageSpawn_--;
+		}
+	}
+
 }

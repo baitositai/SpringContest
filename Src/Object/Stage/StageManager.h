@@ -18,6 +18,7 @@ public:
 	void Update();	//更新処理
 	void Draw();	//描画処理
 	void Release();	//解放処理
+	void CheckStagePos();	//ステージのZ座標の確認
 
 private:
 
