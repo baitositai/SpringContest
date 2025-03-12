@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DxLib.h>
+#include<EffekseerForDXLib.h>
 #include <assert.h>
 #include <memory>
 #include <map>

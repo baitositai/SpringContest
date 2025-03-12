@@ -49,6 +49,14 @@ void Application::Init(void)
 		return;
 	}
 
+	//エフェクシアの初期化
+	if (Effekseer_Init(8000) == -1)
+	{
+		DxLib_End();
+	}
+	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
+	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+
 	// キー制御初期化
 	SetUseDirectInputFlag(true);
 
@@ -119,6 +127,9 @@ void Application::Destroy(void)
 	SceneManager::GetInstance().Destroy();
 	TextManager::GetInstance().Destroy();
 	PixelShader::GetInstance().Destroy();
+
+	// Effekseerを終了する。
+	Effkseer_End();
 	
 	// DxLib終了
 	if (DxLib_End() == -1)
