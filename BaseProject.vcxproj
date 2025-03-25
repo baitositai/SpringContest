@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Hinder.cpp" />
+    <ClCompile Include="Src\Object\UI\PlayerUI.cpp" />
     <ClCompile Include="Src\Manager\SoundManager.cpp" />
     <ClCompile Include="Src\Manager\EffectManager.cpp" />
     <ClCompile Include="Src\Manager\DataBank.cpp" />
@@ -61,6 +63,8 @@
     <ClCompile Include="Src\Object\Stage\StageManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Hinder.h" />
+    <ClInclude Include="Src\Object\UI\PlayerUI.h" />
     <ClInclude Include="Src\Manager\SoundManager.h" />
     <ClInclude Include="Src\Manager\EffectManager.h" />
     <ClInclude Include="Src\Manager\DataBank.h" />

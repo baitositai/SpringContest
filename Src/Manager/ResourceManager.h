@@ -10,9 +10,29 @@ constexpr int ALPHABET_NUM_Y = 6;
 constexpr int ALPHABET_IMG_SIZE_X = 320;
 constexpr int ALPHABET_IMG_SIZE_Y = 192;
 constexpr int ALPHABET_SIZE_X = ALPHABET_IMG_SIZE_X / ALPHABET_NUM_X;
-constexpr int ALPHABET_SIZE_Y = ALPHABET_IMG_SIZE_Y / ALPHABET_IMG_SIZE_Y;
+constexpr int ALPHABET_SIZE_Y = ALPHABET_IMG_SIZE_Y / ALPHABET_NUM_Y;
 
+//プレイヤーアイコン
+constexpr int PLAYER_ICONS_NUM_X = 1;
+constexpr int PLAYER_ICONS_NUM_Y = 2;
+constexpr int PLAYER_ICONS_IMG_SIZE_X = 128;
+constexpr int PLAYER_ICONS_IMG_SIZE_Y = 256;
+constexpr int PLAYER_ICONS_SIZE = 128;
 
+//数字画像
+constexpr int NUMBERS_NUM_X = 5;
+constexpr int NUMBERS_NUM_Y = 2;
+constexpr int NUMBERS_IMG_SIZE_X = 210;
+constexpr int NUMBERS_IMG_SIZE_Y = 84;
+constexpr int NUMBERS_SIZE = 42;
+
+//プレイヤーUI
+constexpr int PLAYER_UI_NUM_X = 1;
+constexpr int PLAYER_UI_NUM_Y = 2;
+constexpr int PLAYER_UI_IMG_SIZE_X = 384;
+constexpr int PLAYER_UI_IMG_SIZE_Y = 192;
+constexpr int PLAYER_UI_SIZE_X = PLAYER_UI_IMG_SIZE_X / PLAYER_UI_NUM_X;
+constexpr int PLAYER_UI_SIZE_Y = PLAYER_UI_IMG_SIZE_Y / PLAYER_UI_NUM_Y;
 
 class ResourceManager :
 	public StaticSingleton<ResourceManager>
@@ -26,6 +46,21 @@ public:
 		//画像
 		ALPHABET,
 		PLAYER_SHADOW,
+		NUMBER,
+		NUMBER2,
+		PLAYER_UI,
+		TIMER_UI,
+		WIN_UI,
+
+		//UI画像
+		POWER_UI,
+		LIFE_UI,
+		SCORE_UI,
+		HINDER,
+		HINDER_GAGE,
+		PLAYER_ICONS,
+		LIFE,
+		POWER,
 
 		//モデル
 		PLAYER,

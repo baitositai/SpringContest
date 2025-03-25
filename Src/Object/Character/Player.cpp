@@ -21,6 +21,7 @@ Player::Player()
 	stateChanges_.emplace(STATE::NONE, std::bind(&Player::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::ALIVE, std::bind(&Player::ChangeStateAlive, this));
 	stateChanges_.emplace(STATE::DEATH, std::bind(&Player::ChangeStateDeath, this));
+	stateChanges_.emplace(STATE::WIN, std::bind(&Player::ChangeStateWin, this));
 
 	aliveStateChanges_.emplace(ALIVE_STATE::RUN, std::bind(&Player::ChanageAliveStateRun, this));
 	aliveStateChanges_.emplace(ALIVE_STATE::TACKLE, std::bind(&Player::ChanageAliveStateTackle, this));
@@ -261,6 +262,14 @@ void Player::ChangeStateDeath(void)
 	animationController_->Play((int)ANIM_TYPE::DEATH, false);
 }
 
+void Player::ChangeStateWin(void)
+{
+	stateUpdate_ = std::bind(&Player::UpdateDeath, this);
+
+	//アニメーションを再生
+	animationController_->Play((int)ANIM_TYPE::DANCE, false);
+}
+
 void Player::ChanageAliveStateRun()
 {
 	aliveStateUpdate_ = std::bind(&Player::Run, this);
@@ -301,5 +310,9 @@ void Player::UpdateAlive(void)
 }
 
 void Player::UpdateDeath(void)
+{
+}
+
+void Player::UpdateWin(void)
 {
 }

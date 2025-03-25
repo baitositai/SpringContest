@@ -10,6 +10,7 @@
 #include "../Object/ScrollObject/ObjectManager.h"
 #include "../Object/TimeCount.h"
 #include "../Object/Stage/StageManager.h"
+#include "../Object/UI/PlayerUI.h"
 
 GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 {
@@ -21,6 +22,8 @@ GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 
 	players_.clear();
 	objs_.clear();
+	stage_ = nullptr;
+	uis_ = nullptr;
 	state_ = STATE::NONE;
 	strCnt_ = -1.0f;
 	playNum_ = -1;
@@ -64,6 +67,10 @@ void GameScene::Load(void)
 	stage_ = std::make_unique<StageManager>();
 	stage_->Load();
 
+	//UI
+	uis_ = std::make_unique<PlayerUI>();
+	uis_->Load();
+
 	//フォント
 	loadFont_ = CreateFontToHandle(
 		TextManager::GetInstance().GetFontName(TextManager::FONT_TYPE::HANAZOME).c_str(),
@@ -100,11 +107,17 @@ void GameScene::Init(void)
 	//ステージの初期化
 	stage_->Init();
 
+	//UIの初期化
+	uis_->Init();
+
 	//カウントダウンの設定
 	strCnt_ = COUNTDOWN;
 
 	//初期状態
 	ChangeState(STATE::START);
+
+	//スコア初期化
+	ScoreBank::GetInstance().Init();
 }
 
 void GameScene::Update(InputManager& input)
@@ -123,6 +136,9 @@ void GameScene::Release(void)
 {
 	//ステージの解放処理
 	stage_->Release();
+
+	//UI関係の開放
+	uis_->Release();
 
 	//フォント削除
 	DeleteFontToHandle(loadFont_);
@@ -197,6 +213,9 @@ void GameScene::ChangeRezalt(void)
 {
 	stateGameUpdate_ = std::bind(&GameScene::RezaltUpdate, this);
 	stateGameDraw_ = std::bind(&GameScene::RezaltDraw, this);
+
+	//勝利状態の確認
+	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS) { CheckWinPlayer(); }
 }
 
 void GameScene::StartUpdate(void)
@@ -227,6 +246,9 @@ void GameScene::PlayUpdate(void)
 
 	//ステージの更新
 	stage_->Update();
+
+	//UIの更新
+	uis_->Update();
 
 	//衝突判定
 	Collision();
@@ -269,7 +291,7 @@ void GameScene::NormalDraw(void)
 	stage_->Draw();
 	players_[sceneManager_.GetScreenCount()]->Draw();
 	objs_[sceneManager_.GetScreenCount()]->Draw();
-
+	uis_->Draw(*players_[sceneManager_.GetScreenCount()]);
 	//各状態ごとの描画
 	//stateGameDraw_();
 
@@ -315,11 +337,8 @@ void GameScene::RezaltDraw()
 {
 	int score = ScoreBank::GetInstance().GetScore();
 
-	DrawFormatString(
-		Application::SCREEN_HALF_X - 64,
-		Application::SCREEN_HALF_Y,
-		0x000000,
-		"GameOver");
+	//クリア描画
+	uis_->VSClearDraw();
 
 	DrawFormatString(
 		Application::SCREEN_HALF_X,
@@ -346,8 +365,35 @@ void GameScene::CheckGameOver()
 	//プレイヤーが死亡した場合
 	for (int i = 0; i < playNum_; i++) {
 		if (players_[i]->GetState() == Player::STATE::DEATH){
+
 			//リザルトに移る
 			ChangeState(STATE::REZALT);
 		}
+	}			
+}
+
+void GameScene::CheckWinPlayer()
+{
+	//生存状態のプレイヤーの状態を変更
+	for (int j = 0; j < playNum_; j++) {
+		if (players_[j]->GetState() != Player::STATE::DEATH) { players_[j]->ChangeState(Player::STATE::WIN); }
+	}
+
+	//ゲームの勝利状態を調べる
+	if (players_[0]->GetState() == Player::STATE::WIN &&
+		players_[1]->GetState() == Player::STATE::WIN)
+	{
+		//引き分け
+		uis_->ChangeWinState(PlayerUI::WIN_STATE::DRAW);
+	}
+	else if (players_[0]->GetState() == Player::STATE::WIN)
+	{
+		//プレイヤー1の勝利
+		uis_->ChangeWinState(PlayerUI::WIN_STATE::P1_WIN);
+	}
+	else if (players_[1]->GetState() == Player::STATE::WIN)
+	{
+		//プレイヤー2の勝利
+		uis_->ChangeWinState(PlayerUI::WIN_STATE::P2_WIN);
 	}
 }

@@ -5,6 +5,9 @@ class ScoreBank : public StaticSingleton<ScoreBank>
 {
 public:
 
+	//ÉXÉRÉAç≈ëÂó 
+	static constexpr int SCORE_MAX = 99999;
+
 	ScoreBank();
 	~ScoreBank() = default;
 

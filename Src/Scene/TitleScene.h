@@ -33,7 +33,7 @@ public:
 	static constexpr int  MESH_FONT_NUM =12;
 
 	//アルファベット
-	static constexpr int ALPHABET_IMG_NUM = ALPHABET_NUM_X * ALPHABET_SIZE_Y;
+	static constexpr int ALPHABET_IMG_NUM = ALPHABET_NUM_X * ALPHABET_NUM_Y;
 
 	// コンストラクタ
 	TitleScene(SceneManager& manager);

@@ -44,6 +44,7 @@ public:
 		NONE,
 		ALIVE,
 		DEATH,
+		WIN,
 	};
 
 	//プレイヤーの生存状態
@@ -80,7 +81,10 @@ public:
 	void AddLife(const int &life);
 
 	//力を加える
-	void AddPower(const int& pow);
+	void AddPower(const int& pow);	
+	
+	//状態の変更
+	void ChangeState(STATE state);
 
 	//生存状態の変更
 	void ChangeAliveState(const ALIVE_STATE & state);
@@ -91,6 +95,9 @@ public:
 		const int& left, 
 		const int& jump, 
 		const int& tackle);
+
+	//体力を返す
+	inline const int& GetLife() const { return life_; }
 
 	//力を返す
 	inline const int& GetPower() const { return pow_; }
@@ -169,10 +176,10 @@ private:
 	std::unique_ptr<AnimationController> animationController_;
 
 	// 状態遷移
-	void ChangeState(STATE state);
 	void ChangeStateNone(void);
 	void ChangeStateAlive(void);
 	void ChangeStateDeath(void);
+	void ChangeStateWin(void);
 
 	void ChanageAliveStateRun();
 	void ChanageAliveStateTackle();
@@ -182,6 +189,7 @@ private:
 	void UpdateNone(void);
 	void UpdateAlive(void);
 	void UpdateDeath(void);
+	void UpdateWin(void);
 
 	//各種初期設定
 	void InitModel(void);

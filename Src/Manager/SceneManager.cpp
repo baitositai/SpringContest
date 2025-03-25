@@ -236,9 +236,11 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	{
 	case SCENE_ID::TITLE:
 		ChangeAllScene(std::make_shared<TitleScene>(*this));
+		drawFunc_ = std::bind(&SceneManager::NormalDraw, this);
 		break;
 	case SCENE_ID::SELECT:
 		ChangeAllScene(std::make_shared<SelectScene>(*this));
+		drawFunc_ = std::bind(&SceneManager::NormalDraw, this);
 		break;
 	case SCENE_ID::GAME:
 		ChangeAllScene(std::make_shared<GameScene>(*this));

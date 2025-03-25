@@ -6,6 +6,7 @@ class Player;
 class ObjectManager;
 class TimeCount;
 class StageManager;
+class PlayerUI;
 
 class GameScene : public SceneBase
 {
@@ -76,6 +77,7 @@ private:
 	std::vector<std::unique_ptr<ObjectManager>> objs_;
 	std::unique_ptr<TimeCount> time_;
 	std::unique_ptr<StageManager> stage_;
+	std::unique_ptr<PlayerUI> uis_;
 
 	//更新関数
 	void LoadingUpdate(InputManager& ins);	//読み込み中処理
@@ -106,6 +108,9 @@ private:
 
 	//ゲームオーバー判定
 	void CheckGameOver();
+
+	//勝利状態の確認
+	void CheckWinPlayer();
 
 	//デバッグ
 	void DebagDraw();
