@@ -2,9 +2,14 @@
 #include "../framework.h"
 #include "SceneBase.h"
 
+
+constexpr int FONT_SIZE_X = 400;
+constexpr int FONT_SIZE_Y = 400;
+
 class SelectScene : public SceneBase
 {
 public:
+
 
 	// コンストラクタ
 	SelectScene(SceneManager& manager);
@@ -27,6 +32,8 @@ private:
 	//描画関数 
 	void LoadingDraw(void);		//読み込み中描画
 	void NormalDraw(void);		//ゲーム中描画
+
+	int image_;
 
 };
 

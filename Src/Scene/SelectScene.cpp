@@ -32,6 +32,7 @@ void SelectScene::Load(void)
 
 void SelectScene::Init(void)
 {
+	image_=LoadGraph( "Data/Image/select.png");
 }
 
 void SelectScene::Update(InputManager& input)
@@ -50,6 +51,7 @@ void SelectScene::Release(void)
 {
 	//フォント削除
 	DeleteFontToHandle(loadFont_);
+	DeleteGraph(image_);
 }
 
 void SelectScene::LoadingUpdate(InputManager& ins)
@@ -79,12 +81,12 @@ void SelectScene::LoadingUpdate(InputManager& ins)
 void SelectScene::NormalUpdate(InputManager& ins)
 {
 	//シーン遷移
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	if (ins.IsTrgDown(KEY_INPUT_W))
 	{		
 		DataBank::GetInstance().Input(SceneManager::MODE::MARASON);
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
 	}
-	else if (ins.IsTrgDown(KEY_INPUT_W))
+	else if (ins.IsTrgDown(KEY_INPUT_Z))
 	{
 		DataBank::GetInstance().Input(SceneManager::MODE::VS);
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
@@ -94,6 +96,7 @@ void SelectScene::NormalUpdate(InputManager& ins)
 void SelectScene::LoadingDraw(void)
 {
 	DrawNowLoading();
+	
 }
 
 void SelectScene::NormalDraw(void)
@@ -102,9 +105,12 @@ void SelectScene::NormalDraw(void)
 		0, 0,
 		Application::SCREEN_SIZE_X,
 		Application::SCREEN_SIZE_Y,
-		0x00ffff,
+		0x000000,
 		true);
-
-	DrawFormatString(0, 0, 0xffffff, "1人プレイはSPACE");
-	DrawFormatString(0, 20, 0xffffff, "2人プレイはW");
+	DrawFormatString(FONT_SIZE_X, 100, 0xffffff, "モード選択" );
+	DrawFormatString(FONT_SIZE_X, 350, 0xffffff, "1人プレイはSPACE");
+	DrawFormatString(FONT_SIZE_X, 400, 0xffffff, "2人プレイはW");
+	DrawGraph(0, 0, image_, true);
+	DrawExtendGraph(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, image_, TRUE);
 }
+
