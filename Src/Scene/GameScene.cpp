@@ -11,6 +11,7 @@
 #include "../Object/TimeCount.h"
 #include "../Object/Stage/StageManager.h"
 #include "../Object/UI/PlayerUI.h"
+#include "../Object/CountDown.h"
 
 GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 {
@@ -71,6 +72,10 @@ void GameScene::Load(void)
 	uis_ = std::make_unique<PlayerUI>();
 	uis_->Load();
 
+	//カウントダウン
+	cntDown_ = std::make_unique<CountDown>();
+	cntDown_->Load();
+
 	//フォント
 	loadFont_ = CreateFontToHandle(
 		TextManager::GetInstance().GetFontName(TextManager::FONT_TYPE::HANAZOME).c_str(),
@@ -110,8 +115,8 @@ void GameScene::Init(void)
 	//UIの初期化
 	uis_->Init();
 
-	//カウントダウンの設定
-	strCnt_ = COUNTDOWN;
+	//カウントダウン初期化
+	cntDown_->Init();
 
 	//初期状態
 	ChangeState(STATE::START);
@@ -221,10 +226,10 @@ void GameScene::ChangeRezalt(void)
 void GameScene::StartUpdate(void)
 {
 	//カウントダウン
-	strCnt_ -= SceneManager::GetInstance().GetDeltaTime();
+	cntDown_->Update();
 
 	//時間になったら
-	if (strCnt_ <= 0.0f)
+	if (cntDown_->IsStart())
 	{
 		ChangeState(STATE::PLAY);
 	}
@@ -325,12 +330,7 @@ void GameScene::Collision()
 
 void GameScene::StartDraw()
 {
-	DrawFormatString(
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y,
-		0xff0000,
-		"%d",
-		(int)strCnt_);
+	cntDown_->Draw();
 }
 
 void GameScene::RezaltDraw()

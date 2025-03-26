@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\CountDown.cpp" />
     <ClCompile Include="Src\Object\Hinder.cpp" />
     <ClCompile Include="Src\Object\UI\PlayerUI.cpp" />
     <ClCompile Include="Src\Manager\SoundManager.cpp" />
@@ -63,6 +64,7 @@
     <ClCompile Include="Src\Object\Stage\StageManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\CountDown.h" />
     <ClInclude Include="Src\Object\Hinder.h" />
     <ClInclude Include="Src\Object\UI\PlayerUI.h" />
     <ClInclude Include="Src\Manager\SoundManager.h" />

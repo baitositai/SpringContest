@@ -7,6 +7,7 @@ class ObjectManager;
 class TimeCount;
 class StageManager;
 class PlayerUI;
+class CountDown;
 
 class GameScene : public SceneBase
 {
@@ -23,9 +24,6 @@ public:
 
 	//プレイヤー人数
 	static constexpr int PLAYER_MAX = 2;
-
-	//ゲーム開始カウントダウン
-	static constexpr float COUNTDOWN = 3.0f;
 
 	//プレイヤーの初期位置
 	static constexpr VECTOR DEFAULT_PLAYER_POS = { 0,0,0 };
@@ -78,6 +76,7 @@ private:
 	std::unique_ptr<TimeCount> time_;
 	std::unique_ptr<StageManager> stage_;
 	std::unique_ptr<PlayerUI> uis_;
+	std::unique_ptr<CountDown> cntDown_;
 
 	//更新関数
 	void LoadingUpdate(InputManager& ins);	//読み込み中処理
