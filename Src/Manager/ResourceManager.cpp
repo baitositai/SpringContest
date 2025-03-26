@@ -6,6 +6,18 @@ void ResourceManager::Init(void)
 	std::string path_Omuretu = "Character/Omuretu/";
 	std::string path_Stage = "Stage/";
 
+	//タイトル画像
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "GameLogo.png");
+	resourcesMap_.emplace(SRC::TITLE, std::move(res));
+
+	//タイトル文字
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "PushSpace.png");
+	resourcesMap_.emplace(SRC::TITLE_UI, std::move(res));
+
+	//タイトル背景
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "TitleBackGround.png");
+	resourcesMap_.emplace(SRC::TITLE_BACKGROUND, std::move(res));
+
 	// プレイヤー影
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "Shadow.png");
 	resourcesMap_.emplace(SRC::PLAYER_SHADOW, std::move(res));

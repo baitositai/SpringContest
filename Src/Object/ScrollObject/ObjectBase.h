@@ -1,6 +1,7 @@
 #pragma once
 #include "../../framework.h"
 #include "../Common/Transform.h"
+#include "../Character/Player.h"
 
 class ResourceManager;
 class SceneManager;

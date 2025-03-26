@@ -3,6 +3,7 @@
 #include "../framework.h"
 #include "../Common/Vector2.h"
 #include "../Manager/ResourceManager.h"
+class TitlePlayer;
 
 class TitleScene : public SceneBase
 {
@@ -54,6 +55,21 @@ private:
 	// テキスト画像
 	int* imgTexts_[ALPHABET_IMG_NUM];
 
+	//タイトル背景
+	int imgTitle_;
+
+	//タイトルUI
+	int imgTitleUI_;
+
+	//アルファ
+	int alpha_;
+
+	//フェード値
+	int fade_;
+
+	//タイトル背景
+	int imgTitleBackGround_;
+
 	// メッセージフォント
 	int mesFont_;
 
@@ -104,5 +120,10 @@ private:
 
 	// メッシュ更新
 	void MeshUpdate();
+
+	void Fade();
+
+	//インスタンス生成
+	std::unique_ptr<TitlePlayer> titlePlayer_;
 
 };

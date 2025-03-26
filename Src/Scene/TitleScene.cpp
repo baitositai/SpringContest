@@ -6,6 +6,7 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "TitleScene.h"
+#include "../Object/Character/TitlePlayer.h"
 
 TitleScene::TitleScene(SceneManager& manager) :SceneBase(manager)
 {
@@ -24,6 +25,9 @@ TitleScene::TitleScene(SceneManager& manager) :SceneBase(manager)
 
 	//描画関数のセット
 	drawFunc_ = std::bind(&TitleScene::LoadingDraw, this);
+
+	//初期化
+	titlePlayer_ = nullptr;
 }
 
 void TitleScene::Load(void)
@@ -34,9 +38,11 @@ void TitleScene::Load(void)
 	//非同期読み込みをtrueにする
 	SetUseASyncLoadFlag(true);
 
-	// タイトルロゴ
+	// タイトル
 	imgTexts_[0] = ResourceManager::GetInstance().Load(ResourceManager::SRC::ALPHABET).handleIds_;
-	
+	imgTitle_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TITLE).handleId_;
+	imgTitleUI_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TITLE_UI).handleId_;
+	imgTitleBackGround_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TITLE_BACKGROUND).handleId_;
 	//フォント
 	loadFont_ = CreateFontToHandle(
 		TextManager::GetInstance().GetFontName(TextManager::FONT_TYPE::DOT).c_str(),
@@ -46,7 +52,12 @@ void TitleScene::Load(void)
 		TextManager::GetInstance().GetFontName(TextManager::FONT_TYPE::BOKUTACHI).c_str(),
 		MES_FONT_SIZE,
 		0);
+
+	//タイトルにプレイヤーをロードする
+	titlePlayer_ = std::make_unique<TitlePlayer>();
+	titlePlayer_->Load();
 }
+
 
 void TitleScene::Init(void)
 {
@@ -58,17 +69,24 @@ void TitleScene::Init(void)
 	deg_ = 2.0f;// 角度
 	ex_ = 1.0f;
 	exSpeed_ = 0.2f;
+	alpha_ = 256;
+	fade_ = -1;
+
+	//初期化
+	titlePlayer_->Init();
 }
 
 void TitleScene::Update(InputManager& input)
 {
 	updataFunc_(input);
+
 	return;
 }
 
 void TitleScene::Draw(void)
 {
 	drawFunc_();
+
 	return;
 }
 
@@ -76,6 +94,9 @@ void TitleScene::Release(void)
 {
 	DeleteFontToHandle(loadFont_);
 	DeleteFontToHandle(mesFont_);
+
+	//解放処理
+	titlePlayer_->Release();
 }
 
 void TitleScene::CommonDraw()
@@ -110,6 +131,17 @@ void TitleScene::NormalUpdate(InputManager& ins)
 {
 	MeshUpdate();
 
+	if (alpha_ > 256 ||
+		alpha_ < 128)
+	{
+		fade_ *= -1;
+	}
+	alpha_ += fade_;
+
+	//更新処理
+	titlePlayer_->Update();
+
+
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
@@ -124,6 +156,9 @@ void TitleScene::LoadingDraw(void)
 
 void TitleScene::NormalDraw(void)
 {
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 256);
+
 	//背景
 	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, 0xffb6c1, true);
 	for (int j = 0; j < MESH_FONT_NUM; j++)
@@ -134,20 +169,34 @@ void TitleScene::NormalDraw(void)
 		DrawPolygon3D(vertices1, 1, *imgTexts_[0], true); // 三角形1
 		DrawPolygon3D(vertices2, 1, *imgTexts_[0], true); // 三角形2
 	}
+	
+	//タイトル背景
+	DrawRotaGraph(500, 375, 0.75, 0.f, imgTitleBackGround_, true);
+	
+	//タイトルロゴ生成
+	DrawRotaGraph(525,200, 0.5,0.f, imgTitle_, true);
+	
+
+	
 
 	SetDrawScreen(sceneManager_.GetMainScreen());
 
-	int cx = Application::SCREEN_HALF_X;
-	int cy = Application::SCREEN_HALF_Y;
+	//描画処理
+	titlePlayer_->Draw();
 
-	//シーン遷移
-	std::string mes = "スペースを押してね";
-	DrawFormatStringToHandle(
-		cx - mes.length() * MES_FONT_SIZE / 2,
-		cy + 150,
-		0xffffff,
-		mesFont_,
-		mes.c_str());
+	//int cx = Application::SCREEN_HALF_X;
+	//int cy = Application::SCREEN_HALF_Y;
+
+	////シーン遷移
+	//std::string mes = "スペースを押してね";
+	//DrawFormatStringToHandle(
+	//	cx - mes.length() * MES_FONT_SIZE / 2,
+	//	cy + 150,
+	//	0xffffff,
+	//	mesFont_,
+	//	mes.c_str());
+
+	Fade();
 }
 
 void TitleScene::MeshInit()
@@ -327,4 +376,14 @@ void TitleScene::MeshUpdate()
 
 		}
 	}
+}
+
+void TitleScene::Fade()
+{
+	//タイトルUI
+	SetDrawBlendMode(DX_BLENDGRAPHTYPE_ALPHA, alpha_);
+
+	DrawRotaGraph(525, 375, 0.3f, 0.f, imgTitleUI_, true);
+
+	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 256);
 }

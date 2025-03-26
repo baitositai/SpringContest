@@ -51,6 +51,9 @@ public:
 		PLAYER_UI,
 		TIMER_UI,
 		WIN_UI,
+		TITLE,
+		TITLE_UI,
+		TITLE_BACKGROUND,
 
 		//UI‰æ‘œ
 		POWER_UI,
