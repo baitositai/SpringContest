@@ -13,8 +13,8 @@ public:
 	enum class STAGE_TYPE
 	{
 		STAGE,			//通常ステージ
-		STAGERIGHT,		//足場右側だけ
-		STAGELEFT,		//足場左側だけ
+		//STAGERIGHT,		//足場右側だけ
+		//STAGELEFT,		//足場左側だけ
 		MAX
 	};
 

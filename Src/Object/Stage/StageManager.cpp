@@ -65,12 +65,12 @@ void StageManager::Update()
 		case StageBase::STAGE_TYPE::STAGE:
 			newStage = new StageDefault();
 			break;
-		case StageBase::STAGE_TYPE::STAGELEFT:
+	/*	case StageBase::STAGE_TYPE::STAGELEFT:
 			newStage = new StageLeft();
 			break;
 		case StageBase::STAGE_TYPE::STAGERIGHT:
 			newStage = new StageRight();
-			break;
+			break;*/
 		}
 
 		newStage->Init();
@@ -150,7 +150,7 @@ void StageManager::CheckStagePos()
 	size_t sSize = stages_.size();
 	for (int i = 0; i < sSize; i++)
 	{
-		if (stages_[i]->GetTransform().pos.z < -StageBase::SIZE_Z)
+		if (stages_[i]->GetTransform().pos.z + StageBase::SIZE_Z < 0)
 		{
 			stages_.erase(stages_.begin() + i);
 			sSize--;
