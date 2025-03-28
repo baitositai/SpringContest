@@ -2,6 +2,9 @@
 #include "../../Manager/InputManager.h"
 #include "../../Manager/ScrollManager.h"
 #include "../../Manager/SceneManager.h"
+#include "../../Manager/SoundManager.h"
+#include "../../Manager/EffectManager.h"
+#include "../../Manager/SoundManager.h"
 #include "Player.h"
 
 Player::Player()
@@ -17,6 +20,7 @@ Player::Player()
 	radius_ = -1.0f;
 	tackleTime_ = -1.0f;
 	damageTime_ = -1.0f;
+	key_ = { -1, -1, -1, -1 };
 
 	stateChanges_.emplace(STATE::NONE, std::bind(&Player::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::ALIVE, std::bind(&Player::ChangeStateAlive, this));
@@ -28,6 +32,14 @@ Player::Player()
 	aliveStateChanges_.emplace(ALIVE_STATE::DAMAGE, std::bind(&Player::ChanageAliveStateDamage, this));
 }
 
+Player::~Player()
+{
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::DAMAGE_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::TACKLE_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::JUMP_SE);
+	EffectManager::GetInstance().Stop(EffectManager::EFFECT::TACKLE);
+}
+
 void Player::Load()
 {
 	// モデルの基本設定
@@ -35,6 +47,31 @@ void Player::Load()
 
 	//アニメーションの設定
 	animationController_ = std::make_unique<AnimationController>(trans_.modelId);
+
+	//エフェクトの読み込み
+	int efk = ResourceManager::GetInstance().Load(ResourceManager::SRC::TACKLE_EFK).handleId_;
+	if (efk == -1) { 
+		return; }
+
+	//エフェクトの設定
+	EffectManager::GetInstance().Add(EffectManager::EFFECT::TACKLE,
+	efk);
+
+	//音楽の読み込み
+	SoundManager::GetInstance().Add(
+		SoundManager::TYPE::SE,
+		SoundManager::SOUND::JUMP_SE,
+		ResourceManager::GetInstance().Load(ResourceManager::SRC::JUMP_SE).handleId_);
+
+	SoundManager::GetInstance().Add(
+		SoundManager::TYPE::SE,
+		SoundManager::SOUND::TACKLE_SE,
+		ResourceManager::GetInstance().Load(ResourceManager::SRC::TACKLE_SE).handleId_);
+
+	SoundManager::GetInstance().Add(
+		SoundManager::TYPE::SE,
+		SoundManager::SOUND::DAMAGE_SE,
+		ResourceManager::GetInstance().Load(ResourceManager::SRC::DAMAGE_SE).handleId_);
 }
 
 void Player::Init()
@@ -70,6 +107,11 @@ void Player::Draw()
 {
 	// モデルの描画
 	MV1DrawModel(trans_.modelId);
+}
+
+void Player::Release()
+{
+	EffectManager::GetInstance().Stop(EffectManager::EFFECT::TACKLE);
 }
 
 void Player::AddLife(const int& life)
@@ -155,7 +197,17 @@ void Player::Process()
 	if (ins.IsTrgDown(key_.jump_)) 
 	{ 
 		isJump_ = true; 
+		SoundManager::GetInstance().Play(SoundManager::SOUND::JUMP_SE);
 		if (aliveState_ != ALIVE_STATE::TACKLE ) { animationController_->Play((int)ANIM_TYPE::JUMP); }
+	}
+
+	//タックル処理
+	if (ins.IsTrgDown(key_.tackle_) && aliveState_ != ALIVE_STATE::TACKLE)
+	{
+		//状態変更
+		ChangeAliveState(ALIVE_STATE::TACKLE);
+		//パワーを減少
+		AddPower(-1);
 	}
 }
 
@@ -188,6 +240,13 @@ void Player::Tackle()
 	//時間を減らす
 	tackleTime_ -= SceneManager::GetInstance().GetDeltaTime();
 
+	//エフェクトを追従させる
+	EffectManager::GetInstance().SyncEffect(
+		EffectManager::EFFECT::TACKLE,
+		VAdd(trans_.pos, TACKLE_EFK_LOCAL_POS),
+		Quaternion(),
+		TACKLE_FEK_SIZE);
+
 	//時間になった時
 	if (tackleTime_ <= 0.0f) {
 		//アニメーションを戻す
@@ -196,6 +255,8 @@ void Player::Tackle()
 		tackleTime_ = 0.0f;
 		//タックルを終了
 		ChangeAliveState(ALIVE_STATE::RUN);
+		//エフェクト終了
+		EffectManager::GetInstance().Stop(EffectManager::EFFECT::TACKLE);
 	}
 }
 
@@ -267,7 +328,7 @@ void Player::ChangeStateWin(void)
 	stateUpdate_ = std::bind(&Player::UpdateDeath, this);
 
 	//アニメーションを再生
-	animationController_->Play((int)ANIM_TYPE::DANCE, false);
+	animationController_->Play((int)ANIM_TYPE::DANCE, true);
 }
 
 void Player::ChanageAliveStateRun()
@@ -281,16 +342,30 @@ void Player::ChanageAliveStateTackle()
 
 	//アニメーションの再生
 	animationController_->Play((int)ANIM_TYPE::TACKLE);
+
+	//エフェクトの再生
+	EffectManager::GetInstance().Play(EffectManager::EFFECT::TACKLE,
+		VAdd(trans_.pos, TACKLE_EFK_LOCAL_POS),
+		Quaternion(),
+		TACKLE_FEK_SIZE,
+		SoundManager::SOUND::NONE);
 	
 	//タックルの時間設定
 	tackleTime_ = TACKLE_TIME;
+
+	//SEの再生
+	SoundManager::GetInstance().Play(SoundManager::SOUND::TACKLE_SE);
 }
 
 void Player::ChanageAliveStateDamage()
 {
 	aliveStateUpdate_ = std::bind(&Player::Damage, this);
 
+	//ダメージによる無敵時間
 	damageTime_ = DAMAGE_TIME;
+
+	//SEの再生
+	SoundManager::GetInstance().Play(SoundManager::SOUND::DAMAGE_SE);
 }
 
 void Player::UpdateNone(void)

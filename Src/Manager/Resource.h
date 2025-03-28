@@ -17,6 +17,7 @@ public:
 		EFFEKSEER,
 		PS,
 		FONT,
+		SOUND,
 	};
 
 	// コンストラクタ

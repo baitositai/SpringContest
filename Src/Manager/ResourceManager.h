@@ -1,7 +1,6 @@
 #pragma once
 #include "../framework.h"
 #include "../Utility/StaticSingleton.h"
-#include "../Application.h"
 #include "Resource.h"
 
 // オムレツ走る画像
@@ -22,9 +21,16 @@ constexpr int PLAYER_ICONS_SIZE = 128;
 //数字画像
 constexpr int NUMBERS_NUM_X = 5;
 constexpr int NUMBERS_NUM_Y = 2;
-constexpr int NUMBERS_IMG_SIZE_X = 210;
-constexpr int NUMBERS_IMG_SIZE_Y = 84;
-constexpr int NUMBERS_SIZE = 42;
+constexpr int NUMBERS_IMG_SIZE_X = 640;
+constexpr int NUMBERS_IMG_SIZE_Y = 256;
+constexpr int NUMBERS_SIZE = 128;
+
+//数字2画像
+constexpr int NUMBERS2_NUM_X = 5;
+constexpr int NUMBERS2_NUM_Y = 2;
+constexpr int NUMBERS2_IMG_SIZE_X = 210;
+constexpr int NUMBERS2_IMG_SIZE_Y = 84;
+constexpr int NUMBERS2_SIZE = 42;
 
 //プレイヤーUI
 constexpr int PLAYER_UI_NUM_X = 1;
@@ -51,6 +57,8 @@ public:
 		PLAYER_UI,
 		TIMER_UI,
 		WIN_UI,
+		TITLE_LOGO,
+		DRAW,
 
 		//UI画像
 		POWER_UI,
@@ -61,12 +69,44 @@ public:
 		PLAYER_ICONS,
 		LIFE,
 		POWER,
+		TITLE,
+		TITLE_UI,
+		TITLE_BACKGROUND,
 
 		//モデル
 		PLAYER,
 		STAGE,
 		SKY_DOME,
-		ENEMY
+		ENEMY,
+		BOMB,
+		HEART,
+		POTION,
+
+		//エフェクト
+		TACKLE_EFK,
+		STAR_DUST_EFK,
+
+		//音楽
+		TITLE_BGM,
+		SELECT_BGM,
+		GAMEBGM1,
+		GAMEBGM2,
+		CHANGE_SCENE_SE,
+		SWITCH_ON_SE,
+		SWITCH_OFF_SE,
+		TACKLE_SE,
+		ITEM_GET_SE,
+		DAMAGE_SE,
+		COUNT_DOWN_SE,
+		COUNT_3,
+		COUNT_2,
+		COUNT_1,
+		COUNT_0,
+		GO_SE,
+		CLEAR_SE,
+		JUMP_SE,
+		BLAST_SE,
+		ENEMY_DAMAGE_SE
 	};
 
 	// 初期化

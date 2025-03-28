@@ -1,6 +1,8 @@
 #include "../../Manager/ResourceManager.h"
 #include "../../Manager/SceneManager.h"
 #include "../../Manager/ScrollManager.h"
+#include "../../Manager/SoundManager.h"
+#include "../../Utility/Utility.h"
 #include "../Character/Player.h"
 #include "ObjectBase.h"
 
@@ -19,6 +21,9 @@ ObjectBase::ObjectBase()
 
 ObjectBase::~ObjectBase(void)
 {
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::ENEMY_DAMAGE_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::BLAST_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::ITEM_GET_SE);
 }
 
 void ObjectBase::Load(void)
@@ -28,6 +33,23 @@ void ObjectBase::Load(void)
 
 	//ƒ‚ƒfƒ‹‚Ì‰Šú‰»
 	InitModel();
+
+	//‰¹Šy‚Ì“Ç‚İ‚İ
+	SoundManager::GetInstance().Add(
+		SoundManager::TYPE::SE,
+		SoundManager::SOUND::ITEM_GET_SE,
+		ResourceManager::GetInstance().Load(ResourceManager::SRC::ITEM_GET_SE).handleId_);
+
+	SoundManager::GetInstance().Add(
+		SoundManager::TYPE::SE,
+		SoundManager::SOUND::BLAST_SE,
+		ResourceManager::GetInstance().Load(ResourceManager::SRC::BLAST_SE).handleId_);
+
+	SoundManager::GetInstance().Add(
+		SoundManager::TYPE::SE,
+		SoundManager::SOUND::ENEMY_DAMAGE_SE,
+		ResourceManager::GetInstance().Load(ResourceManager::SRC::ENEMY_DAMAGE_SE).handleId_);
+
 }
 
 void ObjectBase::Init(void)

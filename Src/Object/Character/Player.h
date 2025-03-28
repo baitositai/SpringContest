@@ -38,6 +38,12 @@ public:
 	//ダメージ時間
 	static constexpr float DAMAGE_TIME = 2.0f;
 
+	//タックルエフェクトの相対座標
+	static constexpr VECTOR TACKLE_EFK_LOCAL_POS = { 0,100,100 };
+
+	//タックルのエフェクトサイズ
+	static constexpr float TACKLE_FEK_SIZE = 10.0f;
+
 	//状態
 	enum class STATE
 	{
@@ -70,12 +76,13 @@ public:
 
 	//引数で初期位置を取得
 	Player();
-	~Player() = default;
+	~Player();
 
 	void Load();
 	void Init();
 	void Update();
 	void Draw();
+	void Release();
 
 	//体力を加える
 	void AddLife(const int &life);

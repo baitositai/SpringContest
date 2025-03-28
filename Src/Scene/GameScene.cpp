@@ -5,6 +5,7 @@
 #include "../Manager/ScoreBank.h"
 #include "../Manager/DataBank.h"
 #include "../Manager/ScrollManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Utility/Utility.h"
 #include "../Object/Character/Player.h"
 #include "../Object/ScrollObject/ObjectManager.h"
@@ -12,6 +13,7 @@
 #include "../Object/Stage/StageManager.h"
 #include "../Object/UI/PlayerUI.h"
 #include "../Object/CountDown.h"
+#include "../Object/GameBGM.h"
 
 GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 {
@@ -25,6 +27,7 @@ GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 	objs_.clear();
 	stage_ = nullptr;
 	uis_ = nullptr;
+	bgm_ = nullptr;
 	state_ = STATE::NONE;
 	strCnt_ = -1.0f;
 	playNum_ = -1;
@@ -32,6 +35,12 @@ GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 	stateChanges_.emplace(STATE::START, std::bind(&GameScene::ChangeStart, this));
 	stateChanges_.emplace(STATE::PLAY, std::bind(&GameScene::ChangePlay, this));
 	stateChanges_.emplace(STATE::REZALT, std::bind(&GameScene::ChangeRezalt, this));
+}
+
+GameScene::~GameScene(void)
+{
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::CLEAR_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::CHANGE_SCENE_SE);
 }
 
 void GameScene::Load(void)
@@ -76,11 +85,26 @@ void GameScene::Load(void)
 	cntDown_ = std::make_unique<CountDown>();
 	cntDown_->Load();
 
+	//BGM
+	bgm_ = std::make_unique<GameBGM>();
+	bgm_->Load();
+
 	//フォント
 	loadFont_ = CreateFontToHandle(
 		TextManager::GetInstance().GetFontName(TextManager::FONT_TYPE::HANAZOME).c_str(),
 		LOAD_FONT_SIZE,
 		0);
+
+	//サウンド関係
+	SoundManager::GetInstance().Add(
+		SoundManager::TYPE::SE,
+		SoundManager::SOUND::CHANGE_SCENE_SE,
+		ResourceManager::GetInstance().Load(ResourceManager::SRC::CHANGE_SCENE_SE).handleId_);
+
+	SoundManager::GetInstance().Add(
+		SoundManager::TYPE::SE,
+		SoundManager::SOUND::CLEAR_SE,
+		ResourceManager::GetInstance().Load(ResourceManager::SRC::CLEAR_SE).handleId_);
 
 	//カメラの設定
 	auto cameras = SceneManager::GetInstance().GetCameras();
@@ -118,8 +142,14 @@ void GameScene::Init(void)
 	//カウントダウン初期化
 	cntDown_->Init();
 
+	//BGM
+	bgm_->Init();
+
 	//初期状態
 	ChangeState(STATE::START);
+
+	//スピード関係の初期化
+	ScrollManager::GetInstance().Init();
 
 	//スコア初期化
 	ScoreBank::GetInstance().Init();
@@ -144,6 +174,9 @@ void GameScene::Release(void)
 
 	//UI関係の開放
 	uis_->Release();
+
+	//プレイヤーの解放処理
+	for (auto& player : players_) { player->Release(); }
 
 	//フォント削除
 	DeleteFontToHandle(loadFont_);
@@ -185,12 +218,12 @@ void GameScene::NormalUpdate(InputManager& ins)
 	// 更新ステップ
 	stateGameUpdate_();
 
-	//シーン遷移
-	if (ins.IsTrgDown(KEY_INPUT_RETURN))
-	{
-		SceneManager::GetInstance().
-			ChangeScene(SceneManager::SCENE_ID::TITLE);
-	}
+	////シーン遷移
+	//if (ins.IsTrgDown(KEY_INPUT_RETURN))
+	//{
+	//	SceneManager::GetInstance().
+	//		ChangeScene(SceneManager::SCENE_ID::TITLE);
+	//}
 }
 
 void GameScene::ChangeState(STATE state)
@@ -221,6 +254,12 @@ void GameScene::ChangeRezalt(void)
 
 	//勝利状態の確認
 	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS) { CheckWinPlayer(); }
+
+	//BGM停止
+	bgm_->Stop();
+
+	//クリアSE
+	SoundManager::GetInstance().Play(SoundManager::SOUND::CLEAR_SE);
 }
 
 void GameScene::StartUpdate(void)
@@ -273,6 +312,12 @@ void GameScene::RezaltUpdate(void)
 	{
 		SceneManager::GetInstance().
 			ChangeScene(SceneManager::SCENE_ID::TITLE);
+
+		//シーン遷移SE
+		SoundManager::GetInstance().Play(SoundManager::SOUND::CHANGE_SCENE_SE);
+
+		//SEの停止
+		SoundManager::GetInstance().Stop(SoundManager::SOUND::CLEAR_SE);
 	}
 }
 

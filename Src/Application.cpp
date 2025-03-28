@@ -3,6 +3,8 @@
 #include "Manager/TextManager.h"
 #include "Manager/InputManager.h"
 #include "Manager/SceneManager.h"
+#include "Manager/SoundManager.h"
+#include "Manager/EffectManager.h"
 #include "Shader/PixelShader.h"
 #include "Scene/TitleScene.h"
 #include "Scene/GameScene.h"
@@ -15,6 +17,7 @@ const std::string Application::PATH_MODEL = "Data/Model/";
 const std::string Application::PATH_EFFECT = "Data/Effect/";
 const std::string Application::PATH_FONT = "Data/Font/";
 const std::string Application::PATH_TEXT = "Data/Text/";
+const std::string Application::PATH_SOUND = "Data/Sound/";
 
 void Application::CreateInstance(void)
 {
@@ -122,11 +125,13 @@ void Application::Run(void)
 
 void Application::Destroy(void)
 {
-	InputManager::GetInstance().Destroy();
-	ResourceManager::GetInstance().Destroy();
+	InputManager::GetInstance().Destroy();	
+	EffectManager::GetInstance().Destroy();	
+	SoundManager::GetInstance().Destroy();
+	PixelShader::GetInstance().Destroy();
 	SceneManager::GetInstance().Destroy();
 	TextManager::GetInstance().Destroy();
-	PixelShader::GetInstance().Destroy();
+	ResourceManager::GetInstance().Destroy();
 
 	// EffekseerÇèIóπÇ∑ÇÈÅB
 	Effkseer_End();

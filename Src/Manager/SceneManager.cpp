@@ -290,6 +290,9 @@ void SceneManager::NormalDraw()
 	// 描画先グラフィック領域の指定
 	SetDrawingScreen(mainScreen_);
 
+	// Effekseerにより再生中のエフェクトを更新する。
+	UpdateEffekseer3D();
+
 	//シーン描画(最後尾から描画)
 	auto rit = scenes_.rbegin();
 	for (; rit != scenes_.rend(); rit++)
@@ -297,6 +300,9 @@ void SceneManager::NormalDraw()
 		(*rit)->Draw();
 		(*rit)->CommonDraw();
 	}
+
+	// Effekseerにより再生中のエフェクトを描画する。
+	DrawEffekseer3D();
 
 	// 暗転・明転
 	fader_->Draw();
@@ -326,6 +332,9 @@ void SceneManager::VSPlayDraw()
 		{
 			(*rit)->Draw();
 		}
+
+		// Effekseerにより再生中のエフェクトを更新する。
+		UpdateEffekseer3D();
 	}
 
 	//全体の画面を作る
@@ -333,7 +342,12 @@ void SceneManager::VSPlayDraw()
 
 	//分割した画面の描画
 	for (int i = 0; i < PLAYER_MAX; i++) 
-	{ DrawGraph(static_cast<int>(screenPos_.x) + Application::SCREEN_HALF_X * i, static_cast<int>(screenPos_.y), halfScreen_[i], true); }
+	{ 
+		DrawGraph(static_cast<int>(screenPos_.x) + Application::SCREEN_HALF_X * i, static_cast<int>(screenPos_.y), halfScreen_[i], true);
+			
+		// Effekseerにより再生中のエフェクトを描画する。
+		DrawEffekseer3D();
+	}	
 
 	//画面の共通部分を描画
 	auto rit = scenes_.rbegin();

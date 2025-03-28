@@ -18,6 +18,26 @@ public:
 	enum class SOUND
 	{
 		NONE,
+		TITLE_BGM,
+		SELECT_BGM,
+		GAMEBGM1,
+		GAMEBGM2,
+		CHANGE_SCENE_SE,
+		SWITCH_ON_SE,
+		SWITCH_OFF_SE,
+		TACKLE_SE,
+		ITEM_GET_SE,
+		DAMAGE_SE,
+		COUNT_DOWN_SE,
+		COUNT_3,
+		COUNT_2,
+		COUNT_1,
+		COUNT_0,
+		GO_SE,
+		CLEAR_SE,
+		JUMP_SE,
+		BLAST_SE,
+		ENEMY_DAMAGE_SE,
 	};
 
 	struct SoundData

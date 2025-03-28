@@ -1,9 +1,13 @@
 #pragma once
 #include "ObjectBase.h"
+#include "../../Utility/Utility.h"
 
 class Gimic : public ObjectBase
 {
 public:
+
+	//スケール
+	static constexpr VECTOR SCALE = { 0.3f,0.3f ,0.3f };
 
 	//ダメージ量
 	static constexpr int DAMAGE = -1;
@@ -16,6 +20,7 @@ public:
 
 	void InitModel() override;
 	void OnCollision(Player& player) override;
+	void Draw() override;
 
 private:
 

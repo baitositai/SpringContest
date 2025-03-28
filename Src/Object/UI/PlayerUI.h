@@ -73,6 +73,9 @@ private:
 	int imgLifeMes_;	//体力UI
 	int imgPowMes_;		//パワーUI
 	int imgScoreMes_;	//スコア
+	int imgWin_;		//勝利
+	int imgDraw_;		//引き分け
+	int* imgPlayers_;	//プレイヤー
 
 	//数字
 	int *imgNumbers_;

@@ -5,6 +5,9 @@ class LifeItem : public ObjectBase
 {
 public:
 
+	//ƒXƒP[ƒ‹
+	static constexpr VECTOR SCALE = { 0.3f,0.3f ,0.3f };
+
 	//‘Ì—Í‰ñ•œ—Ê
 	static constexpr int LIFE_HEAL = 1;
 
@@ -16,6 +19,7 @@ public:
 
 	void InitModel() override;
 	void OnCollision(Player& player) override;
+	void Draw() override;
 
 private:
 

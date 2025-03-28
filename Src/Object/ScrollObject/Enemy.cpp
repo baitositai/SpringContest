@@ -1,6 +1,8 @@
 #include "../../Manager/ScoreBank.h"
+#include "../../Manager/DataBank.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Manager/SceneManager.h"
+#include "../../Manager/SoundManager.h"
 #include "../Character/Player.h"
 #include "../../Utility/Utility.h"
 #include "../../Object/Common/AnimationController.h"
@@ -8,6 +10,8 @@
 
 Enemy::Enemy()
 {
+	cnt_ = -1;
+	moveDirX_ = -1.0f;
 }
 
 Enemy::~Enemy()
@@ -83,7 +87,7 @@ void Enemy::Draw()
 
 	//モデルの描画
 	MV1DrawModel(transform_.modelId);
-	DrawSphere3D(transform_.pos, 20.0f, 10, color_, color_, true);
+	//DrawSphere3D(transform_.pos, 20.0f, 10, color_, color_, true);
 }
 
 void Enemy::OnCollision(Player& player)
@@ -97,6 +101,9 @@ void Enemy::OnCollision(Player& player)
 		//スコア加算
 		ScoreBank::GetInstance().AddScore(HIT_SCORE);
 
+		//効果音再生
+		SoundManager::GetInstance().Play(SoundManager::SOUND::ENEMY_DAMAGE_SE);
+
 		//状態を変更
 		ChangeState(STATE::HIT);
 
@@ -104,7 +111,7 @@ void Enemy::OnCollision(Player& player)
 		ResetHitAnim();
 	}	
 	//パワーがある場合
-	else if (player.GetPower() > 0)
+	else if (player.GetPower() > 0 && DataBank::GetInstance().Output().autoTackle_)
 	{
 		//プレイヤーをタックル状態にする
 		player.ChangeAliveState(Player::ALIVE_STATE::TACKLE);
@@ -112,6 +119,9 @@ void Enemy::OnCollision(Player& player)
 
 		//スコア加算
 		ScoreBank::GetInstance().AddScore(HIT_SCORE);
+
+		//効果音再生
+		SoundManager::GetInstance().Play(SoundManager::SOUND::ENEMY_DAMAGE_SE);
 
 		//状態を変更
 		ChangeState(STATE::HIT);

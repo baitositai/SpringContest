@@ -12,6 +12,11 @@ public:
 	enum class EFFECT
 	{
 		NONE,
+		TACKLE,
+		DAMAGE,
+		GET,
+		BLAST,
+		STAR_DUST,
 	};
 
 	//èâä˙âª

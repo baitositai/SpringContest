@@ -3,6 +3,7 @@
 #include "../framework.h"
 #include "../Common/Vector2.h"
 #include "../Manager/ResourceManager.h"
+class TitlePlayer;
 
 class TitleScene : public SceneBase
 {
@@ -30,16 +31,19 @@ public:
 	static constexpr float TEXT_INTERVEL = 40;
 
 	//メッシ用フォント数
-	static constexpr int  MESH_FONT_NUM =12;
+	static constexpr int  MESH_FONT_NUM =9;
 
 	//アルファベット
 	static constexpr int ALPHABET_IMG_NUM = ALPHABET_NUM_X * ALPHABET_NUM_Y;
+
+	//音量
+	static constexpr int VOLUME = 70;
 
 	// コンストラクタ
 	TitleScene(SceneManager& manager);
 
 	// デストラクタ
-	~TitleScene(void) = default;
+	~TitleScene(void);
 
 	void Load(void) override;
 	void Init(void) override;
@@ -53,6 +57,21 @@ public:
 private:	
 	// テキスト画像
 	int* imgTexts_[ALPHABET_IMG_NUM];
+
+	//タイトル背景
+	int imgTitle_;
+
+	//タイトルUI
+	int imgTitleUI_;
+
+	//アルファ
+	int alpha_;
+
+	//フェード値
+	int fade_;
+
+	//タイトル背景
+	int imgTitleBackGround_;
 
 	// メッセージフォント
 	int mesFont_;
@@ -104,5 +123,10 @@ private:
 
 	// メッシュ更新
 	void MeshUpdate();
+
+	void Fade();
+
+	//インスタンス生成
+	std::unique_ptr<TitlePlayer> titlePlayer_;
 
 };

@@ -25,6 +25,7 @@ public:
 	static const std::string PATH_EFFECT;
 	static const std::string PATH_FONT;
 	static const std::string PATH_TEXT;
+	static const std::string PATH_SOUND;
 	//-------------------------------------------
 
 	// 明示的にインステンスを生成する

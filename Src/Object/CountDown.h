@@ -6,9 +6,10 @@ public:
 
 	//ゲーム開始カウントダウン
 	static constexpr float COUNTDOWN = 4.0f;
+	static constexpr int SE_COUNT = 3;
 
 	CountDown();
-	~CountDown() = default;
+	~CountDown();
 
 	void Load();
 	void Init();
@@ -29,6 +30,12 @@ private:
 
 	//終了判定
 	bool isStart_;
+
+	//カウント
+	int seCnt_;
+
+	//効果音の再生処理
+	void PlaySE();
 	
 };
 

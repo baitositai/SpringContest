@@ -8,6 +8,7 @@ class TimeCount;
 class StageManager;
 class PlayerUI;
 class CountDown;
+class GameBGM;
 
 class GameScene : public SceneBase
 {
@@ -32,7 +33,7 @@ public:
 	static constexpr int RIGHT_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_D, KEY_INPUT_RIGHT };
 	static constexpr int LEFT_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_A, KEY_INPUT_LEFT };
 	static constexpr int JUMP_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_SPACE, KEY_INPUT_RETURN };
-	static constexpr int TACKLE_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_Q, KEY_INPUT_RSHIFT };
+	static constexpr int TACKLE_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_W, KEY_INPUT_UP };
 
 	//カメラ位置
 	static constexpr VECTOR LOCAL_CAMERA_POS = { 0, 150, -200 };
@@ -41,7 +42,7 @@ public:
 	GameScene(SceneManager& manager);
 
 	// デストラクタ
-	~GameScene(void) = default;
+	~GameScene(void);
 
 	void Load(void) override;
 	void Init(void) override;
@@ -77,6 +78,7 @@ private:
 	std::unique_ptr<StageManager> stage_;
 	std::unique_ptr<PlayerUI> uis_;
 	std::unique_ptr<CountDown> cntDown_;
+	std::unique_ptr<GameBGM> bgm_;
 
 	//更新関数
 	void LoadingUpdate(InputManager& ins);	//読み込み中処理

@@ -10,11 +10,14 @@ PlayerUI::PlayerUI()
 	int i = -1;
 	imgPlayerIcons_ = &i;
 	imgNumbers_ = &i;
+	imgPlayers_ = &i;
 	imgLifeMes_ = -1;
 	imgPowMes_ = -1;
 	imgScoreMes_ = -1;
 	imgLife_ = -1;
 	imgPow_ = -1;
+	imgWin_ = -1;
+	imgDraw_ = -1;
 	winState_ = WIN_STATE::NONE;
 	for (int i = 0; i < SCORE_DIGIT; i++) { scoreDigits_[i] = -1; }
 }
@@ -31,6 +34,9 @@ void PlayerUI::Load()
 	imgNumbers_ = res.Load(ResourceManager::SRC::NUMBER2).handleIds_;
 	imgLife_ = res.Load(ResourceManager::SRC::LIFE).handleId_;
 	imgPow_ = res.Load(ResourceManager::SRC::POWER).handleId_;
+	imgPlayers_ = res.Load(ResourceManager::SRC::PLAYER_UI).handleIds_;
+	imgWin_ = res.Load(ResourceManager::SRC::WIN_UI).handleId_;
+	imgDraw_ = res.Load(ResourceManager::SRC::DRAW).handleId_;
 }
 
 void PlayerUI::Init()
@@ -186,27 +192,49 @@ void PlayerUI::DrawNone()
 
 void PlayerUI::DrawP1Win()
 {
-	DrawFormatString(
+	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y,
-		0x000000,
-		"P1 WIN");
+		Application::SCREEN_HALF_Y - 64,
+		1.0f,
+		0.0f,
+		imgPlayers_[0],
+		true);
+
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y + 64,
+		1.0f,
+		0.0f,
+		imgWin_,
+		true);
 }
 
 void PlayerUI::DrawP2Win()
 {
-	DrawFormatString(
+	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y,
-		0x000000,
-		"P2 WIN");
+		Application::SCREEN_HALF_Y - 64,
+		1.0f,
+		0.0f,
+		imgPlayers_[1],
+		true);
+
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y + 64,
+		1.0f,
+		0.0f,
+		imgWin_,
+		true);
 }
 
 void PlayerUI::DrawDraw()
 {
-	DrawFormatString(
+	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		Application::SCREEN_HALF_Y,
-		0x000000,
-		"DRAW");
+		1.0f,
+		0.0f,
+		imgDraw_,
+		true);
 }

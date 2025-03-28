@@ -80,13 +80,15 @@ void Resource::Load(void)
 		//フォント
 		handleId_ = AddFontResourceEx(path_.c_str(), FR_PRIVATE, NULL);
 		break;
-	}
 
+	case Resource::TYPE::SOUND:
+		//サウンド
+		handleId_ = LoadSoundMem(path_.c_str());
+	}
 }
 
 void Resource::Release(void)
 {
-
 	switch (type_)
 	{
 	case Resource::TYPE::IMG:
@@ -122,6 +124,10 @@ void Resource::Release(void)
 
 	case Resource::TYPE::FONT:
 		RemoveFontResourceEx(path_.c_str(), FR_PRIVATE, NULL);
+		break;
+
+	case Resource::TYPE::SOUND:
+		DeleteSoundMem(handleId_);
 		break;
 	}
 }
