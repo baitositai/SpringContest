@@ -18,7 +18,7 @@ Enemy::~Enemy()
 {
 }
 
-void Enemy::InitModel(void)
+void Enemy::InitModel()
 {
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::ENEMY));
@@ -56,7 +56,7 @@ void Enemy::UpdateHit()
 	}
 }
 
-void Enemy::InitAnimation(void)
+void Enemy::InitAnimation()
 {
 	//アニメーションの設定
 	animationController_ = std::make_unique<AnimationController>(transform_.modelId);
@@ -87,11 +87,13 @@ void Enemy::Draw()
 
 	//モデルの描画
 	MV1DrawModel(transform_.modelId);
-	//DrawSphere3D(transform_.pos, 20.0f, 10, color_, color_, true);
 }
 
 void Enemy::OnCollision(Player& player)
 {
+	//プレイヤーIDを設定
+	int playerId = DataBank::GetInstance().Output().playerId_;
+
 	//プレイヤーがダメージの状態は処理を行わない
 	if (player.GetAliveState() == Player::ALIVE_STATE::DAMAGE) { return; }
 
@@ -99,7 +101,7 @@ void Enemy::OnCollision(Player& player)
 	if (player.GetAliveState() == Player::ALIVE_STATE::TACKLE)
 	{
 		//スコア加算
-		ScoreBank::GetInstance().AddScore(HIT_SCORE);
+		ScoreBank::GetInstance().AddScore(playerId, HIT_SCORE);
 
 		//効果音再生
 		SoundManager::GetInstance().Play(SoundManager::SOUND::ENEMY_DAMAGE_SE);
@@ -118,7 +120,7 @@ void Enemy::OnCollision(Player& player)
 		player.AddPower(POWER_CONSUME);
 
 		//スコア加算
-		ScoreBank::GetInstance().AddScore(HIT_SCORE);
+		ScoreBank::GetInstance().AddScore(playerId, HIT_SCORE);
 
 		//効果音再生
 		SoundManager::GetInstance().Play(SoundManager::SOUND::ENEMY_DAMAGE_SE);
@@ -136,6 +138,6 @@ void Enemy::OnCollision(Player& player)
 		player.AddLife(DAMAGE);
 
 		//スコア加算
-		ScoreBank::GetInstance().AddScore(DAMAGE_SCORE);
+		ScoreBank::GetInstance().AddScore(playerId, DAMAGE_SCORE);
 	}
 }

@@ -21,7 +21,5 @@ public:
 	void OnCollision(Player& player) override;
 	void Draw() override;
 
-private:
-
 };
 

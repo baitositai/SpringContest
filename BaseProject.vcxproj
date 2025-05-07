@@ -19,20 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Scene\MovieScene.cpp" />
+    <ClCompile Include="Src\Object\Hinder\HinderManager.cpp" />
+    <ClCompile Include="Src\Object\Hinder\HinderObject.cpp" />
+    <ClCompile Include="Src\Manager\Effect2DManagerContainer.cpp" />
+    <ClCompile Include="Src\Manager\Effect2DManager.cpp" />
+    <ClCompile Include="Src\Object\Stage\SkyDome.cpp" />
+    <ClCompile Include="Src\Object\UI\DrawSpeedUp.cpp" />
     <ClCompile Include="Src\Object\GameBGM.cpp" />
     <ClCompile Include="Src\Object\Character\TitlePlayer.cpp" />
     <ClCompile Include="Src\Object\CountDown.cpp" />
-    <ClCompile Include="Src\Object\Hinder.cpp" />
+    <ClCompile Include="Src\Object\Hinder\Hinder.cpp" />
     <ClCompile Include="Src\Object\UI\PlayerUI.cpp" />
     <ClCompile Include="Src\Manager\SoundManager.cpp" />
-    <ClCompile Include="Src\Manager\EffectManager.cpp" />
     <ClCompile Include="Src\Manager\DataBank.cpp" />
     <ClCompile Include="Src\Object\ScrollObject\ObjectBase.cpp" />
-    <ClCompile Include="Src\Object\Stage\StageBase.cpp" />
-    <ClCompile Include="Src\Object\Stage\StageDefault.cpp" />
     <ClCompile Include="Src\Scene\SelectScene.cpp" />
     <ClCompile Include="Src\Manager\ScoreBank.cpp" />
-    <ClCompile Include="Src\Object\ScrollObject\Gimic.cpp" />
+    <ClCompile Include="Src\Object\ScrollObject\Gimmick.cpp" />
     <ClCompile Include="Src\Object\ScrollObject\Enemy.cpp" />
     <ClCompile Include="Src\Object\ScrollObject\LifeItem.cpp" />
     <ClCompile Include="Src\Object\ScrollObject\PowerItem.cpp" />
@@ -63,23 +67,28 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\Utility.cpp" />
     <ClCompile Include="Src\Object\TimeCount.cpp" />
-    <ClCompile Include="Src\Object\Stage\StageManager.cpp" />
+    <ClCompile Include="Src\Object\Stage\Stage.cpp" />
+    <ClCompile Include="Src\Object\TitleMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Scene\MovieScene.h" />
+    <ClInclude Include="Src\Object\Hinder\HinderManager.h" />
+    <ClInclude Include="Src\Object\Hinder\HinderObject.h" />
+    <ClInclude Include="Src\Manager\Effect2DManagerContainer.h" />
+    <ClInclude Include="Src\Manager\Effect2DManager.h" />
+    <ClInclude Include="Src\Object\Stage\SkyDome.h" />
+    <ClInclude Include="Src\Object\UI\DrawSpeedUp.h" />
     <ClInclude Include="Src\Object\GameBGM.h" />
     <ClInclude Include="Src\Object\Character\TitlePlayer.h" />
     <ClInclude Include="Src\Object\CountDown.h" />
-    <ClInclude Include="Src\Object\Hinder.h" />
+    <ClInclude Include="Src\Object\Hinder\Hinder.h" />
     <ClInclude Include="Src\Object\UI\PlayerUI.h" />
     <ClInclude Include="Src\Manager\SoundManager.h" />
-    <ClInclude Include="Src\Manager\EffectManager.h" />
     <ClInclude Include="Src\Manager\DataBank.h" />
     <ClInclude Include="Src\Object\ScrollObject\ObjectBase.h" />
-    <ClInclude Include="Src\Object\Stage\StageBase.h" />
-    <ClInclude Include="Src\Object\Stage\StageDefault.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Manager\ScoreBank.h" />
-    <ClInclude Include="Src\Object\ScrollObject\Gimic.h" />
+    <ClInclude Include="Src\Object\ScrollObject\Gimmick.h" />
     <ClInclude Include="Src\Object\ScrollObject\Enemy.h" />
     <ClInclude Include="Src\Object\ScrollObject\LifeItem.h" />
     <ClInclude Include="Src\Object\ScrollObject\PowerItem.h" />
@@ -112,7 +121,8 @@
     <ClInclude Include="Src\Utility\Utility.h" />
     <ClInclude Include="Src\Utility\StaticSingleton.h" />
     <ClInclude Include="Src\Object\TimeCount.h" />
-    <ClInclude Include="Src\Object\Stage\StageManager.h" />
+    <ClInclude Include="Src\Object\Stage\Stage.h" />
+    <ClInclude Include="Src\Object\TitleMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\HLSL\ColorTex.hlsl">
@@ -231,7 +241,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -239,7 +249,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories>$(DXLIB_DIR)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\DxLib</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>4.0_level_9_3</ShaderModel>
@@ -274,7 +284,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -284,7 +294,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(DXLIB_DIR);C:\DxLib</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories>$(DXLIB_DIR)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\DxLib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

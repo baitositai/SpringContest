@@ -14,6 +14,9 @@ public:
 	//通常半径
 	static constexpr float DEFAULT_RADIUS = 20.0f;
 
+	//爆発エフェクト相対座標
+	static constexpr VECTOR EXPLOSION_POS = { 0.0f, 0.0f, 0.0f };
+
 	enum class STATE
 	{
 		NONE,
@@ -25,21 +28,28 @@ public:
 	ObjectBase();
 
 	// デストラクタ
-	~ObjectBase(void);
+	~ObjectBase() = default;
 
-	virtual void Load(void);
-	virtual void Init(void);
-	virtual void Update(void);
-	virtual void Draw(void);	
+	virtual void Load();
+	virtual void Init();
+	virtual void Update();
+	virtual void Draw();	
+	void Release();
 	
-	//状態変更
-	void ChangeState(STATE state);
+	/// <summary>
+	/// 状態変更
+	/// </summary>
+	/// <param name="state"></param>次の状態
+	void ChangeState(const STATE state);
 
-	//衝突判定後の処理
+	/// <summary>
+	/// 衝突判定後の処理
+	/// </summary>
+	/// <param name="player"></param>プレイヤー
 	virtual void OnCollision(Player& player) = 0;
 
 	//トランスフォームを返す
-	inline const Transform& GetTransform(void) const { return transform_; }
+	inline const Transform& GetTransform() const { return transform_; }
 
 	//状態を返す
 	inline const STATE& GetState()const { return state_; }
@@ -68,20 +78,20 @@ protected:
 private:
 
 	// 状態管理(状態遷移時初期処理)
-	std::map<STATE, std::function<void(void)>> stateChanges_;
+	std::map<STATE, std::function<void()>> stateChanges_;
 
 	// 状態管理(更新ステップ)
-	std::function<void(void)> stateUpdate_;
+	std::function<void()> stateUpdate_;
 
 	// 状態遷移
-	void ChangeStateNone(void);
-	void ChangeStateScroll(void);
-	void ChangeStateHit(void);
+	void ChangeStateNone();
+	void ChangeStateScroll();
+	void ChangeStateHit();
 
 	// 更新ステップ
-	void UpdateNone(void);
-	void UpdateScroll(void);
-	virtual void UpdateHit(void);
+	void UpdateNone();
+	void UpdateScroll();
+	virtual void UpdateHit();
 
 	//位置のランダム決定
 	void DecideRandPos();

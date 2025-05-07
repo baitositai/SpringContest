@@ -3,8 +3,9 @@
 #include "../../Manager/ScrollManager.h"
 #include "../../Manager/SceneManager.h"
 #include "../../Manager/SoundManager.h"
-#include "../../Manager/EffectManager.h"
-#include "../../Manager/SoundManager.h"
+#include "../../Manager/DataBank.h"
+#include "../../Manager/Effect2DManager.h"
+#include "../../Manager/Effect2DManagerContainer.h"
 #include "Player.h"
 
 Player::Player()
@@ -22,6 +23,10 @@ Player::Player()
 	damageTime_ = -1.0f;
 	key_ = { -1, -1, -1, -1 };
 
+	int i = -1;
+	imgTackleEfk_ = &i;
+	imgHitEfk_ = &i;
+
 	stateChanges_.emplace(STATE::NONE, std::bind(&Player::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::ALIVE, std::bind(&Player::ChangeStateAlive, this));
 	stateChanges_.emplace(STATE::DEATH, std::bind(&Player::ChangeStateDeath, this));
@@ -32,46 +37,58 @@ Player::Player()
 	aliveStateChanges_.emplace(ALIVE_STATE::DAMAGE, std::bind(&Player::ChanageAliveStateDamage, this));
 }
 
-Player::~Player()
-{
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::DAMAGE_SE);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::TACKLE_SE);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::JUMP_SE);
-	EffectManager::GetInstance().Stop(EffectManager::EFFECT::TACKLE);
-}
-
 void Player::Load()
 {
+	ResourceManager & res = ResourceManager::GetInstance();
+	SoundManager& snd = SoundManager::GetInstance();
+	Effect2DManagerContainer& efc = Effect2DManagerContainer::GetInstance();
+	int playerId = DataBank::GetInstance().Output().playerId_;
+
 	// モデルの基本設定
 	InitModel();
 
 	//アニメーションの設定
 	animationController_ = std::make_unique<AnimationController>(trans_.modelId);
 
-	//エフェクトの読み込み
-	int efk = ResourceManager::GetInstance().Load(ResourceManager::SRC::TACKLE_EFK).handleId_;
-	if (efk == -1) { 
-		return; }
-
-	//エフェクトの設定
-	EffectManager::GetInstance().Add(EffectManager::EFFECT::TACKLE,
-	efk);
-
 	//音楽の読み込み
-	SoundManager::GetInstance().Add(
+	snd.Add(
 		SoundManager::TYPE::SE,
 		SoundManager::SOUND::JUMP_SE,
-		ResourceManager::GetInstance().Load(ResourceManager::SRC::JUMP_SE).handleId_);
+		res.Load(ResourceManager::SRC::JUMP_SE).handleId_);
 
-	SoundManager::GetInstance().Add(
+	snd.Add(
 		SoundManager::TYPE::SE,
 		SoundManager::SOUND::TACKLE_SE,
-		ResourceManager::GetInstance().Load(ResourceManager::SRC::TACKLE_SE).handleId_);
+		res.Load(ResourceManager::SRC::TACKLE_SE).handleId_);
 
-	SoundManager::GetInstance().Add(
+	snd.Add(
 		SoundManager::TYPE::SE,
 		SoundManager::SOUND::DAMAGE_SE,
-		ResourceManager::GetInstance().Load(ResourceManager::SRC::DAMAGE_SE).handleId_);
+		res.Load(ResourceManager::SRC::DAMAGE_SE).handleId_);
+	
+	//エフェクトの追加
+	efc.GetManager(playerId)->Add(
+		Effect2DManager::EFFECT::TACKLE, 
+		res.Load(ResourceManager::SRC::TACKLE_EFK).handleIds_, 
+		EFK_NUM_X * EFK_NUM_Y);
+
+	efc.GetManager(playerId)->Add(
+		Effect2DManager::EFFECT::DAMAGE, 
+		res.Load(ResourceManager::SRC::HIT_EFK).handleIds_,
+		EFK_NUM_X * EFK_NUM_Y,
+		EFK_SPEED);
+
+	efc.GetManager(playerId)->Add(
+		Effect2DManager::EFFECT::BLAST,
+		res.Load(ResourceManager::SRC::EXPLOSION_EFK).handleIds_,
+		EFK_NUM_X * EFK_NUM_Y,
+		EFK_SPEED);
+
+	efc.GetManager(playerId)->Add(
+		Effect2DManager::EFFECT::GET,
+		res.Load(ResourceManager::SRC::GET_EFK).handleIds_,
+		GET_ANIM_MAX,
+		EFK_SPEED);
 }
 
 void Player::Init()
@@ -107,11 +124,19 @@ void Player::Draw()
 {
 	// モデルの描画
 	MV1DrawModel(trans_.modelId);
+
+	//エフェクトの描画
+	Effect2DManagerContainer& efc = Effect2DManagerContainer::GetInstance();
+	efc.GetManager(SceneManager::GetInstance().GetScreenCount())->DrawScreenEffect(Effect2DManager::EFFECT::TACKLE);
+	efc.GetManager(SceneManager::GetInstance().GetScreenCount())->DrawScreenEffect(Effect2DManager::EFFECT::DAMAGE);
+	efc.GetManager(SceneManager::GetInstance().GetScreenCount())->DrawScreenEffect(Effect2DManager::EFFECT::GET);
 }
 
 void Player::Release()
 {
-	EffectManager::GetInstance().Stop(EffectManager::EFFECT::TACKLE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::JUMP_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::DAMAGE_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::TACKLE_SE);
 }
 
 void Player::AddLife(const int& life)
@@ -153,7 +178,7 @@ void Player::SetKey(const int& right, const int& left, const int& jump, const in
 	key_.tackle_ = tackle;
 }
 
-void Player::InitModel(void)
+void Player::InitModel()
 {
 	trans_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(
 		ResourceManager::SRC::PLAYER));
@@ -165,7 +190,7 @@ void Player::InitModel(void)
 	trans_.Update();
 }
 
-void Player::InitAnimation(void)
+void Player::InitAnimation()
 {
 	std::string path = Application::PATH_MODEL + "Player/Animation/";
 	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", ANIM_SPEED);
@@ -202,7 +227,9 @@ void Player::Process()
 	}
 
 	//タックル処理
-	if (ins.IsTrgDown(key_.tackle_) && aliveState_ != ALIVE_STATE::TACKLE)
+	if (ins.IsTrgDown(key_.tackle_) &&
+		pow_ > 0 &&
+		aliveState_ != ALIVE_STATE::TACKLE )
 	{
 		//状態変更
 		ChangeAliveState(ALIVE_STATE::TACKLE);
@@ -211,7 +238,7 @@ void Player::Process()
 	}
 }
 
-void Player::Jump(void)
+void Player::Jump()
 {
 	// ジャンプ
 	if (isJump_)
@@ -237,18 +264,21 @@ void Player::Run()
 
 void Player::Tackle()
 {
+	Effect2DManagerContainer& efc = Effect2DManagerContainer::GetInstance();
+
 	//時間を減らす
 	tackleTime_ -= SceneManager::GetInstance().GetDeltaTime();
 
 	//エフェクトを追従させる
-	EffectManager::GetInstance().SyncEffect(
-		EffectManager::EFFECT::TACKLE,
+	efc.GetManager(DataBank::GetInstance().Output().playerId_)->Sync(
+		Effect2DManager::EFFECT::TACKLE,
 		VAdd(trans_.pos, TACKLE_EFK_LOCAL_POS),
-		Quaternion(),
-		TACKLE_FEK_SIZE);
+		EFK_RATE,
+		0.0f);
 
 	//時間になった時
-	if (tackleTime_ <= 0.0f) {
+	if (tackleTime_ <= 0.0f)
+	{
 		//アニメーションを戻す
 		animationController_->Play((int)ANIM_TYPE::RUN);
 		//時間の初期化
@@ -256,14 +286,25 @@ void Player::Tackle()
 		//タックルを終了
 		ChangeAliveState(ALIVE_STATE::RUN);
 		//エフェクト終了
-		EffectManager::GetInstance().Stop(EffectManager::EFFECT::TACKLE);
+		efc.GetManager(DataBank::GetInstance().Output().playerId_)->Stop(Effect2DManager::EFFECT::TACKLE);
+		//色を戻す
+		MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 }
 
 void Player::Damage()
 {
+	Effect2DManagerContainer& efc = Effect2DManagerContainer::GetInstance();
+
 	//時間を減らす
 	damageTime_ -= SceneManager::GetInstance().GetDeltaTime();
+
+	//エフェクトを追従させる
+	efc.GetManager(DataBank::GetInstance().Output().playerId_)->Sync(
+		Effect2DManager::EFFECT::TACKLE,
+		VAdd(trans_.pos, TACKLE_EFK_LOCAL_POS),
+		1.0f,
+		0.0f);
 
 	//モデルの色を変える
 	//MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
@@ -271,13 +312,16 @@ void Player::Damage()
 	else { MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 1.0f, 1.0f, 1.0f)); }
 
 	//時間になった時
-	if (damageTime_ <= 0.0f) {
+	if (damageTime_ <= 0.0f) 
+	{
 		//モデルの色を通常に戻す
 		MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
 		//時間の初期化
 		damageTime_ = 0.0f;
 		//タックルを終了
 		ChangeAliveState(ALIVE_STATE::RUN);
+		//エフェクト終了
+		efc.GetManager(DataBank::GetInstance().Output().playerId_)->Stop(Effect2DManager::EFFECT::DAMAGE);
 	}
 }
 
@@ -292,8 +336,11 @@ void Player::DebagDraw()
 		true);
 
 	//デバッグ
-	DrawFormatString(0, 0, 0x000000, "LIFE = %d", life_);
-	DrawFormatString(0, 20, 0x000000, "POW = %d", pow_);
+	int interval = 20;
+	int i = 0;
+	DrawFormatString(0, interval * i, 0x000000, "LIFE = %d", life_);
+	i++;
+	DrawFormatString(0, interval * i, 0x000000, "POW = %d", pow_);
 }
 
 void Player::ChangeState(STATE state)
@@ -305,17 +352,17 @@ void Player::ChangeState(STATE state)
 	stateChanges_[state_]();
 }
 
-void Player::ChangeStateNone(void)
+void Player::ChangeStateNone()
 {
 	stateUpdate_ = std::bind(&Player::UpdateNone, this);
 }
 
-void Player::ChangeStateAlive(void)
+void Player::ChangeStateAlive()
 {
 	stateUpdate_ = std::bind(&Player::UpdateAlive, this);
 }
 
-void Player::ChangeStateDeath(void)
+void Player::ChangeStateDeath()
 {
 	stateUpdate_ = std::bind(&Player::UpdateDeath, this);
 
@@ -323,7 +370,7 @@ void Player::ChangeStateDeath(void)
 	animationController_->Play((int)ANIM_TYPE::DEATH, false);
 }
 
-void Player::ChangeStateWin(void)
+void Player::ChangeStateWin()
 {
 	stateUpdate_ = std::bind(&Player::UpdateDeath, this);
 
@@ -344,17 +391,14 @@ void Player::ChanageAliveStateTackle()
 	animationController_->Play((int)ANIM_TYPE::TACKLE);
 
 	//エフェクトの再生
-	EffectManager::GetInstance().Play(EffectManager::EFFECT::TACKLE,
+	Effect2DManagerContainer::GetInstance().GetManager(DataBank::GetInstance().Output().playerId_)->Play(Effect2DManager::EFFECT::TACKLE,
 		VAdd(trans_.pos, TACKLE_EFK_LOCAL_POS),
-		Quaternion(),
-		TACKLE_FEK_SIZE,
-		SoundManager::SOUND::NONE);
+		EFK_RATE,
+		0.0f,
+		SoundManager::SOUND::TACKLE_SE);
 	
 	//タックルの時間設定
 	tackleTime_ = TACKLE_TIME;
-
-	//SEの再生
-	SoundManager::GetInstance().Play(SoundManager::SOUND::TACKLE_SE);
 }
 
 void Player::ChanageAliveStateDamage()
@@ -364,15 +408,19 @@ void Player::ChanageAliveStateDamage()
 	//ダメージによる無敵時間
 	damageTime_ = DAMAGE_TIME;
 
-	//SEの再生
-	SoundManager::GetInstance().Play(SoundManager::SOUND::DAMAGE_SE);
+	//エフェクトの再生
+	Effect2DManagerContainer::GetInstance().GetManager(DataBank::GetInstance().Output().playerId_)->Play(Effect2DManager::EFFECT::DAMAGE,
+		VAdd(trans_.pos, TACKLE_EFK_LOCAL_POS),
+		1.0f,
+		0.0f,
+		SoundManager::SOUND::DAMAGE_SE);
 }
 
-void Player::UpdateNone(void)
+void Player::UpdateNone()
 {
 }
 
-void Player::UpdateAlive(void)
+void Player::UpdateAlive()
 {
 	//操作処理
 	Process();
@@ -384,10 +432,10 @@ void Player::UpdateAlive(void)
 	aliveStateUpdate_();
 }
 
-void Player::UpdateDeath(void)
+void Player::UpdateDeath()
 {
 }
 
-void Player::UpdateWin(void)
+void Player::UpdateWin()
 {
 }

@@ -6,64 +6,71 @@
 #include "../Manager/DataBank.h"
 #include "../Manager/ScrollManager.h"
 #include "../Manager/SoundManager.h"
+#include "../Manager/Effect2DManager.h"
+#include "../Manager/Effect2DManagerContainer.h"
 #include "../Utility/Utility.h"
 #include "../Object/Character/Player.h"
 #include "../Object/ScrollObject/ObjectManager.h"
 #include "../Object/TimeCount.h"
-#include "../Object/Stage/StageManager.h"
+#include "../Object/Stage/Stage.h"
+#include "../Object/Stage/SkyDome.h"
 #include "../Object/UI/PlayerUI.h"
 #include "../Object/CountDown.h"
+#include "../Object/Hinder/HinderManager.h"
 #include "../Object/GameBGM.h"
 
 GameScene::GameScene(SceneManager& manager) :SceneBase(manager)
 {
 	//更新関数のセット
-	updataFunc_ = [&](InputManager& input) {LoadingUpdate(input); };
+	updateFunc_ = [&](InputManager& input) {LoadingUpdate(input); };
 
 	//描画関数のセット
 	drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
 
 	players_.clear();
-	objs_.clear();
+	objs_.clear();	
 	stage_ = nullptr;
 	uis_ = nullptr;
 	bgm_ = nullptr;
+	sky_ = nullptr;
+	hinder_ = nullptr;
 	state_ = STATE::NONE;
 	strCnt_ = -1.0f;
 	playNum_ = -1;
 
 	stateChanges_.emplace(STATE::START, std::bind(&GameScene::ChangeStart, this));
 	stateChanges_.emplace(STATE::PLAY, std::bind(&GameScene::ChangePlay, this));
-	stateChanges_.emplace(STATE::REZALT, std::bind(&GameScene::ChangeRezalt, this));
+	stateChanges_.emplace(STATE::RESULT, std::bind(&GameScene::ChangeResult, this));
 }
 
-GameScene::~GameScene(void)
-{
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::CLEAR_SE);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::CHANGE_SCENE_SE);
-}
-
-void GameScene::Load(void)
+void GameScene::Load()
 {
 	// 読み込み時間初期化
 	loadingTime_ = 0.0f;
 
-	//非同期読み込みをtrueにする
-	SetUseASyncLoadFlag(true);
+	//非同期読み込みを行う
+	SetUseASyncLoadFlag(true);	
+	
+	//エフェクト関係初期化※最初に行う
+	Effect2DManagerContainer::GetInstance().Init();
 
 	//人数設定
 	playNum_ = 1;
 	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS) { playNum_ = SceneManager::PLAYER_MAX; }
+	DataBank::GetInstance().InputPlayNum(playNum_);
 
 	//プレイヤー
-	for (int i = 0; i < playNum_; i++) {
+	for (int i = 0; i < playNum_; i++) 
+	{
 		auto player = std::make_shared<Player>();
+		DataBank::GetInstance().Input(i);
 		player->Load();
 		players_.emplace_back(std::move(player));
 	}
 
 	//オブジェクト
-	for (int i = 0; i < playNum_; i++) {
+	for (int i = 0; i < playNum_; i++) 
+	{
 		auto objs = std::make_unique<ObjectManager>();
 		objs->Load();
 		objs_.emplace_back(std::move(objs));
@@ -74,7 +81,7 @@ void GameScene::Load(void)
 	time_->Load();
 
 	//ステージ
-	stage_ = std::make_unique<StageManager>();
+	stage_ = std::make_unique<Stage>();
 	stage_->Load();
 
 	//UI
@@ -88,6 +95,17 @@ void GameScene::Load(void)
 	//BGM
 	bgm_ = std::make_unique<GameBGM>();
 	bgm_->Load();
+
+	//スカイドーム
+	sky_ = std::make_unique<SkyDome>();
+	sky_->Load();
+
+	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS)
+	{
+		//妨害関係
+		hinder_ = std::make_unique<HinderManager>();
+		hinder_->Load();
+	}
 
 	//フォント
 	loadFont_ = CreateFontToHandle(
@@ -115,7 +133,7 @@ void GameScene::Load(void)
 	}
 }
 
-void GameScene::Init(void)
+void GameScene::Init()
 {
 	//プレイヤー初期化
 	for (int i = 0; i < playNum_; i++) { 
@@ -145,6 +163,15 @@ void GameScene::Init(void)
 	//BGM
 	bgm_->Init();
 
+	//スカイドーム
+	sky_->Init();
+
+	//妨害関係初期化	
+	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS)
+	{
+		hinder_->Init();
+	}
+
 	//初期状態
 	ChangeState(STATE::START);
 
@@ -157,25 +184,23 @@ void GameScene::Init(void)
 
 void GameScene::Update(InputManager& input)
 {
-	updataFunc_(input);
+	updateFunc_(input);
 	return;
 }
 
-void GameScene::Draw(void)
+void GameScene::Draw()
 {
 	drawFunc_();
 	return;
 }
 
-void GameScene::Release(void)
+void GameScene::Release()
 {
-	//ステージの解放処理
-	stage_->Release();
-
-	//UI関係の開放
-	uis_->Release();
-
-	//プレイヤーの解放処理
+	//各インスタンスのリリース処理
+	time_->Release();
+	cntDown_->Release();
+	bgm_->Release();
+	for (auto& obj : objs_) { obj->Release(); }
 	for (auto& player : players_) { player->Release(); }
 
 	//フォント削除
@@ -206,7 +231,7 @@ void GameScene::LoadingUpdate(InputManager& ins)
 		sceneManager_.StartFadeIn();
 
 		//更新関数のセット
-		updataFunc_ = [&](InputManager& input) {NormalUpdate(input); };
+		updateFunc_ = [&](InputManager& input) {NormalUpdate(input); };
 		
 		//描画関数のセット
 		drawFunc_ = std::bind(&GameScene::NormalDraw, this);
@@ -218,12 +243,11 @@ void GameScene::NormalUpdate(InputManager& ins)
 	// 更新ステップ
 	stateGameUpdate_();
 
-	////シーン遷移
-	//if (ins.IsTrgDown(KEY_INPUT_RETURN))
-	//{
-	//	SceneManager::GetInstance().
-	//		ChangeScene(SceneManager::SCENE_ID::TITLE);
-	//}
+	//スカイドーム更新
+	sky_->Update();
+
+	//2Dエフェクト更新
+	Effect2DManagerContainer::GetInstance().Update();
 }
 
 void GameScene::ChangeState(STATE state)
@@ -235,22 +259,22 @@ void GameScene::ChangeState(STATE state)
 	stateChanges_[state_]();
 }
 
-void GameScene::ChangeStart(void)
+void GameScene::ChangeStart()
 {
 	stateGameUpdate_ = std::bind(&GameScene::StartUpdate, this);
 	stateGameDraw_ = std::bind(&GameScene::StartDraw, this);
 }
 
-void GameScene::ChangePlay(void)
+void GameScene::ChangePlay()
 {
 	stateGameUpdate_ = std::bind(&GameScene::PlayUpdate, this);
 	stateGameDraw_ = std::bind(&GameScene::PlayDraw, this);
 }
 
-void GameScene::ChangeRezalt(void)
+void GameScene::ChangeResult()
 {
-	stateGameUpdate_ = std::bind(&GameScene::RezaltUpdate, this);
-	stateGameDraw_ = std::bind(&GameScene::RezaltDraw, this);
+	stateGameUpdate_ = std::bind(&GameScene::ResultUpdate, this);
+	stateGameDraw_ = std::bind(&GameScene::ResultDraw, this);
 
 	//勝利状態の確認
 	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS) { CheckWinPlayer(); }
@@ -262,7 +286,7 @@ void GameScene::ChangeRezalt(void)
 	SoundManager::GetInstance().Play(SoundManager::SOUND::CLEAR_SE);
 }
 
-void GameScene::StartUpdate(void)
+void GameScene::StartUpdate()
 {
 	//カウントダウン
 	cntDown_->Update();
@@ -274,19 +298,30 @@ void GameScene::StartUpdate(void)
 	}
 }
 
-void GameScene::PlayUpdate(void)
+void GameScene::PlayUpdate()
 {
 	//時間経過処理
 	time_->Update();
 
-	//スクロール関係の処理
-	ScrollManager::GetInstance().Update();
-
 	//プレイヤーの更新
-	for (auto& player : players_) { player->Update(); }
+	for (int i = 0; i < players_.size(); i++)
+	{
+		DataBank::GetInstance().Input(i);
+		players_[i]->Update();
+	}
 
 	//オブジェクトの更新
-	for (auto& objs : objs_) { objs->Update(); }
+	for (int i = 0; i < objs_.size(); i++)
+	{
+		DataBank::GetInstance().Input(i);
+		objs_[i]->Update();
+	}
+
+	//妨害関係の更新
+	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS)
+	{
+		hinder_->Update();
+	}
 
 	//ステージの更新
 	stage_->Update();
@@ -299,10 +334,9 @@ void GameScene::PlayUpdate(void)
 
 	//ゲームオーバー判定
 	CheckGameOver();
-
 }
 
-void GameScene::RezaltUpdate(void)
+void GameScene::ResultUpdate()
 {
 	//プレイヤーの更新(アニメーション再生のため)
 	for (auto& player : players_) { player->Update(); }
@@ -310,8 +344,7 @@ void GameScene::RezaltUpdate(void)
 	//シーン遷移
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_SPACE))
 	{
-		SceneManager::GetInstance().
-			ChangeScene(SceneManager::SCENE_ID::TITLE);
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 
 		//シーン遷移SE
 		SoundManager::GetInstance().Play(SoundManager::SOUND::CHANGE_SCENE_SE);
@@ -321,39 +354,51 @@ void GameScene::RezaltUpdate(void)
 	}
 }
 
-void GameScene::LoadingDraw(void)
+void GameScene::LoadingDraw()
 {
 	//「now loading」の描画
 	DrawNowLoading();
 }
 
-void GameScene::NormalDraw(void)
+void GameScene::NormalDraw()
 {
-	DrawBox(
-		0, 0,
-		Application::SCREEN_SIZE_X,
-		Application::SCREEN_SIZE_Y,
-		0x00ffff,
-		true);
-	
-	//各種オブジェクト描画処理
-	//※プレイヤーはステージより前の描画
-	stage_->Draw();
-	players_[sceneManager_.GetScreenCount()]->Draw();
-	objs_[sceneManager_.GetScreenCount()]->Draw();
-	uis_->Draw(*players_[sceneManager_.GetScreenCount()]);
-	//各状態ごとの描画
-	//stateGameDraw_();
+	int playerId = sceneManager_.GetScreenCount();
 
-	//デバッグ描画
-	DebagDraw();
+	//スカイドーム
+	sky_->Draw();
+
+	//ステージ
+	stage_->Draw();
+
+	//プレイヤー
+	players_[playerId]->Draw();
+
+	//オブジェクト関連
+	objs_[sceneManager_.GetScreenCount()]->Draw();
+
+	//妨害関係の描画
+	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS)
+	{
+		hinder_->Draw();
+	}
+
+	//タイム
+	time_->Draw();
+
+	//UI
+	uis_->Draw(*players_[playerId]);
 }
 
 void GameScene::Collision()
 {
 	//プレイヤーとオブジェクト同士の衝突処理
-	for (int i = 0; i < playNum_; i++) {
+	for (int i = 0; i < playNum_; i++)
+	{
+		//プレイヤーIDを設定
+		DataBank::GetInstance().Input(i);
+
 		auto& objs = objs_[i]->GetObjects();
+
 		for (auto& obj : objs)
 		{
 			//オブジェクトがNONEの場合処理をせず次へ回す
@@ -378,29 +423,22 @@ void GameScene::StartDraw()
 	cntDown_->Draw();
 }
 
-void GameScene::RezaltDraw()
+void GameScene::ResultDraw()
 {
-	int score = ScoreBank::GetInstance().GetScore();
-
 	//クリア描画
-	uis_->VSClearDraw();
-
-	DrawFormatString(
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y + 20,
-		0x000000,
-		"score = %d",
-		score);
+	uis_->ResultDraw();
 }
+
 void GameScene::PlayDraw()
 {
 	//時間やスコア等のUIを描画予定
-	time_->Draw();
+	time_->CommonDraw();
 }
 
 void GameScene::DebagDraw()
 {
-	for (int i = 0; i < playNum_; i++) {
+	for (int i = 0; i < playNum_; i++)
+	{
 		players_[i]->DebagDraw();
 	}
 }
@@ -408,11 +446,12 @@ void GameScene::DebagDraw()
 void GameScene::CheckGameOver()
 {
 	//プレイヤーが死亡した場合
-	for (int i = 0; i < playNum_; i++) {
+	for (int i = 0; i < playNum_; i++) 
+	{
 		if (players_[i]->GetState() == Player::STATE::DEATH){
 
 			//リザルトに移る
-			ChangeState(STATE::REZALT);
+			ChangeState(STATE::RESULT);
 		}
 	}			
 }
@@ -420,7 +459,8 @@ void GameScene::CheckGameOver()
 void GameScene::CheckWinPlayer()
 {
 	//生存状態のプレイヤーの状態を変更
-	for (int j = 0; j < playNum_; j++) {
+	for (int j = 0; j < playNum_; j++)
+	{
 		if (players_[j]->GetState() != Player::STATE::DEATH) { players_[j]->ChangeState(Player::STATE::WIN); }
 	}
 

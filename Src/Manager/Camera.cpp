@@ -187,8 +187,10 @@ void Camera::ProcessRot(void)
 
 	//ƒJƒƒ‰§ŒÀ(XŽ²‚Ì‚Ý)
 	if (angles_.x >= LIMIT_X_UP_RAD ||
-		angles_.x <= LIMIT_X_DW_RAD){
-		angles_.x = preAngleX;}
+		angles_.x <= LIMIT_X_DW_RAD)
+	{
+		angles_.x = preAngleX;
+	}
 }
 
 void Camera::SetBeforeDrawFixedPoint(void)
@@ -200,7 +202,8 @@ void Camera::SetBeforeDrawFollow(void)
 {
 
 	// ƒJƒƒ‰
-	if (SceneManager::GetInstance().GetSceneID() == SceneManager::SCENE_ID::GAME) {
+	if (SceneManager::GetInstance().GetSceneID() == SceneManager::SCENE_ID::GAME) 
+	{
 		ProcessRot();
 	}
 

@@ -7,11 +7,12 @@
 #include "../Scene/TitleScene.h"
 #include "../Scene/SelectScene.h"
 #include "../Scene/GameScene.h"
+#include "../Scene/MovieScene.h"
 #include "InputManager.h"
 #include "DataBank.h"
 #include "SceneManager.h"
 
-void SceneManager::Init(void)
+void SceneManager::Init()
 {
 
 	sceneId_ = SCENE_ID::TITLE;
@@ -23,7 +24,8 @@ void SceneManager::Init(void)
 	fader_->Init();
 
 	// カメラ
-	for (int i = 0; i < PLAYER_MAX; i++) {
+	for (int i = 0; i < PLAYER_MAX; i++) 
+	{
 		std::shared_ptr<Camera>c = std::make_shared<Camera>();
 		c->Init();
 		cameras_.push_back(std::move(c));
@@ -37,7 +39,8 @@ void SceneManager::Init(void)
 	//メインスクリーンの作成
 	mainScreen_ = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
 	//VS用スクリーンを作成
-	for (int i = 0; i < PLAYER_MAX; i++) {
+	for (int i = 0; i < PLAYER_MAX; i++) 
+	{
 		halfScreen_[i] = MakeScreen(Application::SCREEN_HALF_X, Application::SCREEN_SIZE_Y, true);
 	}
 	
@@ -45,15 +48,14 @@ void SceneManager::Init(void)
 	screenPos_ = { 0,0};
 	screenCnt_ = 0;
 
+	//ウィンドウがアクティブ状態でなくとも処理を行う
+	SetAlwaysRunFlag(true);
+
 	// 3D用の設定
 	Init3D();
-
-	//// 初期シーンの設定
-	///DoChangeScene(SCENE_ID::GAME);
-
 }
 
-void SceneManager::Init3D(void)
+void SceneManager::Init3D()
 {
 
 	// 背景色設定
@@ -102,20 +104,6 @@ void SceneManager::ChangeAllScene(std::shared_ptr<SceneBase> scene)
 	scenes_.front()->Load();
 }
 
-//void SceneManager::PushScene(std::shared_ptr<SceneBase> scene)
-//{
-//	scene->Init();
-//	scenes_.push_front(scene);
-//}
-//
-//void SceneManager::PopScene()
-//{
-//	if (scenes_.size() >= 1)
-//	{
-//		scenes_.pop_front();
-//	}
-//}
-
 void SceneManager::Update(InputManager& ins)
 {
 	if (scenes_.empty())return;
@@ -137,12 +125,12 @@ void SceneManager::Update(InputManager& ins)
 	for (auto& c : cameras_) { c->Update(); }
 }
 
-void SceneManager::Draw(void)
+void SceneManager::Draw()
 {
 	drawFunc_();
 }
 
-void SceneManager::Destroy(void)
+void SceneManager::Destroy()
 {
 	scenes_.front()->Release();
 }
@@ -163,24 +151,24 @@ void SceneManager::ChangeScene(SCENE_ID nextId)
 	isSceneChanging_ = true;
 }
 
-SceneManager::SCENE_ID SceneManager::GetSceneID(void)
+SceneManager::SCENE_ID SceneManager::GetSceneID()
 {
 	return sceneId_;
 }
 
-float SceneManager::GetDeltaTime(void) const
+float SceneManager::GetDeltaTime() const
 {
 	//return 1.0f / 60.0f;
 	return deltaTime_;
 }
 
 // カメラの取得
-std::vector<std::shared_ptr<Camera>> SceneManager::GetCameras(void) const
+std::vector<std::shared_ptr<Camera>> SceneManager::GetCameras() const
 {
 	return cameras_;
 }
 
-void SceneManager::StartFadeIn(void)
+void SceneManager::StartFadeIn()
 {
 	// フェードインを開始する
 	fader_->SetFade(Fader::STATE::FADE_IN);
@@ -191,7 +179,7 @@ void SceneManager::SetFadeColor(unsigned int color)
 	fader_->SetFadeColor(color);
 }
 
-void SceneManager::SetDrawingScreen(const int& screenID)
+void SceneManager::SetDrawingScreen(const int screenID)
 {
 	SetDrawScreen(screenID);
 	ClearDrawScreen();
@@ -200,7 +188,7 @@ void SceneManager::SetDrawingScreen(const int& screenID)
 	for (auto& c : cameras_) { c->SetBeforeDraw(); }
 }
 
-SceneManager::SceneManager(void)
+SceneManager::SceneManager()
 {
 	sceneId_ = SCENE_ID::NONE;
 	waitSceneId_ = SCENE_ID::NONE;
@@ -217,7 +205,7 @@ SceneManager::SceneManager(void)
 	Init();
 }
 
-void SceneManager::ResetDeltaTime(void)
+void SceneManager::ResetDeltaTime()
 {
 	deltaTime_ = 0.016f;
 	preTime_ = std::chrono::system_clock::now();
@@ -225,9 +213,6 @@ void SceneManager::ResetDeltaTime(void)
 
 void SceneManager::DoChangeScene(SCENE_ID sceneId)
 {
-
-	//// リソースの解放
-	//ResourceManager::GetInstance().Release();
 
 	// シーンを変更する
 	sceneId_ = sceneId;
@@ -238,6 +223,10 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		ChangeAllScene(std::make_shared<TitleScene>(*this));
 		drawFunc_ = std::bind(&SceneManager::NormalDraw, this);
 		break;
+	case SCENE_ID::MOVIE:
+		ChangeAllScene(std::make_shared<MovieScene>(*this));
+		drawFunc_ = std::bind(&SceneManager::NormalDraw, this);
+		break;
 	case SCENE_ID::SELECT:
 		ChangeAllScene(std::make_shared<SelectScene>(*this));
 		drawFunc_ = std::bind(&SceneManager::NormalDraw, this);
@@ -246,7 +235,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		ChangeAllScene(std::make_shared<GameScene>(*this));
 		//描画の切り替え
 		if (DataBank::GetInstance().Output().mode_ == MODE::VS) { drawFunc_ = std::bind(&SceneManager::VSPlayDraw, this); }
-		else { drawFunc_ = std::bind(&SceneManager::NormalDraw, this); }
+		else { drawFunc_ = std::bind(&SceneManager::NormalDraw, this); screenCnt_ = 0; }
 		break;
 	}
 
@@ -256,7 +245,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 }
 
-void SceneManager::Fade(void)
+void SceneManager::Fade()
 {
 	fader_->Update();
 
@@ -290,9 +279,6 @@ void SceneManager::NormalDraw()
 	// 描画先グラフィック領域の指定
 	SetDrawingScreen(mainScreen_);
 
-	// Effekseerにより再生中のエフェクトを更新する。
-	UpdateEffekseer3D();
-
 	//シーン描画(最後尾から描画)
 	auto rit = scenes_.rbegin();
 	for (; rit != scenes_.rend(); rit++)
@@ -300,9 +286,6 @@ void SceneManager::NormalDraw()
 		(*rit)->Draw();
 		(*rit)->CommonDraw();
 	}
-
-	// Effekseerにより再生中のエフェクトを描画する。
-	DrawEffekseer3D();
 
 	// 暗転・明転
 	fader_->Draw();
@@ -316,7 +299,8 @@ void SceneManager::NormalDraw()
 void SceneManager::VSPlayDraw()
 {
 	//分割画面を生成
-	for (int i = 0; i < PLAYER_MAX; i++) {
+	for (int i = 0; i < PLAYER_MAX; i++) 
+	{
 		//スクリーンカウント設定
 		screenCnt_ = i;
 
@@ -333,8 +317,6 @@ void SceneManager::VSPlayDraw()
 			(*rit)->Draw();
 		}
 
-		// Effekseerにより再生中のエフェクトを更新する。
-		UpdateEffekseer3D();
 	}
 
 	//全体の画面を作る
@@ -344,9 +326,6 @@ void SceneManager::VSPlayDraw()
 	for (int i = 0; i < PLAYER_MAX; i++) 
 	{ 
 		DrawGraph(static_cast<int>(screenPos_.x) + Application::SCREEN_HALF_X * i, static_cast<int>(screenPos_.y), halfScreen_[i], true);
-			
-		// Effekseerにより再生中のエフェクトを描画する。
-		DrawEffekseer3D();
 	}	
 
 	//画面の共通部分を描画

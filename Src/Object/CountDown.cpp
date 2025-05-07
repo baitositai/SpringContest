@@ -14,15 +14,6 @@ CountDown::CountDown()
 	imgNums_ = &i;
 }
 
-CountDown::~CountDown()
-{
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::GO_SE);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::COUNT_3);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::COUNT_2);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::COUNT_1);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::COUNT_0);
-}
-
 void CountDown::Load()
 {
 	auto& res = ResourceManager::GetInstance();
@@ -88,6 +79,11 @@ void CountDown::Draw()
 
 void CountDown::Release()
 {
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::GO_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::COUNT_3);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::COUNT_2);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::COUNT_1);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::COUNT_0);
 }
 
 void CountDown::PlaySE()

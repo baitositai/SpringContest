@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+#include "../Manager/SceneManager.h"
 #include "../Utility/StaticSingleton.h"
 
 class ScoreBank : public StaticSingleton<ScoreBank>
@@ -15,10 +17,13 @@ public:
 	void Init();
 
 	//スコアの加算
-	void AddScore(const int& value);
+	void AddScore(const int playerId,const int value);
 
 	//スコアを返す
-	inline const int & GetScore() const { return score_; }
+	inline const int & GetScore(const int playerId) const { return score_[playerId]; }
+
+	//スコアをリセット
+	inline void ResetScore(const int playerId) { score_[playerId] = 0; }
 
 private:
 
@@ -26,5 +31,5 @@ private:
 	THIS_CLASS_IS_STATIC_SINGLETON(ScoreBank);
 
 	//スコア
-	int score_;
+	std::vector<int> score_;
 };

@@ -1,11 +1,15 @@
 #include "../Application.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/DataBank.h"
+#include "../Manager/ScoreBank.h"
+#include "../Manager/ScrollManager.h"
 #include "TimeCount.h"
 
 TimeCount::TimeCount()
 {
 	step_ = -1.0f;
+	preStep_ = -1;
+	scrCnt_ = -1.0f;
 	int i = -1;
 	imgNums_ = &i;
 	imgTimerGage_ = -1;
@@ -18,28 +22,80 @@ void TimeCount::Load()
 	auto& res = ResourceManager::GetInstance();
 	imgTimerGage_ = res.Load(ResourceManager::SRC::TIMER_UI).handleId_;
 	imgNums_ = res.Load(ResourceManager::SRC::NUMBER).handleIds_;
+
+	//速度上昇UI
+	speedUi_ = std::make_unique<DrawSpeedUp>();
+	speedUi_->Load();
 }
 
 void TimeCount::Init()
 {
 	//初期化
 	step_ = 0.0f;
+	preStep_ = 1;
+	scrCnt_ = ScrollManager::SPEED_UP_TIME;
 
 	//モードごとに描画位置を変更
 	if (DataBank::GetInstance().Output().mode_ == SceneManager::MODE::VS) { posY_ = VS_TIMER_POS_Y; }	
 	else { posY_ = TIMER_POS_Y; }
+
+	//速度上昇UI
+	speedUi_->Init();
 }
 
 void TimeCount::Update()
 {
-	//時間経過
-	step_ += SceneManager::GetInstance().GetDeltaTime();
+	float cnt = SceneManager::GetInstance().GetDeltaTime();
+	int playNum = DataBank::GetInstance().Output().playerNum_;
+
+	//カウント更新
+	step_ += cnt;
+	scrCnt_ -= cnt;
+
+	//1秒ごとにスコア上昇
+	if (static_cast<int>(step_) != preStep_)
+	{
+		preStep_ = static_cast<int>(step_);
+		for (int i = 0; i < playNum; i++) {
+			ScoreBank::GetInstance().AddScore(i, ADD_SCORE);
+		}
+	}
+
+	//スピードアップ
+	if (scrCnt_ <= 0.0f)
+	{
+		//速度アップ
+		for (int i = 0; i < playNum; i++) {
+			ScrollManager::GetInstance().ChangeScrollSpeed(i, ScrollManager::ACC_SPEED);
+		}
+
+		//速度上昇UI状態変更
+		speedUi_->ChangeState(DrawSpeedUp::STATE::EXPAND);
+
+		//カウント初期化
+		scrCnt_ = ScrollManager::SPEED_UP_TIME;
+	}
+
+	//速度上昇UI
+	speedUi_->Update();
 }
 
 void TimeCount::Draw()
 {
-	int min = static_cast<int>(step_) / 60;
-	int sec = static_cast<int>(step_) % 60;
+	//スピードアップ描画
+	speedUi_->Draw();
+}
+
+void TimeCount::Release()
+{
+	speedUi_->Release();
+}
+
+void TimeCount::CommonDraw()
+{
+	//タイマー描画
+	int min = static_cast<int>(step_) / SECONDS_PER_MINUTE;
+	int sec = static_cast<int>(step_) % SECONDS_PER_MINUTE;
 
 	int timeNum[TIME_DIGITS] = {
 		min / 10,
@@ -70,8 +126,4 @@ void TimeCount::Draw()
 			true,
 			false);
 	}
-}
-
-void TimeCount::Release()
-{
 }

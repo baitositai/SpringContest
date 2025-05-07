@@ -14,20 +14,25 @@ public:
 	{
 		NONE,
 		IDLE,
-		DANCE,
+		RUN,
 	};
+	//位置
+	static constexpr VECTOR POS = { 500,100,-100 };
 
 	//スケール
 	static constexpr VECTOR SCALE = { 1.f,1.f,1.f };
 
-	TitlePlayer();
-	~TitlePlayer();
+	//アニメーション速度
+	static constexpr float IDLE_SPEED = 10.0f;
+	static constexpr float RUN_SPEED = 40.0f;
 
-	void Load(void);
-	void Init(void);
-	void Update(void);
-	void Draw(void);
-	void Release(void);
+	TitlePlayer();
+	~TitlePlayer() = default;
+
+	void Load();
+	void Init();
+	void Update();
+	void Draw();
 
 private:
 

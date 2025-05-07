@@ -1,6 +1,9 @@
 #include "../../Manager/ScoreBank.h"
+#include "../../Manager/DataBank.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Manager/SoundManager.h"
+#include "../../Manager/Effect2DManagerContainer.h"
+#include "../../Manager/Effect2DManager.h"
 #include "../../Utility/Utility.h"
 #include "../Character/Player.h"
 #include "PowerItem.h"
@@ -32,13 +35,17 @@ void PowerItem::OnCollision(Player& player)
 	player.AddPower(POWER_HEAL);
 
 	//スコア加算
-	ScoreBank::GetInstance().AddScore(SCORE);
-
-	//効果音の再生
-	SoundManager::GetInstance().Play(SoundManager::SOUND::ITEM_GET_SE);
+	ScoreBank::GetInstance().AddScore(DataBank::GetInstance().Output().playerId_, SCORE);
 
 	//状態を変更
 	ChangeState(STATE::HIT);
+
+	//エフェクト再生
+	Effect2DManagerContainer::GetInstance().GetManager(DataBank::GetInstance().Output().playerId_)->Play(Effect2DManager::EFFECT::GET,
+		VAdd(player.GetTransform().pos, Player::TACKLE_EFK_LOCAL_POS),
+		1.0f,
+		0.0f,
+		SoundManager::SOUND::ITEM_GET_SE);
 }
 
 void PowerItem::Draw()
@@ -47,5 +54,4 @@ void PowerItem::Draw()
 
 	//モデルの描画
 	MV1DrawModel(transform_.modelId);
-	//DrawSphere3D(transform_.pos, 20.0f, 10, color_, color_, true);
 }

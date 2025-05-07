@@ -8,7 +8,7 @@ FpsControl::FpsControl()
 	prevFrameTime_ = 0;
 	frameCnt_ = 0;
 	updateFrameRateTime_ = 0;
-	frameCnt_ = 0.0f;
+	frameCnt_ = 0;
 }
 
 FpsControl::~FpsControl()
@@ -22,7 +22,7 @@ void FpsControl::Init()
 	prevFrameTime_ = 0;
 	frameCnt_ = 0;
 	updateFrameRateTime_ = 0;
-	frameCnt_ = 0.0f;
+	frameCnt_ = 0;
 }
 
 bool FpsControl::UpdateFrameRate()

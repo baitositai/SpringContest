@@ -21,6 +21,10 @@ public:
 	static constexpr int ICON_POS_X = 0;
 	static constexpr int ICON_POS_Y = 0;
 
+	//操作説明位置
+	static constexpr int EXPLAN_POS_X = 0;
+	static constexpr int EXPLAN_POS_Y = 128;
+
 	//ライフUI座標位置
 	static constexpr int LIFE_UI_X = 128;
 	static constexpr int LIFE_UI_Y = 0;
@@ -41,9 +45,27 @@ public:
 	static constexpr int SCORE_UI_X = Application::SCREEN_SIZE_X - 320;
 	static constexpr int SCORE_UI_Y = 100;
 
+	static constexpr int REZALT_SCORE_UI_X = Application::SCREEN_HALF_X - 160;
+	static constexpr int REZALT_SCORE_UI_Y = Application::SCREEN_HALF_Y - 40;
+
 	//スコア桁数
 	static constexpr int SCORE_DIGIT = 5;
 
+	//タックルゲージ長さ
+	static constexpr int GAGE_SIZE_X = 128;
+	static constexpr int GAGE_SIZE_Y = 50;
+
+	//クリア者UI位置
+	static constexpr int CLEAR_PLAYER_POS_Y = Application::SCREEN_HALF_Y - 64;
+
+	//クリアメッセUI位置
+	static constexpr int CLEAR_MES_POS_Y = Application::SCREEN_HALF_Y + 64;
+
+	//スコアの座標位置
+	static constexpr int RESULT_SCORE_INTERVAL = 35;
+	static constexpr int RESULT_SCORE_POS_X = REZALT_SCORE_UI_X + 120;
+	static constexpr int RESULT_SCORE_POS_Y = REZALT_SCORE_UI_Y + 10;
+	
 	PlayerUI();
 	~PlayerUI() = default;
 
@@ -51,13 +73,12 @@ public:
 	void Init();
 	void Update();
 	void Draw(const Player & player);
-	void Release();
 
 	//勝利状態変更
 	void ChangeWinState(const WIN_STATE& state);
 
 	//クリア状態の描画
-	void VSClearDraw();
+	void ResultDraw();
 
 private:
 
@@ -75,7 +96,9 @@ private:
 	int imgScoreMes_;	//スコア
 	int imgWin_;		//勝利
 	int imgDraw_;		//引き分け
+	int imgTackleGage_;	//タックルゲージ
 	int* imgPlayers_;	//プレイヤー
+	int* imgExplan_;	//操作説明
 
 	//数字
 	int *imgNumbers_;
@@ -84,13 +107,16 @@ private:
 	int scoreDigits_[SCORE_DIGIT];
 
 	//モード別描画
-	std::function<void(void)> drawModeFunc_;
+	std::function<void()> drawModeFunc_;
+
+	//リザルト画面
+	std::function<void()> drawResultFunc_;
 
 	//勝利状態別描画
-	std::function<void(void)> drawWinFunc_;
+	std::function<void()> drawWinFunc_;
 
 	//モード別描画
-	void DrawMarason();
+	void DrawMarathon();
 	void DrawVS();
 
 	//勝利状態別描画
@@ -98,5 +124,11 @@ private:
 	void DrawP1Win();
 	void DrawP2Win();
 	void DrawDraw();
+
+	//マラソンリザルト描画
+	void DrawResultScore();
+
+	//クリアUIの描画
+	void VSClearDraw();
 };
 

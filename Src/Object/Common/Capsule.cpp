@@ -16,11 +16,11 @@ Capsule::Capsule(const Capsule& base, const Transform& parent) : transformParent
 	localPosDown_ = base.GetLocalPosDown();
 }
 
-Capsule::~Capsule(void)
+Capsule::~Capsule()
 {
 }
 
-void Capsule::Draw(void)
+void Capsule::Draw()
 {
 
 	// è„ÇÃãÖëÃ
@@ -64,12 +64,12 @@ void Capsule::Draw(void)
 
 }
 
-VECTOR Capsule::GetLocalPosTop(void) const
+VECTOR Capsule::GetLocalPosTop() const
 {
 	return localPosTop_;
 }
 
-VECTOR Capsule::GetLocalPosDown(void) const
+VECTOR Capsule::GetLocalPosDown() const
 {
 	return localPosDown_;
 }
@@ -84,12 +84,12 @@ void Capsule::SetLocalPosDown(const VECTOR& pos)
 	localPosDown_ = pos;
 }
 
-VECTOR Capsule::GetPosTop(void) const
+VECTOR Capsule::GetPosTop() const
 {
 	return GetRotPos(localPosTop_);
 }
 
-VECTOR Capsule::GetPosDown(void) const
+VECTOR Capsule::GetPosDown() const
 {
 	return GetRotPos(localPosDown_);
 }
@@ -100,7 +100,7 @@ VECTOR Capsule::GetRotPos(const VECTOR& localPos) const
 	return VAdd(transformParent_.pos, localRotPos);
 }
 
-float Capsule::GetRadius(void) const
+float Capsule::GetRadius() const
 {
 	return radius_;
 }
@@ -110,12 +110,12 @@ void Capsule::SetRadius(float radius)
 	radius_ = radius;
 }
 
-float Capsule::GetHeight(void) const
+float Capsule::GetHeight() const
 {
 	return localPosTop_.y;
 }
 
-VECTOR Capsule::GetCenter(void) const
+VECTOR Capsule::GetCenter() const
 {
 	VECTOR top = GetPosTop();
 	VECTOR down = GetPosDown();

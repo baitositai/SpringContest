@@ -6,6 +6,9 @@ class SoundManager : public StaticSingleton<SoundManager>
 {
 public:
 
+	//ˆø”—p‰¹—ÊÅ‘å’l
+	static constexpr int VOLUME_MAX = 255;
+
 	//Ä¶‚Ìí—Ş•ª‚¯‚·‚é‚Æ‚«‚Ég‚¤
 	enum class TYPE 
 	{
@@ -38,6 +41,8 @@ public:
 		JUMP_SE,
 		BLAST_SE,
 		ENEMY_DAMAGE_SE,
+		SPEED_UP,
+		HINDER_SE
 	};
 
 	struct SoundData
@@ -75,6 +80,8 @@ private:
 
 	SoundManager();
 	~SoundManager() = default;
+
+	bool CheckSoundFile(const SOUND snd);
 
 };
 

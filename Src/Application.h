@@ -18,6 +18,9 @@ public:
 	static constexpr int SCREEN_HALF_X = SCREEN_SIZE_X / 2;
 	static constexpr int SCREEN_HALF_Y = SCREEN_SIZE_Y / 2;
 
+	//カラービット深度
+	static constexpr int COLOR_BIT_DEPTH = 32;
+
 	// データパス関連
 	//-------------------------------------------
 	static const std::string PATH_IMAGE;
@@ -26,28 +29,29 @@ public:
 	static const std::string PATH_FONT;
 	static const std::string PATH_TEXT;
 	static const std::string PATH_SOUND;
+	static const std::string PATH_MOVIE;
 	//-------------------------------------------
 
 	// 明示的にインステンスを生成する
-	static void CreateInstance(void);
+	static void CreateInstance();
 
 	// 静的インスタンスの取得
-	static Application& GetInstance(void);
+	static Application& GetInstance();
 
 	// 初期化
-	void Init(void);
+	void Init();
 
 	// ゲームループの開始
-	void Run(void);
+	void Run();
 
 	// リソースの破棄
-	void Destroy(void);
+	void Destroy();
 
 	// 初期化成功／失敗の判定
-	bool IsInitFail(void) const;
+	bool IsInitFail() const;
 
 	// 解放成功／失敗の判定
-	bool IsReleaseFail(void) const;
+	bool IsReleaseFail() const;
 
 private:
 
@@ -65,12 +69,12 @@ private:
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
-	Application(void);
+	Application();
 
 	// コピーコンストラクタも同様
 	Application(const Application&);
 
 	// デストラクタも同様
-	~Application(void) = default;
+	~Application() = default;
 
 };

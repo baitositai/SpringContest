@@ -40,6 +40,44 @@ constexpr int PLAYER_UI_IMG_SIZE_Y = 192;
 constexpr int PLAYER_UI_SIZE_X = PLAYER_UI_IMG_SIZE_X / PLAYER_UI_NUM_X;
 constexpr int PLAYER_UI_SIZE_Y = PLAYER_UI_IMG_SIZE_Y / PLAYER_UI_NUM_Y;
 
+//操作説明
+//プレイヤーUI
+constexpr int EXPLAN_NUM_X = 2;
+constexpr int EXPLAN_NUM_Y = 1;
+constexpr int EXPLAN_IMG_SIZE_X = 240;
+constexpr int EXPLAN_IMG_SIZE_Y = 160;
+constexpr int EXPLAN_SIZE_X = EXPLAN_IMG_SIZE_X / EXPLAN_NUM_X;
+constexpr int EXPLAN_SIZE_Y = EXPLAN_IMG_SIZE_Y / EXPLAN_NUM_Y;
+
+//エフェクト
+constexpr int EFK_NUM_X = 6;
+constexpr int EFK_NUM_Y = 5;
+constexpr int EFK_IMG_SIZE_X = 1536;
+constexpr int EFK_IMG_SIZE_Y = 1280;
+constexpr int EFK_SIZE = 256;
+
+//ゲットエフェクト
+constexpr int GET_EFK_NUM_X = 8;
+constexpr int GET_EFK_NUM_Y = 5;
+constexpr int GET_EFK_IMG_SIZE_X = 2048;
+constexpr int GET_EFK_IMG_SIZE_Y = 1280;
+constexpr int GET_EFK_SIZE = 256;
+
+//妨害オブジェクト
+constexpr int HINDER_NUM_X = 4;
+constexpr int HINDER_NUM_Y = 1;
+constexpr int HINDER_SIZE = 96;
+constexpr int HINDER_IMG_SIZE_X = HINDER_NUM_X * HINDER_SIZE;
+constexpr int HINDER_IMG_SIZE_Y = HINDER_NUM_Y * HINDER_SIZE;
+
+//タイトルUI
+constexpr int TITLE_UI_NUM_X = 9;
+constexpr int TITLE_UI_NUM_Y = 1;
+constexpr int TITLE_UI_SIZE = 100;
+constexpr int TITLE_UI_IMG_SIZE_X = TITLE_UI_SIZE * TITLE_UI_NUM_X;
+constexpr int TITLE_UI_IMG_SIZE_Y = TITLE_UI_SIZE * TITLE_UI_NUM_Y;
+
+
 class ResourceManager :
 	public StaticSingleton<ResourceManager>
 {
@@ -50,7 +88,6 @@ public:
 	enum class SRC
 	{
 		//画像
-		ALPHABET,
 		PLAYER_SHADOW,
 		NUMBER,
 		NUMBER2,
@@ -59,6 +96,7 @@ public:
 		WIN_UI,
 		TITLE_LOGO,
 		DRAW,
+		HINDER_OBJS,
 
 		//UI画像
 		POWER_UI,
@@ -72,6 +110,10 @@ public:
 		TITLE,
 		TITLE_UI,
 		TITLE_BACKGROUND,
+		TACKLE_GAGE,
+		SPEED_UP,
+		TACKLE_SELECT,
+		EXPLAN,
 
 		//モデル
 		PLAYER,
@@ -84,7 +126,9 @@ public:
 
 		//エフェクト
 		TACKLE_EFK,
-		STAR_DUST_EFK,
+		HIT_EFK,
+		EXPLOSION_EFK,
+		GET_EFK,
 
 		//音楽
 		TITLE_BGM,
@@ -106,17 +150,22 @@ public:
 		CLEAR_SE,
 		JUMP_SE,
 		BLAST_SE,
-		ENEMY_DAMAGE_SE
+		ENEMY_DAMAGE_SE,
+		SPEED_UP_SE,
+		HINDER_SE,
+
+		//動画
+		MOVIE,
 	};
 
 	// 初期化
-	void Init(void);
+	void Init();
 
 	// 解放(シーン切替時に一旦解放)
-	void Release(void);
+	void Release();
 
 	// リソースの完全破棄
-	void Destroy(void);
+	void Destroy();
 
 	// リソースのロード
 	Resource& Load(SRC src);
@@ -139,10 +188,10 @@ private:
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
-	ResourceManager(void);
+	ResourceManager();
 
 	// デストラクタも同様
-	~ResourceManager(void) = default;
+	~ResourceManager() = default;
 
 	// 内部ロード
 	Resource& _Load(SRC src);

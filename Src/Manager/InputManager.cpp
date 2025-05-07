@@ -1,7 +1,7 @@
 #include <DxLib.h>
 #include "InputManager.h"
 
-void InputManager::Init(void)
+void InputManager::Init()
 {
 	// ゲームで使用したいキーを、
 	// 事前にここで登録しておいてください
@@ -50,7 +50,7 @@ void InputManager::Init(void)
 	mouseInfos_.emplace(info.key, info);
 }
 
-void InputManager::Update(void)
+void InputManager::Update()
 {
 
 	// キーボード検知
@@ -83,7 +83,7 @@ void InputManager::Update(void)
 
 }
 
-void InputManager::Destroy(void)
+void InputManager::Destroy()
 {
 	keyInfos_.clear();
 	mouseInfos_.clear();
@@ -100,7 +100,7 @@ void InputManager::Add(int key)
 	keyInfos_.emplace(key, info);
 }
 
-void InputManager::Clear(void)
+void InputManager::Clear()
 {
 	keyInfos_.clear();
 }
@@ -125,32 +125,32 @@ Vector2 InputManager::GetMousePos(void) const
 	return mousePos_;
 }
 
-int InputManager::GetMouse(void) const
+int InputManager::GetMouse() const
 {
 	return mouseInput_;
 }
 
-bool InputManager::IsClickMouseLeft(void) const
+bool InputManager::IsClickMouseLeft() const
 {
 	return mouseInput_ == MOUSE_INPUT_LEFT;
 }
 
-bool InputManager::IsClickMouseRight(void) const
+bool InputManager::IsClickMouseRight() const
 {
 	return mouseInput_ == MOUSE_INPUT_RIGHT;
 }
 
-bool InputManager::IsTrgMouseLeft(void) const
+bool InputManager::IsTrgMouseLeft() const
 {
 	return FindMouse(MOUSE_INPUT_LEFT).keyTrgDown;
 }
 
-bool InputManager::IsTrgMouseRight(void) const
+bool InputManager::IsTrgMouseRight() const
 {
 	return FindMouse(MOUSE_INPUT_RIGHT).keyTrgDown;
 }
 
-InputManager::InputManager(void)
+InputManager::InputManager()
 {
 	mouseInput_ = -1;
 	Init();

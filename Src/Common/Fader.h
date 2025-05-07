@@ -55,7 +55,4 @@ private:
 	int imgFade_;
 
 	int tmpScreen_;
-
-	void CircleMask();
-
 };

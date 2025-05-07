@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "../Utility/StaticSingleton.h"
 
 class ScrollManager : public StaticSingleton<ScrollManager>
@@ -25,10 +26,10 @@ public:
 	static constexpr float GROUND = 0.0f;
 
 	//スクロール開始ライン
-	static constexpr float SCROLL_START_LINE = 600.0f;
+	static constexpr float SCROLL_START_LINE = 1200.0f;
 
 	//スクロール終了ライン
-	static constexpr float SCROLL_FINISH_LINE = -200.0f;
+	static constexpr float SCROLL_FINISH_LINE = -500.0f;
 
 	//速度アップ時間
 	static constexpr int SPEED_UP_TIME = 30;
@@ -36,14 +37,14 @@ public:
 	ScrollManager();
 	~ScrollManager() = default;
 
+	//初期化
 	void Init();
-	void Update();
 
 	//スクロールスピードを返す
-	inline const float GetScrollSpeed()const { return scrollSpeed_; }
+	inline const float GetScrollSpeed(const int playerId)const { return scrollSpeed_[playerId]; }
 
 	//スピードの変更
-	void ChangeScrollSpeed(const float speed);
+	void ChangeScrollSpeed(const int playerId, const float speed);
 
 private:
 
@@ -51,7 +52,7 @@ private:
 	THIS_CLASS_IS_STATIC_SINGLETON(ScrollManager);
 
 	//スクロールスピード
-	float scrollSpeed_;
+	std::vector<float> scrollSpeed_;
 
 	//速度アップ用ステップ
 	float step_;

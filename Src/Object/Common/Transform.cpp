@@ -39,11 +39,11 @@ Transform::Transform(int model)
 
 }
 
-Transform::~Transform(void)
+Transform::~Transform()
 {
 }
 
-void Transform::Update(void)
+void Transform::Update()
 {
 
 	// ‘å‚«‚³
@@ -78,10 +78,6 @@ void Transform::Update(void)
 
 }
 
-void Transform::Release(void)
-{
-}
-
 void Transform::SetModel(int model)
 {
 	modelId = model;
@@ -100,32 +96,32 @@ void Transform::MakeCollider(Collider::TYPE type)
 
 }
 
-VECTOR Transform::GetForward(void) const
+VECTOR Transform::GetForward() const
 {
 	return GetDir(Utility::DIR_F);
 }
 
-VECTOR Transform::GetBack(void) const
+VECTOR Transform::GetBack() const
 {
 	return GetDir(Utility::DIR_B);
 }
 
-VECTOR Transform::GetRight(void) const
+VECTOR Transform::GetRight() const
 {
 	return GetDir(Utility::DIR_R);
 }
 
-VECTOR Transform::GetLeft(void) const
+VECTOR Transform::GetLeft() const
 {
 	return GetDir(Utility::DIR_L);
 }
 
-VECTOR Transform::GetUp(void) const
+VECTOR Transform::GetUp() const
 {
 	return GetDir(Utility::DIR_U);
 }
 
-VECTOR Transform::GetDown(void) const
+VECTOR Transform::GetDown() const
 {
 	return GetDir(Utility::DIR_D);
 }

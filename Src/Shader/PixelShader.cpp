@@ -181,7 +181,7 @@ void PixelShader::InitPS()
 	psMap_.emplace(std::make_pair(PS_TYPE::COL_TX, LoadPixelShader(fileName.c_str())));*/
 }
 
-const int& PixelShader::SearchPS(const PS_TYPE& ps) const
+const int PixelShader::SearchPS(const PS_TYPE& ps) const
 {
 	//ìoò^Ç™çsÇÌÇÍÇƒÇ¢ÇÈÇ©îªíf
 	const auto& psPair = psMap_.find(ps);

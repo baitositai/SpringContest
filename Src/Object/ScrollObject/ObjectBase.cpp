@@ -2,6 +2,7 @@
 #include "../../Manager/SceneManager.h"
 #include "../../Manager/ScrollManager.h"
 #include "../../Manager/SoundManager.h"
+#include "../../Manager/DataBank.h"
 #include "../../Utility/Utility.h"
 #include "../Character/Player.h"
 #include "ObjectBase.h"
@@ -17,13 +18,6 @@ ObjectBase::ObjectBase()
 	stateChanges_.emplace(STATE::NONE, std::bind(&ObjectBase::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::SCROLL, std::bind(&ObjectBase::ChangeStateScroll, this));
 	stateChanges_.emplace(STATE::HIT, std::bind(&ObjectBase::ChangeStateHit, this));
-}
-
-ObjectBase::~ObjectBase(void)
-{
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::ENEMY_DAMAGE_SE);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::BLAST_SE);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::ITEM_GET_SE);
 }
 
 void ObjectBase::Load(void)
@@ -52,7 +46,7 @@ void ObjectBase::Load(void)
 
 }
 
-void ObjectBase::Init(void)
+void ObjectBase::Init()
 {
 	//半径の設定
 	radius_ = DEFAULT_RADIUS;
@@ -61,7 +55,7 @@ void ObjectBase::Init(void)
 	ChangeState(STATE::NONE);
 }
 
-void ObjectBase::Update(void)
+void ObjectBase::Update()
 {
 	// 更新ステップ
 	stateUpdate_();
@@ -70,10 +64,16 @@ void ObjectBase::Update(void)
 	transform_.Update();
 }
 
-void ObjectBase::Draw(void)
+void ObjectBase::Draw()
 {
 	if (state_ == STATE::NONE) { return; }	//非スクロール状態の場合描画しない
-	DrawSphere3D(transform_.pos, 20.0f, 10, color_, color_, true);
+}
+
+void ObjectBase::Release()
+{
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::ENEMY_DAMAGE_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::BLAST_SE);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::ITEM_GET_SE);
 }
 
 void ObjectBase::ChangeState(STATE state)
@@ -85,12 +85,12 @@ void ObjectBase::ChangeState(STATE state)
 	stateChanges_[state_]();
 }
 
-void ObjectBase::ChangeStateNone(void)
+void ObjectBase::ChangeStateNone()
 {
 	stateUpdate_ = std::bind(&ObjectBase::UpdateNone, this);
 }
 
-void ObjectBase::ChangeStateScroll(void)
+void ObjectBase::ChangeStateScroll()
 {
 	//位置を決める
 	DecideRandPos();
@@ -98,25 +98,25 @@ void ObjectBase::ChangeStateScroll(void)
 	stateUpdate_ = std::bind(&ObjectBase::UpdateScroll, this);
 }
 
-void ObjectBase::ChangeStateHit(void)
+void ObjectBase::ChangeStateHit()
 {
 	stateUpdate_ = std::bind(&ObjectBase::UpdateHit, this);
 }
 
-void ObjectBase::UpdateNone(void)
+void ObjectBase::UpdateNone()
 {
 	//この状態のときは何も処理をしない
 }
 
-void ObjectBase::UpdateScroll(void)
+void ObjectBase::UpdateScroll()
 {
 	//スクロール
 	auto& scr = ScrollManager::GetInstance();
 	//Z値を減らしていく
-	transform_.pos.z -= scr.GetScrollSpeed();
+	transform_.pos.z -= scr.GetScrollSpeed(DataBank::GetInstance().Output().playerId_);
 }
 
-void ObjectBase::UpdateHit(void)
+void ObjectBase::UpdateHit()
 {
 	//状態を変える
 	ChangeState(STATE::NONE);
@@ -125,7 +125,8 @@ void ObjectBase::UpdateHit(void)
 void ObjectBase::DecideRandPos()
 {
 	// 乱数で X 座標を決定
-	float posX = ScrollManager::MOVE_LIMIT_LEFT + GetRand(ScrollManager::MOVE_LIMIT_RIGHT - ScrollManager::MOVE_LIMIT_LEFT);
+	float posX = static_cast<float>(ScrollManager::MOVE_LIMIT_LEFT + GetRand(
+		static_cast<int>(ScrollManager::MOVE_LIMIT_RIGHT - ScrollManager::MOVE_LIMIT_LEFT)));
 
 	// Z 座標を固定値で設定
 	transform_.pos = { posX, 0.0f, ScrollManager::SCROLL_START_LINE };

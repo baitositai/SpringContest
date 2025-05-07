@@ -37,6 +37,7 @@ public:
 	{
 		NONE,
 		TITLE,
+		MOVIE,
 		SELECT,
 		GAME
 	};
@@ -53,7 +54,7 @@ public:
 	void Init3D(void);
 
 	/// <summary>
-	/// 先頭の（Updataが呼ばれる）シーンを切り替える
+	/// 先頭の（Updateが呼ばれる）シーンを切り替える
 	/// </summary>
 	/// <param name="scene">切り替え先のシーン</param>
 	void CreateScene(std::shared_ptr<SceneBase> scene);
@@ -63,19 +64,6 @@ public:
 	/// </summary>
 	/// <param name="scene">切り替え先のシーン</param>
 	void ChangeAllScene(std::shared_ptr<SceneBase> scene);
-
-	/// <summary>
-	/// シーンをプッシュする。スタックの数が増える
-	/// 一番上のシーンのUpdataしか呼ばれません。
-	/// </summary>
-	/// <param name="scene">積むシーン</param>
-	//void PushScene(std::shared_ptr<SceneBase> scene);
-
-	/// <summary>
-	/// スタックの頭のシーンを削除する。
-	/// ただし、スタック上にシーンが一つしかない場合は、削除しない。
-	/// </summary>
-	//void PopScene();
 
 	void Update(InputManager& ins);
 	void Draw(void);
@@ -87,28 +75,28 @@ public:
 	void ChangeScene(SCENE_ID nextId);
 
 	// シーンIDの取得
-	SCENE_ID GetSceneID(void);
+	SCENE_ID GetSceneID();
 
 	// デルタタイムの取得
-	float GetDeltaTime(void) const;
+	float GetDeltaTime() const;
 
 	// 経過時間の取得
-	const float& GetTotalTime(void) const { return totalTime_; }
+	const float& GetTotalTime() const { return totalTime_; }
 
 	// メインスクリーンの取得
-	const int& GetMainScreen(void) const { return mainScreen_; }
+	const int& GetMainScreen() const { return mainScreen_; }
 
 	// カメラの取得
-	std::vector<std::shared_ptr<Camera>> GetCameras(void) const;
+	std::vector<std::shared_ptr<Camera>> GetCameras() const;
 
 	//フェードイン開始
-	void StartFadeIn(void);
+	void StartFadeIn();
 
 	//フェードカラーの指定
 	void SetFadeColor(unsigned int color);
 
 	//描画スクリーンのセット
-	void SetDrawingScreen(const int& screenID);
+	void SetDrawingScreen(const int screenID);
 
 	//描画スクリーンのカウントを返す
 	inline const int GetScreenCount()const { return screenCnt_; }
@@ -161,18 +149,18 @@ private:
 	
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
-	SceneManager(void);
+	SceneManager();
 	// デストラクタも同様
-	~SceneManager(void) = default;
+	~SceneManager() = default;
 
 	// デルタタイムをリセットする
-	void ResetDeltaTime(void);
+	void ResetDeltaTime();
 
 	// シーン遷移
 	void DoChangeScene(SCENE_ID sceneId);
 
 	// フェード
-	void Fade(void);
+	void Fade();
 
 	// 通常の描画
 	void NormalDraw();

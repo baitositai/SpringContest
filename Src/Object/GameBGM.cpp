@@ -6,11 +6,6 @@ GameBGM::GameBGM()
 	soundType_ = SoundManager::SOUND::NONE;
 }
 
-GameBGM::~GameBGM()
-{
-	SoundManager::GetInstance().Stop(soundType_);
-}
-
 void GameBGM::Load()
 {
 	//ƒ‰ƒ“ƒ_ƒ€‚ÅŒˆ’è
@@ -25,6 +20,7 @@ void GameBGM::Load()
 		soundType_,
 		ResourceManager::GetInstance().Load(src).handleId_);
 
+	//‰¹—Ê’²®
 	SoundManager::GetInstance().AdjustVolume(soundType_, VOLUME);
 }
 
@@ -38,4 +34,10 @@ void GameBGM::Stop()
 {
 	//’â~
 	SoundManager::GetInstance().Stop(soundType_);
+}
+
+void GameBGM::Release()
+{	
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::GAMEBGM1);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::GAMEBGM2);	
 }

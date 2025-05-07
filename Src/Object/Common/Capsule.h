@@ -16,35 +16,35 @@ public :
 	Capsule(const Capsule& base, const Transform& parent);
 
 	// デストラクタ
-	~Capsule(void);
+	~Capsule();
 
 	// 描画
-	void Draw(void);
+	void Draw();
 
 	// 親Transformからの相対位置を取得
-	VECTOR GetLocalPosTop(void) const;
-	VECTOR GetLocalPosDown(void) const;
+	VECTOR GetLocalPosTop() const;
+	VECTOR GetLocalPosDown() const;
 
 	// 親Transformからの相対位置をセット
 	void SetLocalPosTop(const VECTOR& pos);
 	void SetLocalPosDown(const VECTOR& pos);
 
 	// ワールド座標を取得
-	VECTOR GetPosTop(void) const;
-	VECTOR GetPosDown(void) const;
+	VECTOR GetPosTop() const;
+	VECTOR GetPosDown() const;
 
 	// 相対座標を回転させてワールド座標で取得する
 	VECTOR GetRotPos(const VECTOR& localPos) const;
 
 	// 半径
-	float GetRadius(void) const;
+	float GetRadius() const;
 	void SetRadius(float radius);
 
 	// 高さ
-	float GetHeight(void) const;
+	float GetHeight() const;
 
 	// カプセルの中心座標
-	VECTOR GetCenter(void) const;
+	VECTOR GetCenter() const;
 
 private :
 

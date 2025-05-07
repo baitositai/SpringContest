@@ -44,6 +44,15 @@ public:
 	//タックルのエフェクトサイズ
 	static constexpr float TACKLE_FEK_SIZE = 10.0f;
 
+	//入手アニメーション総数
+	static constexpr int GET_ANIM_MAX = 35;
+
+	//エフェクト速度
+	static constexpr float EFK_SPEED = 1.0f;
+
+	//エフェクトの拡大率
+	static constexpr float EFK_RATE = 2.0f;
+
 	//状態
 	enum class STATE
 	{
@@ -76,7 +85,7 @@ public:
 
 	//引数で初期位置を取得
 	Player();
-	~Player();
+	~Player() = default;
 
 	void Load();
 	void Init();
@@ -112,6 +121,9 @@ public:
 	//衝突判定用半径を返す
 	inline const float& GetRadius() const { return radius_; }
 
+	//タックル時間を返す
+	inline const float& GetTackleTime() const { return tackleTime_; }
+
 	//状態を返す
 	inline const STATE& GetState() const { return state_; }
 
@@ -125,6 +137,10 @@ public:
 	void DebagDraw(); 
 
 private:
+
+	//エフェクト用画像
+	int* imgTackleEfk_;
+	int* imgHitEfk_;
 
 	//操作キー
 	struct Key
@@ -172,41 +188,41 @@ private:
 	Key key_;
 
 	// 状態管理(状態遷移時初期処理)
-	std::map<STATE, std::function<void(void)>> stateChanges_;
-	std::map<ALIVE_STATE, std::function<void(void)>> aliveStateChanges_;
+	std::map<STATE, std::function<void()>> stateChanges_;
+	std::map<ALIVE_STATE, std::function<void()>> aliveStateChanges_;
 
 	// 状態管理(更新ステップ)
-	std::function<void(void)> stateUpdate_;
-	std::function<void(void)> aliveStateUpdate_;
+	std::function<void()> stateUpdate_;
+	std::function<void()> aliveStateUpdate_;
 
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
 
 	// 状態遷移
-	void ChangeStateNone(void);
-	void ChangeStateAlive(void);
-	void ChangeStateDeath(void);
-	void ChangeStateWin(void);
+	void ChangeStateNone();
+	void ChangeStateAlive();
+	void ChangeStateDeath();
+	void ChangeStateWin();
 
 	void ChanageAliveStateRun();
 	void ChanageAliveStateTackle();
 	void ChanageAliveStateDamage();
 
 	// 更新ステップ
-	void UpdateNone(void);
-	void UpdateAlive(void);
-	void UpdateDeath(void);
-	void UpdateWin(void);
+	void UpdateNone();
+	void UpdateAlive();
+	void UpdateDeath();
+	void UpdateWin();
 
 	//各種初期設定
-	void InitModel(void);
-	void InitAnimation(void);
+	void InitModel();
+	void InitAnimation();
 
 	//操作処理
-	void Process(void);
+	void Process();
 
 	//ジャンプ
-	void Jump(void);
+	void Jump();
 
 	//生存状態別の更新処理
 	void Run();

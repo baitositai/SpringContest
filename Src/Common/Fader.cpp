@@ -26,15 +26,14 @@ void Fader::SetFade(STATE state)
 void Fader::Init(void)
 {
 	state_ = STATE::NONE;
-	alpha_ = 0;
+	alpha_ = 0.0f;
 	isPreEnd_ = true;
 	isEnd_ = true;
 
 	tmpScreen_ = MakeScreen(
 		Application::SCREEN_SIZE_X,
 		Application::SCREEN_SIZE_Y,
-		true
-	);
+		true);
 
 	//フェードシェーダー画像
 	imgFade_ = LoadGraph("Data/Image/Fade/79.png");
@@ -42,7 +41,6 @@ void Fader::Init(void)
 
 void Fader::Update(void)
 {
-
 	if (isEnd_)
 	{
 		return;
@@ -71,10 +69,10 @@ void Fader::Update(void)
 
 	case STATE::FADE_IN:
 		alpha_ -= SPEED_ALPHA;
-		if (alpha_ < 0)
+		if (alpha_ < 0.0f)
 		{
 			// フェード終了
-			alpha_ = 0;
+			alpha_ = 0.0f;
 			if (isPreEnd_)
 			{
 				// 1フレーム後(Draw後)に終了とする
@@ -99,7 +97,7 @@ void Fader::Draw(void)
 	case STATE::FADE_OUT:
 	case STATE::FADE_IN:
 		auto& ds = PixelShader::GetInstance();
-		COLOR_F buf = COLOR_F{ alpha_ / 255 };
+		COLOR_F buf = COLOR_F{ alpha_ / ALPHA_MAX };
 		ds.DrawExtendGraphToShader(
 			{ 0,0 },
 			{ Application::SCREEN_SIZE_X,Application::SCREEN_SIZE_Y },

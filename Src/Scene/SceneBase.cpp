@@ -6,11 +6,11 @@ SceneBase::SceneBase(SceneManager& scene) :sceneManager_(scene)
 	loadingTime_ = 0.0f;
 	loadFont_ = -1;
 }
-SceneBase::~SceneBase(void)
+SceneBase::~SceneBase()
 {
 }
 
-void SceneBase::DrawNowLoading(void)
+void SceneBase::DrawNowLoading()
 {
 	//ÉçÅ[ÉhíÜ
 	auto time = sceneManager_.GetTotalTime();

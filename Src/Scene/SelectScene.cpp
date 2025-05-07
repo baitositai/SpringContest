@@ -10,29 +10,24 @@
 SelectScene::SelectScene(SceneManager& manager) :SceneBase(manager)
 {
 	//更新関数のセット
-	updataFunc_ = [&](InputManager& input) {LoadingUpdate(input); };
+	updateFunc_ = [&](InputManager& input) {LoadingUpdate(input); };
 
 	//描画関数のセット
 	drawFunc_ = std::bind(&SelectScene::LoadingDraw, this);
 
 	//初期化
 	image_ = -1;
+	imgSelect_ = -1;
+	imgSpeech_ = -1;
+	step_ = -1.0f;
 }
 
-SelectScene::~SelectScene(void)
-{
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::SWITCH_OFF_SE);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::SWITCH_ON_SE);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::CHANGE_SCENE_SE);
-	SoundManager::GetInstance().Stop(SoundManager::SOUND::SELECT_BGM);
-}
-
-void SelectScene::Load(void)
+void SelectScene::Load()
 {
 	// 読み込み時間初期化
 	loadingTime_ = 0.0f;
 
-	//非同期読み込みをtrueにする
+	//非同期読み込みを実行する
 	SetUseASyncLoadFlag(true);
 
 	//フォント
@@ -43,6 +38,8 @@ void SelectScene::Load(void)
 
 	//画像の読み込み
 	image_=LoadGraph( "Data/Image/select.png");
+	imgSelect_ =LoadGraph( "Data/Image/TackleSelect.png");
+	imgSpeech_ =LoadGraph( "Data/Image/Speech.png");
 
 	//サウンドのロード
 	SoundManager::GetInstance().Add(
@@ -66,35 +63,44 @@ void SelectScene::Load(void)
 		ResourceManager::GetInstance().Load(ResourceManager::SRC::SWITCH_OFF_SE).handleId_);
 }
 
-void SelectScene::Init(void)
+void SelectScene::Init()
 {
+	step_ = 0.0f; // ステップを初期化
+
 	//音声再生
+	SoundManager::GetInstance().AdjustVolume(SoundManager::SOUND::SELECT_BGM, VOLUME);
 	SoundManager::GetInstance().Play(SoundManager::SOUND::SELECT_BGM);
 }
 
 void SelectScene::Update(InputManager& input)
 {
-	updataFunc_(input);
+	updateFunc_(input);
 	return;
 }
 
-void SelectScene::Draw(void)
+void SelectScene::Draw()
 {
 	drawFunc_();
 	return;
 }
 
-void SelectScene::CommonDraw(void)
+void SelectScene::CommonDraw()
 {
 }
 
-void SelectScene::Release(void)
+void SelectScene::Release()
 {
 	//フォント削除
 	DeleteFontToHandle(loadFont_);
 
 	//画像の解放
+	DeleteGraph(imgSpeech_);
+	DeleteGraph(imgSelect_);
 	DeleteGraph(image_);
+
+	//音楽を停止
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::SELECT_BGM);
+	SoundManager::GetInstance().Stop(SoundManager::SOUND::CHANGE_SCENE_SE);
 }
 
 void SelectScene::LoadingUpdate(InputManager& ins)
@@ -114,7 +120,7 @@ void SelectScene::LoadingUpdate(InputManager& ins)
 		sceneManager_.StartFadeIn();
 
 		//更新関数のセット
-		updataFunc_ = [&](InputManager& input) {NormalUpdate(input); };
+		updateFunc_ = [&](InputManager& input) {NormalUpdate(input); };
 
 		//描画関数のセット
 		drawFunc_ = std::bind(&SelectScene::NormalDraw, this);
@@ -144,36 +150,71 @@ void SelectScene::NormalUpdate(InputManager& ins)
 	{
 		CheckPlayerTackle();
 	}
+
+	step_ += PERIOD; // ステップを進める
 }
 
-void SelectScene::LoadingDraw(void)
+void SelectScene::LoadingDraw()
 {
 	DrawNowLoading();
 }
 
-void SelectScene::NormalDraw(void)
+void SelectScene::NormalDraw()
 {
 	//画面の描画
 	DrawExtendGraph(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, image_, TRUE);
+
+	// 揺れによるY座標のオフセットを計算（sin波を使う）
+	float offsetY = sinf(step_) * AMPLITUDE;
+
+	// 画像の描画位置
+	int drawX = SPEECH_POS_X; // 任意のX位置
+	int drawY = SPEECH_POS_Y + (int)offsetY; // 揺れを加えたY位置
+
+	//スピーチバブルの描画
+	DrawRotaGraph(
+		drawX,
+		drawY,
+		1.0f,
+		0.0f,
+		imgSpeech_,
+		true,
+		false);
+
 	// 楕円を描画
 	//中心位置を決める
 	Vector2 cPos = { 0, 0 };
 	int cr = 0;
-	if (DataBank::GetInstance().Output().autoTackle_) { cPos = { 350, 550 }; cr = 0xff0000; }
-	else { cPos = { 500, 550 }; cr = 0x0000ff;}
-	DrawOval(cPos.x, cPos.y, 80, 60, cr, false);
+	if (DataBank::GetInstance().Output().autoTackle_)
+	{
+		cPos = { ON_POS_X, ON_POS_Y }; cr = 0xff0000; 
+	}
+	else 
+	{
+		cPos = { OFF_POS_X, OFF_POS_Y }; cr = 0x0000ff;
+	}
+	DrawRotaGraph(
+		cPos.x,
+		cPos.y,
+		1.0f,
+		0.0f,
+		imgSelect_,
+		true,
+		false);
 }
 
 void SelectScene::CheckPlayerTackle()
 {
 	auto & data = DataBank::GetInstance();
 	//オンの時はオフ
-	if (data.Output().autoTackle_) { 
+	if (data.Output().autoTackle_) 
+	{ 
 		data.Input(false);
 		SoundManager::GetInstance().Play(SoundManager::SOUND::SWITCH_OFF_SE);
 	}
 	//オフの時はオン
-	else { 
+	else 
+	{ 
 		data.Input(true);
 		SoundManager::GetInstance().Play(SoundManager::SOUND::SWITCH_ON_SE);
 	}

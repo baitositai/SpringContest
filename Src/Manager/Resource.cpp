@@ -1,8 +1,9 @@
 #include <DxLib.h>
-#include <EffekseerForDXLib.h>
+#include <iostream>
+#include <cassert> 
 #include "Resource.h"
 
-Resource::Resource(void)
+Resource::Resource()
 {
 	type_ = TYPE::NONE;
 	path_ = "";
@@ -43,11 +44,11 @@ Resource::Resource(TYPE type, const std::string& path, int numX, int numY, int s
 	handleIds_ = nullptr;
 }
 
-Resource::~Resource(void)
+Resource::~Resource()
 {
 }
 
-void Resource::Load(void)
+void Resource::Load()
 {
 	switch (type_)
 	{
@@ -73,7 +74,7 @@ void Resource::Load(void)
 		break;
 
 	case Resource::TYPE::EFFEKSEER:
-		handleId_ = LoadEffekseerEffect(path_.c_str());
+ 		//handleId_ = LoadEffekseerEffect(path_.c_str());
 		break;
 
 	case Resource::TYPE::FONT:
@@ -85,9 +86,19 @@ void Resource::Load(void)
 		//サウンド
 		handleId_ = LoadSoundMem(path_.c_str());
 	}
+
+	//リソースが読み込めたか確認
+	if (type_ == Resource::TYPE::IMGS) {
+		for (int i = 0; i < numX_ * numY_; i++) {
+			assert(handleIds_[i] != -1); // 各スプライトの読み込みが成功してるか確認
+		}
+	}
+	else {
+		assert(handleId_ != -1);
+	}
 }
 
-void Resource::Release(void)
+void Resource::Release()
 {
 	switch (type_)
 	{
@@ -104,22 +115,25 @@ void Resource::Release(void)
 		}
 		delete[] handleIds_;
 	}
-		break;
+	break;
 
 	case Resource::TYPE::MODEL:
 	{
 		MV1DeleteModel(handleId_);
 		auto ids = duplicateModelIds_;
+
+		// デバッグ出力
+		std::cout << "duplicateModelIds_ size: " << ids.size() << std::endl;
 		for (auto id : ids)
 		{
+			std::cout << "Deleting model ID: " << id << std::endl;
 			MV1DeleteModel(id);
 		}
 	}
-		break;
+	break;
 
 	case Resource::TYPE::EFFEKSEER:
-
-		DeleteEffekseerEffect(handleId_);
+		//DeleteEffekseerEffect(handleId_);
 		break;
 
 	case Resource::TYPE::FONT:
@@ -130,6 +144,8 @@ void Resource::Release(void)
 		DeleteSoundMem(handleId_);
 		break;
 	}
+
+
 }
 
 void Resource::CopyHandle(int* imgs)

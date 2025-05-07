@@ -6,10 +6,12 @@ public:
 
 	//ゲーム開始カウントダウン
 	static constexpr float COUNTDOWN = 4.0f;
+
+	//カウントダウン初期値
 	static constexpr int SE_COUNT = 3;
 
 	CountDown();
-	~CountDown();
+	~CountDown() = default;
 
 	void Load();
 	void Init();

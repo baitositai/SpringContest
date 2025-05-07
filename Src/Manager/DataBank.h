@@ -8,6 +8,8 @@ public:
 
 	struct SYSTEM_INFO
 	{
+		int playerId_;				//プレイヤーID
+		int playerNum_;				//プレイヤー人数
 		SceneManager::MODE mode_;	//ゲームモード
 		bool autoTackle_;			//タックルの自動化
 	};
@@ -15,11 +17,34 @@ public:
 	//初期化処理
 	void Init();
 
-	//データを入力
+	/// <summary>
+	/// プレイヤー番号を入力(プレイヤーごとで処理を分ける用)
+	/// </summary>
+	/// <param name="playerId"></param>プレイヤーの番号
+	void Input(const int& playerId);
+
+	/// <summary>
+	/// プレイヤー人数を設定
+	/// </summary>
+	/// <param name="playerNum"></param>人数
+	void InputPlayNum(const int& playerNum);
+
+	/// <summary>
+	/// ゲームモードを設定
+	/// </summary>
+	/// <param name="mode"></param>ゲームモード
 	void Input(const SceneManager::MODE& mode);
+
+	/// <summary>
+	/// 自動攻撃の設定
+	/// </summary>
+	/// <param name="autoTackle"></param>trueの場合あり、falseの場合なし
 	void Input(const bool& autoTackle);
 
-	//出力
+	/// <summary>
+	/// システム情報を返す
+	/// </summary>
+	/// <returns></returns>システム情報
 	inline const SYSTEM_INFO& Output()const { return systemInfo_; }
 
 private:

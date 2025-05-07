@@ -64,17 +64,17 @@ public:
 		int AKeyRY;
 	};
 
-	void Init(void);
-	void Update(void);
+	void Init();
+	void Update();
 
 	// リソースの破棄
-	void Destroy(void);
+	void Destroy();
 
 	// 判定を行うキーを追加
 	void Add(int key);
 
 	// 判定を行うキーをクリア
-	void Clear(void);
+	void Clear();
 
 	// キーの押下判定
 	bool IsNew(int key) const;
@@ -86,22 +86,22 @@ public:
 	bool IsTrgUp(int key) const;
 
 	// マウス座標の取得
-	Vector2 GetMousePos(void) const;
+	Vector2 GetMousePos() const;
 
 	// マウスのクリック状態を取得(MOUSE_INPUT_LEFT、RIGHT)
-	int GetMouse(void) const;
+	int GetMouse() const;
 
 	// マウスが左クリックされたか
-	bool IsClickMouseLeft(void) const;
+	bool IsClickMouseLeft() const;
 
 	// マウスが右クリックされたか
-	bool IsClickMouseRight(void) const;
+	bool IsClickMouseRight() const;
 
 	// マウスが左クリックされたか(押しっぱなしはNG)
-	bool IsTrgMouseLeft(void) const;
+	bool IsTrgMouseLeft() const;
 
 	// マウスが右クリックされたか(押しっぱなしはNG)
-	bool IsTrgMouseRight(void) const;
+	bool IsTrgMouseRight() const;
 
 	// コントローラの入力情報を取得する
 	JOYPAD_IN_STATE GetJPadInputState(JOYPAD_NO no);
@@ -162,8 +162,8 @@ private:
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
-	InputManager(void);
-	~InputManager(void) = default;
+	InputManager();
+	~InputManager() = default;
 
 	// 配列の中からキー情報を取得する
 	const InputManager::Info& Find(int key) const;

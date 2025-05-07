@@ -16,12 +16,9 @@ AnimationController::AnimationController(int modelId)
 	stepEndLoopEnd_ = 0.0f;
 }
 
-AnimationController::~AnimationController(void)
+AnimationController::~AnimationController()
 {
-	for (const auto& anim : animations_)
-	{
-		MV1DeleteModel(anim.second.model);
-	}
+
 }
 
 void AnimationController::Add(int type, const std::string& path, float speed)
@@ -100,7 +97,7 @@ void AnimationController::Play(int type, bool isLoop,
 
 }
 
-void AnimationController::Update(void)
+void AnimationController::Update()
 {
 
 	// Œo‰ßŽžŠÔ‚ÌŽæ“¾
@@ -181,12 +178,12 @@ void AnimationController::SetEndLoop(float startStep, float endStep, float speed
 	endLoopSpeed_ = speed;
 }
 
-int AnimationController::GetPlayType(void) const
+int AnimationController::GetPlayType() const
 {
 	return playType_;
 }
 
-bool AnimationController::IsEnd(void) const
+bool AnimationController::IsEnd() const
 {
 
 	bool ret = false;

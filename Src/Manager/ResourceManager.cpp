@@ -2,10 +2,9 @@
 #include "ResourceManager.h"
 
 
-void ResourceManager::Init(void)
+void ResourceManager::Init()
 {
 	std::unique_ptr<Resource> res;
-	std::string path_Omuretu = "Character/Omuretu/";
 	std::string path_Stage = "Stage/";
 
 	//タイトル画像
@@ -13,7 +12,8 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::TITLE, std::move(res));
 
 	//タイトル文字
-	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "PushSpace.png");
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, Application::PATH_IMAGE + "PushSpace.png",
+		TITLE_UI_NUM_X, TITLE_UI_NUM_Y, TITLE_UI_SIZE, TITLE_UI_SIZE);
 	resourcesMap_.emplace(SRC::TITLE_UI, std::move(res));
 
 	//タイトル背景
@@ -24,17 +24,12 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "Shadow.png");
 	resourcesMap_.emplace(SRC::PLAYER_SHADOW, std::move(res));
 
-	//オムレツ(走る)
-	res = std::make_unique<Resource>(Resource::TYPE::IMGS, Application::PATH_IMAGE + "Alphabet.png",
-		ALPHABET_NUM_X, ALPHABET_NUM_Y, ALPHABET_SIZE_X, ALPHABET_SIZE_Y);
-	resourcesMap_.emplace(SRC::ALPHABET, std::move(res));
-
 	//プレイヤー
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Player/Player.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, std::move(res));
 
 	//ステージ
-	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Stage/MainPlanet.mv1");
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, Application::PATH_MODEL + "Stage/stage.mv1");
 	resourcesMap_.emplace(SRC::STAGE, std::move(res));
 
 	//スカイドーム
@@ -117,14 +112,6 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "Draw.png");
 	resourcesMap_.emplace(SRC::DRAW, std::move(res));
 
-	//タックルエフェクト
-	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, Application::PATH_EFFECT + "Tackle/Tackle.efkefc");
-	resourcesMap_.emplace(SRC::TACKLE_EFK, std::move(res));
-
-	//星塵エフェクト（実験用）
-	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, Application::PATH_EFFECT + "StarDust/StarDust.efkefc");
-	resourcesMap_.emplace(SRC::STAR_DUST_EFK, std::move(res));
-
 	//タイトルBGM
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, Application::PATH_SOUND + "Title.mp3");
 	resourcesMap_.emplace(SRC::TITLE_BGM, std::move(res));
@@ -193,6 +180,10 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, Application::PATH_SOUND + "Jump.mp3");
 	resourcesMap_.emplace(SRC::JUMP_SE, std::move(res));
 
+	//スピードアップSE
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, Application::PATH_SOUND + "SpeedUp.mp3");
+	resourcesMap_.emplace(SRC::SPEED_UP_SE, std::move(res));
+
 	//爆発SE
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, Application::PATH_SOUND + "Blast.mp3");
 	resourcesMap_.emplace(SRC::BLAST_SE, std::move(res));
@@ -201,9 +192,58 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, Application::PATH_SOUND + "EnemyDamage.mp3");
 	resourcesMap_.emplace(SRC::ENEMY_DAMAGE_SE, std::move(res));
 
+	//タックルゲージ
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "TackleGage.png");
+	resourcesMap_.emplace(SRC::TACKLE_GAGE, std::move(res));
+
+	//スピードアップ
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "SpeedUp.png");
+	resourcesMap_.emplace(SRC::SPEED_UP, std::move(res));
+
+	//タックル選択UI 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_IMAGE + "TackleSelect.png");
+	resourcesMap_.emplace(SRC::TACKLE_SELECT, std::move(res));
+
+	//操作説明UI
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, Application::PATH_IMAGE + "Explan.png",
+		EXPLAN_NUM_X, EXPLAN_NUM_Y, EXPLAN_SIZE_X, EXPLAN_SIZE_Y);
+	resourcesMap_.emplace(SRC::EXPLAN, std::move(res));
+
+	//タックルエフェクト
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, Application::PATH_IMAGE + "TackleEfk.png",
+		EFK_NUM_X, EFK_NUM_Y, EFK_SIZE, EFK_SIZE);
+	resourcesMap_.emplace(SRC::TACKLE_EFK, std::move(res));
+
+	//ヒットエフェクト
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, Application::PATH_IMAGE + "HitEfk.png",
+		EFK_NUM_X, EFK_NUM_Y, EFK_SIZE, EFK_SIZE);
+	resourcesMap_.emplace(SRC::HIT_EFK, std::move(res));
+
+	//爆発エフェクト
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, Application::PATH_IMAGE + "Explosion.png",
+		EFK_NUM_X, EFK_NUM_Y, EFK_SIZE, EFK_SIZE);
+	resourcesMap_.emplace(SRC::EXPLOSION_EFK, std::move(res));
+
+	//入手エフェクト
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, Application::PATH_IMAGE + "GetEfk.png",
+		GET_EFK_NUM_X, GET_EFK_NUM_Y, GET_EFK_SIZE, GET_EFK_SIZE);
+	resourcesMap_.emplace(SRC::GET_EFK, std::move(res));
+
+	//妨害オブジェクト
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, Application::PATH_IMAGE + "HinderObjcets.png",
+		HINDER_NUM_X, HINDER_NUM_Y, HINDER_SIZE, HINDER_SIZE);
+	resourcesMap_.emplace(SRC::HINDER_OBJS, std::move(res));
+
+	//妨害開始用SE
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, Application::PATH_SOUND + "Hinder.mp3");
+	resourcesMap_.emplace(SRC::HINDER_SE, std::move(res));
+
+	//動画
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, Application::PATH_MOVIE + "Movie.mp4");
+	resourcesMap_.emplace(SRC::MOVIE, std::move(res));
 }
 
-void ResourceManager::Release(void)
+void ResourceManager::Release()
 {
 	for (auto& p : loadedMap_)
 	{
@@ -213,7 +253,7 @@ void ResourceManager::Release(void)
 	loadedMap_.clear();
 }
 
-void ResourceManager::Destroy(void)
+void ResourceManager::Destroy()
 {
 	Release();
 	resourcesMap_.clear();
@@ -243,7 +283,7 @@ int ResourceManager::LoadModelDuplicate(SRC src)
 	return duId;
 }
 
-ResourceManager::ResourceManager(void)
+ResourceManager::ResourceManager()
 {
 	Init();
 }

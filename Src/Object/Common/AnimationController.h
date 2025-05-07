@@ -22,7 +22,7 @@ public :
 	// コンストラクタ
 	AnimationController(int modelId);
 	// デストラクタ
-	~AnimationController(void);
+	~AnimationController();
 
 	// アニメーション追加
 	void Add(int type, const std::string& path, float speed);
@@ -37,10 +37,10 @@ public :
 	void SetEndLoop(float startStep, float endStep, float speed);
 
 	// 再生中のアニメーション
-	int GetPlayType(void) const;
+	int GetPlayType() const;
 
 	// 再生終了
-	bool IsEnd(void) const;
+	bool IsEnd() const;
 
 private :
 

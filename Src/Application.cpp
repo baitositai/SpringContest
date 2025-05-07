@@ -4,7 +4,6 @@
 #include "Manager/InputManager.h"
 #include "Manager/SceneManager.h"
 #include "Manager/SoundManager.h"
-#include "Manager/EffectManager.h"
 #include "Shader/PixelShader.h"
 #include "Scene/TitleScene.h"
 #include "Scene/GameScene.h"
@@ -18,6 +17,7 @@ const std::string Application::PATH_EFFECT = "Data/Effect/";
 const std::string Application::PATH_FONT = "Data/Font/";
 const std::string Application::PATH_TEXT = "Data/Text/";
 const std::string Application::PATH_SOUND = "Data/Sound/";
+const std::string Application::PATH_MOVIE = "Data/Movie/";
 
 void Application::CreateInstance(void)
 {
@@ -36,10 +36,10 @@ Application& Application::GetInstance(void)
 void Application::Init(void)
 {
 	// アプリケーションの初期設定
-	SetWindowText("ここを見たなこの野郎");
+	SetWindowText("闘走中");
 
 	// ウィンドウサイズ
-	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
+	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, COLOR_BIT_DEPTH);
 	ChangeWindowMode(true);
 
 	// DxLibの初期化
@@ -51,14 +51,6 @@ void Application::Init(void)
 		isInitFail_ = true;
 		return;
 	}
-
-	//エフェクシアの初期化
-	if (Effekseer_Init(8000) == -1)
-	{
-		DxLib_End();
-	}
-	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
-	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
 	// キー制御初期化
 	SetUseDirectInputFlag(true);
@@ -123,19 +115,15 @@ void Application::Run(void)
 	}
 }
 
-void Application::Destroy(void)
+void Application::Destroy()
 {
 	InputManager::GetInstance().Destroy();	
-	EffectManager::GetInstance().Destroy();	
-	SoundManager::GetInstance().Destroy();
-	PixelShader::GetInstance().Destroy();
-	SceneManager::GetInstance().Destroy();
+	ResourceManager::GetInstance().Destroy();		
+	SceneManager::GetInstance().Destroy();	
 	TextManager::GetInstance().Destroy();
-	ResourceManager::GetInstance().Destroy();
+	PixelShader::GetInstance().Destroy();	
+	SoundManager::GetInstance().Destroy();
 
-	// Effekseerを終了する。
-	Effkseer_End();
-	
 	// DxLib終了
 	if (DxLib_End() == -1)
 	{
@@ -145,12 +133,12 @@ void Application::Destroy(void)
 	delete instance_;
 }
 
-bool Application::IsInitFail(void) const
+bool Application::IsInitFail() const
 {
 	return isInitFail_;
 }
 
-bool Application::IsReleaseFail(void) const
+bool Application::IsReleaseFail() const
 {
 	return isReleaseFail_;
 }
@@ -168,7 +156,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-Application::Application(void)
+Application::Application()
 {
 	isInitFail_ = false;
 	isReleaseFail_ = false;

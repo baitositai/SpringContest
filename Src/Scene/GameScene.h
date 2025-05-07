@@ -9,6 +9,9 @@ class StageManager;
 class PlayerUI;
 class CountDown;
 class GameBGM;
+class Stage;
+class SkyDome;
+class HinderManager;
 
 class GameScene : public SceneBase
 {
@@ -20,7 +23,7 @@ public:
 		NONE,
 		START,	//カウントダウン
 		PLAY,	//プレイ
-		REZALT,	//結果
+		RESULT,	//結果
 	};
 
 	//プレイヤー人数
@@ -42,13 +45,13 @@ public:
 	GameScene(SceneManager& manager);
 
 	// デストラクタ
-	~GameScene(void);
+	~GameScene() = default;
 
-	void Load(void) override;
-	void Init(void) override;
+	void Load() override;
+	void Init() override;
 	void Update(InputManager& input) override;
-	void Draw(void) override;
-	void Release(void) override;
+	void Draw() override;
+	void Release() override;
 
 	//共通描画
 	void CommonDraw() override;
@@ -65,44 +68,46 @@ private:
 	STATE state_;
 
 	// 状態管理(状態遷移時初期処理)
-	std::map<STATE, std::function<void(void)>> stateChanges_;
+	std::map<STATE, std::function<void()>> stateChanges_;
 
 	// 状態管理(更新ステップ)
-	std::function<void(void)> stateGameUpdate_;
-	std::function<void(void)> stateGameDraw_;
+	std::function<void()> stateGameUpdate_;
+	std::function<void()> stateGameDraw_;
 
 	//インスタンス生成
 	std::vector<std::shared_ptr<Player>> players_;
 	std::vector<std::unique_ptr<ObjectManager>> objs_;
 	std::unique_ptr<TimeCount> time_;
-	std::unique_ptr<StageManager> stage_;
+	std::unique_ptr<Stage> stage_;
 	std::unique_ptr<PlayerUI> uis_;
 	std::unique_ptr<CountDown> cntDown_;
 	std::unique_ptr<GameBGM> bgm_;
+	std::unique_ptr<SkyDome> sky_;
+	std::unique_ptr<HinderManager> hinder_;
 
 	//更新関数
 	void LoadingUpdate(InputManager& ins);	//読み込み中処理
 	void NormalUpdate(InputManager& ins);	//ゲーム中処理
 	
 	//描画関数 
-	void LoadingDraw(void);		//読み込み中描画
-	void NormalDraw(void);		//ゲーム中描画(基本はここに書いてね)
+	void LoadingDraw();		//読み込み中描画
+	void NormalDraw();		//ゲーム中描画(基本はここに書いてね)
 
 	//状態遷移
-	void ChangeState(STATE state);
-	void ChangeStart(void);
-	void ChangePlay(void);
-	void ChangeRezalt(void);
+	void ChangeState(const STATE state);
+	void ChangeStart();
+	void ChangePlay();
+	void ChangeResult();
 
 	//更新ステップ
-	void StartUpdate(void);	//状態がSTARTの時に更新することを書く
-	void PlayUpdate(void);	//PLAYの時(基本はここに書いてね)
-	void RezaltUpdate(void);//REZALTの時
+	void StartUpdate();	//状態がSTARTの時に更新することを書く
+	void PlayUpdate();	//PLAYの時(基本はここに書いてね)
+	void ResultUpdate();//RESULTの時
 
 	//描画ステップ
-	void StartDraw();	//状態がSTARTの時に描画することを書く
-	void PlayDraw();	//PLAYの時
-	void RezaltDraw();	//REZALTの時
+	void StartDraw();		//状態がSTARTの時に描画することを書く
+	void PlayDraw();		//PLAYの時
+	void ResultDraw();		//RESULTの時
 
 	//衝突判定
 	void Collision();

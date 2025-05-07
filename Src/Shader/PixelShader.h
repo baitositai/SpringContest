@@ -77,7 +77,7 @@ private:
 	void InitPS();
 
 	//シェーダーの検索
-	const int& SearchPS(const PS_TYPE& ps)const;
+	const int SearchPS(const PS_TYPE& ps)const;
 
 	//コンストラクタ
 	PixelShader();
