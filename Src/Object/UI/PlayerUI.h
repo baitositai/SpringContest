@@ -65,6 +65,9 @@ public:
 	static constexpr int RESULT_SCORE_INTERVAL = 35;
 	static constexpr int RESULT_SCORE_POS_X = REZALT_SCORE_UI_X + 120;
 	static constexpr int RESULT_SCORE_POS_Y = REZALT_SCORE_UI_Y + 10;
+
+	//UI描画用オフセット
+	static constexpr int UI_OFFSET = 35;
 	
 	PlayerUI();
 	~PlayerUI() = default;

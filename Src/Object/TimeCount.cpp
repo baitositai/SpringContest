@@ -93,15 +93,17 @@ void TimeCount::Release()
 
 void TimeCount::CommonDraw()
 {
-	//タイマー描画
+	//10進数の桁分割
+	constexpr int DECIMAL_BASE = 10;
 	int min = static_cast<int>(step_) / SECONDS_PER_MINUTE;
 	int sec = static_cast<int>(step_) % SECONDS_PER_MINUTE;
 
+	//描画する数字を決める
 	int timeNum[TIME_DIGITS] = {
-		min / 10,
-		min % 10,
-		sec / 10,
-		sec % 10
+		min / DECIMAL_BASE,
+		min % DECIMAL_BASE,
+		sec / DECIMAL_BASE,
+		sec % DECIMAL_BASE
 	};
 
 	//タイマーゲージの描画

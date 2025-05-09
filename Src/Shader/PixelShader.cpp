@@ -6,7 +6,7 @@ void PixelShader::Init()
 	InitPS();
 
 	//定数バッファ
-	psConstBuf_ = CreateShaderConstantBuffer(sizeof(float) * 8);
+	psConstBuf_ = CreateShaderConstantBuffer(sizeof(float) * PS_CONST_FLOAT_COUNT);
 }
 
 void PixelShader::Destroy()

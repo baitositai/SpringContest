@@ -26,7 +26,7 @@ void LifeItem::InitModel()
 	transform_.quaRotLocal =
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(0.0f), 0.0f });
 	transform_.Update();
-	color_ = 0xabff2f;
+	color_ = Utility::LIME;
 }
 
 void LifeItem::OnCollision(Player& player)

@@ -32,9 +32,9 @@ Player::Player()
 	stateChanges_.emplace(STATE::DEATH, std::bind(&Player::ChangeStateDeath, this));
 	stateChanges_.emplace(STATE::WIN, std::bind(&Player::ChangeStateWin, this));
 
-	aliveStateChanges_.emplace(ALIVE_STATE::RUN, std::bind(&Player::ChanageAliveStateRun, this));
-	aliveStateChanges_.emplace(ALIVE_STATE::TACKLE, std::bind(&Player::ChanageAliveStateTackle, this));
-	aliveStateChanges_.emplace(ALIVE_STATE::DAMAGE, std::bind(&Player::ChanageAliveStateDamage, this));
+	aliveStateChanges_.emplace(ALIVE_STATE::RUN, std::bind(&Player::ChangeAliveStateRun, this));
+	aliveStateChanges_.emplace(ALIVE_STATE::TACKLE, std::bind(&Player::ChangeAliveStateTackle, this));
+	aliveStateChanges_.emplace(ALIVE_STATE::DAMAGE, std::bind(&Player::ChangeAliveStateDamage, this));
 }
 
 void Player::Load()
@@ -307,9 +307,14 @@ void Player::Damage()
 		0.0f);
 
 	//モデルの色を変える
-	//MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
-	if(static_cast<int>(damageTime_ * 10.0f) % 2 == 0) { MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 0.0f, 0.0f, 1.0f)); }
-	else { MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 1.0f, 1.0f, 1.0f)); }
+	if(static_cast<int>(damageTime_ * 10.0f) % 2 == 0) 
+	{ 
+		MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
+	}
+	else
+	{
+		MV1SetMaterialDifColor(trans_.modelId, 0, GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
+	}
 
 	//時間になった時
 	if (damageTime_ <= 0.0f) 
@@ -327,20 +332,22 @@ void Player::Damage()
 
 void Player::DebagDraw()
 {
+	constexpr int DIV_NUM = 20;
+
 	DrawSphere3D(
 	trans_.pos,
 		radius_,
-		20,
-		0xff0000,
-		0xff0000,
+		DIV_NUM,
+		Utility::RED,
+		Utility::RED,
 		true);
 
 	//デバッグ
-	int interval = 20;
+	constexpr int INTERVAL = 20;
 	int i = 0;
-	DrawFormatString(0, interval * i, 0x000000, "LIFE = %d", life_);
+	DrawFormatString(0, INTERVAL * i, Utility::BLACK, "LIFE = %d", life_);
 	i++;
-	DrawFormatString(0, interval * i, 0x000000, "POW = %d", pow_);
+	DrawFormatString(0, INTERVAL * i, Utility::BLACK, "POW = %d", pow_);
 }
 
 void Player::ChangeState(STATE state)
@@ -378,12 +385,12 @@ void Player::ChangeStateWin()
 	animationController_->Play((int)ANIM_TYPE::DANCE, true);
 }
 
-void Player::ChanageAliveStateRun()
+void Player::ChangeAliveStateRun()
 {
 	aliveStateUpdate_ = std::bind(&Player::Run, this);
 }
 
-void Player::ChanageAliveStateTackle()
+void Player::ChangeAliveStateTackle()
 {
 	aliveStateUpdate_ = std::bind(&Player::Tackle, this);
 
@@ -401,7 +408,7 @@ void Player::ChanageAliveStateTackle()
 	tackleTime_ = TACKLE_TIME;
 }
 
-void Player::ChanageAliveStateDamage()
+void Player::ChangeAliveStateDamage()
 {
 	aliveStateUpdate_ = std::bind(&Player::Damage, this);
 

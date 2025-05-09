@@ -204,9 +204,9 @@ private:
 	void ChangeStateDeath();
 	void ChangeStateWin();
 
-	void ChanageAliveStateRun();
-	void ChanageAliveStateTackle();
-	void ChanageAliveStateDamage();
+	void ChangeAliveStateRun();
+	void ChangeAliveStateTackle();
+	void ChangeAliveStateDamage();
 
 	// 更新ステップ
 	void UpdateNone();

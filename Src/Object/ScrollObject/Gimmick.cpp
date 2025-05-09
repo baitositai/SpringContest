@@ -27,7 +27,7 @@ void Gimmick::InitModel()
 	transform_.quaRotLocal =
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(0.0f), 0.0f });
 	transform_.Update();
-	color_ = 0xb22222;
+	color_ = Utility::RED;
 }
 
 void Gimmick::OnCollision(Player& player)
@@ -41,9 +41,6 @@ void Gimmick::OnCollision(Player& player)
 
 	//スコア加算
 	ScoreBank::GetInstance().AddScore(DataBank::GetInstance().Output().playerId_, SCORE);
-
-	//爆発音再生
-	//SoundManager::GetInstance().Play(SoundManager::SOUND::BLAST_SE);
 
 	//エフェクト再生
 	Effect2DManagerContainer::GetInstance().GetManager(DataBank::GetInstance().Output().playerId_)->Play(Effect2DManager::EFFECT::BLAST,

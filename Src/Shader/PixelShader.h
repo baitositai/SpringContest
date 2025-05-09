@@ -20,6 +20,9 @@ public:
 	// ポリゴン数
 	static constexpr int NUM_POLYGON = 2;
 
+	//バッファー数
+	static constexpr int PS_CONST_FLOAT_COUNT = 8;
+
 	enum class PS_TYPE
 	{
 		TEXTURE,

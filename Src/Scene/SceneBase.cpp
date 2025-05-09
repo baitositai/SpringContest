@@ -1,5 +1,6 @@
-#include "../Manager/SceneManager.h"
 #include "SceneBase.h"
+#include "../Manager/SceneManager.h"
+#include "../Utility/Utility.h"
 
 SceneBase::SceneBase(SceneManager& scene) :sceneManager_(scene)
 {
@@ -24,6 +25,6 @@ void SceneBase::DrawNowLoading()
 	{
 		loadStr += dotStr;
 	}
-	DrawStringToHandle(LOADING_STRING_POS_X, LOADING_STRING_POS_Y, loadStr.c_str(), 0xfff000, loadFont_);
+	DrawStringToHandle(LOADING_STRING_POS_X, LOADING_STRING_POS_Y, loadStr.c_str(), Utility::YELLOW, loadFont_);
 
 }

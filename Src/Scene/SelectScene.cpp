@@ -187,11 +187,11 @@ void SelectScene::NormalDraw()
 	int cr = 0;
 	if (DataBank::GetInstance().Output().autoTackle_)
 	{
-		cPos = { ON_POS_X, ON_POS_Y }; cr = 0xff0000; 
+		cPos = { ON_POS_X, ON_POS_Y }; cr = Utility::RED; 
 	}
 	else 
 	{
-		cPos = { OFF_POS_X, OFF_POS_Y }; cr = 0x0000ff;
+		cPos = { OFF_POS_X, OFF_POS_Y }; cr = Utility::GREEN;
 	}
 	DrawRotaGraph(
 		cPos.x,

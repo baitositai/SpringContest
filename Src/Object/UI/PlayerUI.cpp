@@ -2,6 +2,7 @@
 #include "../../Manager/SceneManager.h"
 #include "../../Manager/DataBank.h"
 #include "../../Manager/ScoreBank.h"
+#include "../../Utility/Utility.h"
 #include "../Character/Player.h"
 #include "PlayerUI.h"
 
@@ -80,11 +81,11 @@ void PlayerUI::Update()
 		return;
 	}
 	//スコアの更新
-	scoreDigits_[0] = score.GetScore(playerId) / 10000;
-	scoreDigits_[1] = (score.GetScore(playerId) % 10000) / 1000;
-	scoreDigits_[2] = (score.GetScore(playerId) % 1000) / 100;
-	scoreDigits_[3] = (score.GetScore(playerId) % 100) / 10;
-	scoreDigits_[4] = score.GetScore(playerId) % 10;
+	scoreDigits_[0] = score.GetScore(playerId) / Utility::SIX_DIGIT_MIN;
+	scoreDigits_[1] = (score.GetScore(playerId) % Utility::FIVE_DIGIT_MIN) / Utility::FOUR_DIGIT_MIN;
+	scoreDigits_[2] = (score.GetScore(playerId) % Utility::FOUR_DIGIT_MIN) / Utility::THREE_DIGIT_MIN;
+	scoreDigits_[3] = (score.GetScore(playerId) % Utility::THREE_DIGIT_MIN) / Utility::TWO_DIGIT_MIN;
+	scoreDigits_[4] = score.GetScore(playerId) % Utility::TWO_DIGIT_MIN;
 }
 
 void PlayerUI::Draw(const Player& player)
@@ -114,7 +115,7 @@ void PlayerUI::Draw(const Player& player)
 	{	
 		//体力
 		DrawGraph(
-			LIFE_X + 35 * i,
+			LIFE_X + UI_OFFSET * i,
 			LIFE_Y,
 			imgLife_,
 			true);
@@ -131,7 +132,7 @@ void PlayerUI::Draw(const Player& player)
 	{
 		//パワー
 		DrawGraph(
-			POWER_X + 35 * i,
+			POWER_X + UI_OFFSET * i,
 			POWER_Y,
 			imgPow_,
 			true);
@@ -206,8 +207,8 @@ void PlayerUI::DrawMarathon()
 	for (int i = 0; i < SCORE_DIGIT; i++)
 	{
 		DrawRotaGraph(
-			SCORE_UI_X + 120 + 35 * i,
-			SCORE_UI_Y + 10,
+			RESULT_SCORE_POS_X + RESULT_SCORE_INTERVAL * i,
+			RESULT_SCORE_POS_Y,
 			1.0f,
 			0.0f,
 			imgNumbers_[scoreDigits_[i]],
@@ -227,7 +228,7 @@ void PlayerUI::DrawP1Win()
 {
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y - 64,
+		CLEAR_PLAYER_POS_Y,
 		1.0f,
 		0.0f,
 		imgPlayers_[0],
@@ -235,7 +236,7 @@ void PlayerUI::DrawP1Win()
 
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y + 64,
+		CLEAR_MES_POS_Y,
 		1.0f,
 		0.0f,
 		imgWin_,
