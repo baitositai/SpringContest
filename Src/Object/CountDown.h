@@ -10,16 +10,45 @@ public:
 	//カウントダウン初期値
 	static constexpr int SE_COUNT = 3;
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	CountDown();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~CountDown() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release();
 
-	//終了したら判定を返す
+	/// <summary>
+	/// 終了したら判定を返す
+	/// </summary>
+	/// <returns></returns>
 	inline const bool IsStart() const { return isStart_; }
 
 private:

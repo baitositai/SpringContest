@@ -6,18 +6,13 @@
 
 class TitlePlayer;
 class TitleMesh;
+class TitleStage;
+class SkyDome;
 
 class TitleScene : public SceneBase
 {
 
 public:
-
-	enum class ROT_STATE
-	{
-		NONE,
-		START,	//開始
-		HALF,	//半回転済み
-	};
 
 	//タイトルフォントサイズ
 	static constexpr int MES_FONT_SIZE = 28;
@@ -35,28 +30,53 @@ public:
 	//ロゴ拡大率
 	static constexpr float LOGO_RATE = 0.5f;
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="manager"></param>シーン管理クラス
 	TitleScene(SceneManager& manager);
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~TitleScene(void) = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load() override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init() override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="ins"></param>入力管理クラス
 	void Update(InputManager& ins) override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release() override;
 
-	//共通描画
+	/// <summary>
+	/// 共通描画
+	/// </summary>
 	void CommonDraw() override;
 
 private:	
 
 	//タイトル背景
 	int imgTitle_;
-
-	//タイトル背景
-	int imgTitleBackGround_;
 
 	// メッセージフォント
 	int mesFont_;
@@ -77,4 +97,10 @@ private:
 
 	//メッシュ
 	std::unique_ptr<TitleMesh> titleMesh_;
+
+	//ステージ
+	std::unique_ptr<TitleStage> stage_;
+
+	//スカイドーム
+	std::unique_ptr<SkyDome> sky_;
 };

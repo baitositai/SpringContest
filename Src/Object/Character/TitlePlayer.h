@@ -26,12 +26,34 @@ public:
 	static constexpr float IDLE_SPEED = 10.0f;
 	static constexpr float RUN_SPEED = 40.0f;
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	TitlePlayer();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~TitlePlayer() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 private:

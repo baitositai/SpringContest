@@ -32,25 +32,42 @@ public:
 	static const std::string PATH_MOVIE;
 	//-------------------------------------------
 
-	// 明示的にインステンスを生成する
+	/// <summary>
+	///  明示的にインステンスを生成する
+	/// </summary>
 	static void CreateInstance();
 
-	// 静的インスタンスの取得
+	/// <summary>
+	/// 静的インスタンスの取得
+	/// </summary>
+	/// <returns></returns>アプリケーション
 	static Application& GetInstance();
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
 
-	// ゲームループの開始
+	/// <summary>
+	/// ゲームループ
+	/// </summary>
 	void Run();
 
-	// リソースの破棄
+	/// <summary>
+	/// リソースの破棄
+	/// </summary>
 	void Destroy();
 
-	// 初期化成功／失敗の判定
+	/// <summary>
+	/// 初期化成功の判定
+	/// </summary>
+	/// <returns></returns>判定結果
 	bool IsInitFail() const;
 
-	// 解放成功／失敗の判定
+	/// <summary>
+	/// 解放成功の判定
+	/// </summary>
+	/// <returns></returns>判定結果
 	bool IsReleaseFail() const;
 
 private:

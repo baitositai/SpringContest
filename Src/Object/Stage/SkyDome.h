@@ -22,12 +22,34 @@ public:
 	//スケールサイズ
 	static constexpr VECTOR SCALE = { 100.0f, 100.0f, 100.0f };
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	SkyDome();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~SkyDome() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 private:

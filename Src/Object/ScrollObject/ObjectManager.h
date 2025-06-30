@@ -18,16 +18,45 @@ public:
 	static constexpr int LIFE_CREATE_CNT = 1;
 	static constexpr int POW_CREATE_CNT = 1;
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	ObjectManager();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~ObjectManager() = default;
 
+	/// <summary>
+	/// 読みこみ
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release();
 
-	//オブジェクトを返す
+	/// <summary>
+	/// オブジェクト配列を返す
+	/// </summary>
+	/// <returns></returns>オブジェクト配列
 	inline const std::vector<std::unique_ptr<ObjectBase>>& GetObjects() const { return objs_; }
 
 private:

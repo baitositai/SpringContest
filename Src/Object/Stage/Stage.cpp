@@ -6,7 +6,7 @@
 
 Stage::Stage()
 {
-	for (int i = 0; i < CREATES; i++) { stages_[i] = {}; }
+	stages_.clear();
 }
 
 Stage::~Stage()
@@ -15,6 +15,9 @@ Stage::~Stage()
 
 void Stage::Load()
 {
+	//ステージのサイズを定義
+	stages_.resize(CREATES);
+
 	//モデルの初期化
 	for (int i = 0; i < CREATES; i++) 
 	{
@@ -26,14 +29,16 @@ void Stage::Load()
 void Stage::Init()
 {
 	//初期化
-	for (int i = 0; i < CREATES; i++) 
+	int i = 0;
+	for (Transform& stage : stages_)
 	{
-		stages_[i].scl = SCLAE;
-		stages_[i].pos = DEFAULT_POS[i];
-		stages_[i].quaRot = Quaternion();
-		stages_[i].quaRotLocal =
+		stage.scl = SCLAE;
+		stage.pos = DEFAULT_POS[i];
+		stage.quaRot = Quaternion();
+		stage.quaRotLocal =
 			Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
-		stages_[i].Update();
+		stage.Update();
+		i++;
 	}
 }
 

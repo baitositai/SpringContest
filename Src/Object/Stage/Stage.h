@@ -19,18 +19,40 @@ public:
 		{-2100,-2000,30000}
 	};
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Stage();
-	~Stage();
 
-	void Load();
-	void Init();
-	void Update();
-	void Draw();
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	virtual ~Stage();
 
-private:
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	virtual void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	virtual void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	virtual void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	virtual void Draw();
+
+protected:
 
 	//ステージ
-	Transform stages_[CREATES];
+	std::vector<Transform> stages_;
 
 };
 

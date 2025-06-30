@@ -19,16 +19,40 @@ public:
 	//RAND範囲
 	static constexpr int RAND_RANGE = 359;
 
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	HinderObject();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~HinderObject() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
-	//オブジェクトを追加
+	/// <summary>
+	/// オブジェクトを追加
+	/// </summary>
+	/// <param name="num"></param>追加値
 	void AddObject(const int num);
 
 private:
@@ -43,8 +67,8 @@ private:
 	//画像
 	int* imgs_;
 
-	//オムレツ
-	std::vector<Object> omus_;
+	//オブジェクト配列
+	std::vector<Object> objs_;
 	
 	//反射処理
 	void Reflect(Vector2& vec, float nx, float ny);

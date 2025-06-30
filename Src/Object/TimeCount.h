@@ -36,16 +36,44 @@ public:
 		Application::SCREEN_HALF_X + 32,
 		Application::SCREEN_HALF_X + 64};
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	TimeCount();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~TimeCount() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release();
 
-	//共通描画
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void CommonDraw();
 
 private:

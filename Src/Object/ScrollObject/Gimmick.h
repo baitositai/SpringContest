@@ -15,13 +15,30 @@ public:
 	//スコア量
 	static constexpr int SCORE = -500;
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Gimmick();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Gimmick();
 
+	/// <summary>
+	/// モデルの初期化
+	/// </summary>
 	void InitModel() override;
-	void OnCollision(Player& player) override;
-	void Draw() override;
 
-private:
+	/// <summary>
+	/// 衝突後の処理処理
+	/// </summary>
+	/// <param name="player"></param>
+	void OnCollision(Player& player) override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw() override;
 
 };

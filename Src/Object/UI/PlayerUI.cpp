@@ -207,8 +207,8 @@ void PlayerUI::DrawMarathon()
 	for (int i = 0; i < SCORE_DIGIT; i++)
 	{
 		DrawRotaGraph(
-			RESULT_SCORE_POS_X + RESULT_SCORE_INTERVAL * i,
-			RESULT_SCORE_POS_Y,
+			SCORE_UI_POS_X + RESULT_SCORE_INTERVAL * i,
+			SCORE_UI_POS_Y,
 			1.0f,
 			0.0f,
 			imgNumbers_[scoreDigits_[i]],

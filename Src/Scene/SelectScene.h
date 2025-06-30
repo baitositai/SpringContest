@@ -23,18 +23,48 @@ public:
 	// 上下揺れの周期（揺れる速さ）
 	static constexpr float PERIOD = 0.05f;
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="manager"></param>シーン管理クラス
 	SelectScene(SceneManager& manager);
 
-	// デストラクタ
-	~SelectScene() = default;
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~SelectScene(void) = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load() override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init() override;
-	void Update(InputManager& input) override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="ins"></param>入力管理クラス
+	void Update(InputManager& ins) override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
-	void CommonDraw() override;
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release() override;
+
+	/// <summary>
+	/// 共通描画
+	/// </summary>
+	void CommonDraw() override;
 
 private:
 

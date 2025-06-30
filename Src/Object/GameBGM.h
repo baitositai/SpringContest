@@ -11,14 +11,34 @@ public:
 	//大きさ
 	static constexpr int VOLUME = 70;
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	GameBGM();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~GameBGM() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release();	
 	
-	//停止
+	/// <summary>
+	/// 音楽停止
+	/// </summary>
 	void Stop();
 
 private:

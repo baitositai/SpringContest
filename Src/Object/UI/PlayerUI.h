@@ -41,7 +41,7 @@ public:
 	static constexpr int POWER_X = 128;
 	static constexpr int POWER_Y = 96;
 
-	//スコア座標位置
+	//スコア背景座標位置
 	static constexpr int SCORE_UI_X = Application::SCREEN_SIZE_X - 320;
 	static constexpr int SCORE_UI_Y = 100;
 
@@ -63,6 +63,8 @@ public:
 
 	//スコアの座標位置
 	static constexpr int RESULT_SCORE_INTERVAL = 35;
+	static constexpr int SCORE_UI_POS_X = SCORE_UI_X + 120;
+	static constexpr int SCORE_UI_POS_Y = SCORE_UI_Y + 10;
 	static constexpr int RESULT_SCORE_POS_X = REZALT_SCORE_UI_X + 120;
 	static constexpr int RESULT_SCORE_POS_Y = REZALT_SCORE_UI_Y + 10;
 

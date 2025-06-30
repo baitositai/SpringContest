@@ -8,6 +8,8 @@
 #include "../Manager/Camera.h"
 #include "../Object/Character/TitlePlayer.h"
 #include "../Object/TitleMesh.h"
+#include "../Object/Stage/SkyDome.h"
+#include "../Object/Stage/TitleStage.h"
 #include "TitleScene.h"
 
 
@@ -15,7 +17,6 @@ TitleScene::TitleScene(SceneManager& manager) :SceneBase(manager)
 {
 	//各種初期化処理
 	imgTitle_ = -1;
-	imgTitleBackGround_ = -1;
 	changeSceneStep_ = -1.0f;
 
 	int i = -1;
@@ -29,6 +30,8 @@ TitleScene::TitleScene(SceneManager& manager) :SceneBase(manager)
 	//初期化
 	titlePlayer_ = nullptr;
 	titleMesh_ = nullptr;
+	stage_ = nullptr;
+	sky_ = nullptr;
 }
 
 void TitleScene::Load()
@@ -41,7 +44,6 @@ void TitleScene::Load()
 
 	// タイトル
 	imgTitle_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TITLE).handleId_;
-	imgTitleBackGround_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TITLE_BACKGROUND).handleId_;
 
 	//フォント
 	loadFont_ = CreateFontToHandle(
@@ -71,6 +73,14 @@ void TitleScene::Load()
 	//メッシュ
 	titleMesh_ = std::make_unique<TitleMesh>();
 	titleMesh_->Load();
+
+	//ステージ
+	stage_ = std::make_unique<TitleStage>();
+	stage_->Load();
+
+	//スカイドーム
+	sky_ = std::make_unique<SkyDome>();
+	sky_->Load();
 }
 
 
@@ -85,6 +95,12 @@ void TitleScene::Init()
 	//メッシュ
 	titleMesh_->Init();
 
+	//ステージ
+	stage_->Init();
+
+	//スカイ
+	sky_->Init();
+
 	//音量設定
 	SoundManager::GetInstance().AdjustVolume(SoundManager::SOUND::TITLE_BGM, VOLUME);
 
@@ -95,14 +111,12 @@ void TitleScene::Init()
 void TitleScene::Update(InputManager& input)
 {
 	updateFunc_(input);
-
 	return;
 }
 
 void TitleScene::Draw()
 {
 	drawFunc_();
-
 	return;
 }
 
@@ -152,6 +166,10 @@ void TitleScene::NormalUpdate(InputManager& ins)
 	//メッシュ
 	titleMesh_->Update();
 
+	//スカイ
+	sky_->Update();
+
+	//シーン遷移
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
 	{
 		//効果音再生
@@ -160,9 +178,13 @@ void TitleScene::NormalUpdate(InputManager& ins)
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
 		//BGM停止
 		SoundManager::GetInstance().Stop(SoundManager::SOUND::TITLE_BGM);
+		//処理終了
+		return;
 	}
 
 	changeSceneStep_ -= SceneManager::GetInstance().GetDeltaTime();
+
+	//動画再生
 	if (ins.IsTrgDown(KEY_INPUT_RETURN) ||
 		changeSceneStep_ <= 0.0f)
 	{
@@ -172,6 +194,8 @@ void TitleScene::NormalUpdate(InputManager& ins)
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::MOVIE);
 		//BGM停止
 		SoundManager::GetInstance().Stop(SoundManager::SOUND::TITLE_BGM);
+		//処理終了
+		return;
 	}
 }
 
@@ -184,7 +208,7 @@ void TitleScene::LoadingDraw()
 void TitleScene::NormalDraw()
 {
 	//タイトル背景
-	DrawExtendGraph(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, imgTitleBackGround_, true);
+	sky_->Draw();
 
 	//タイトルロゴ
 	DrawRotaGraph(LOGO_POS_X, LOGO_POS_Y, LOGO_RATE, 0.0f, imgTitle_, true);
@@ -192,9 +216,12 @@ void TitleScene::NormalDraw()
 	//モデル描画に必要
 	SetDrawScreen(sceneManager_.GetMainScreen());
 
-	//メッシュ
-	titleMesh_->Draw();
+	//ステージ
+	stage_->Draw();
 
 	//キャラクター
 	titlePlayer_->Draw();
+	
+	//メッシュ
+	titleMesh_->Draw();
 }

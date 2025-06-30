@@ -33,27 +33,54 @@ public:
 	static constexpr VECTOR DEFAULT_PLAYER_POS = { 0,0,0 };
 
 	//プレイヤーの操作キー
-	static constexpr int RIGHT_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_D, KEY_INPUT_RIGHT };
-	static constexpr int LEFT_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_A, KEY_INPUT_LEFT };
-	static constexpr int JUMP_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_SPACE, KEY_INPUT_RETURN };
-	static constexpr int TACKLE_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_W, KEY_INPUT_UP };
+	static constexpr int RIGHT_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_D, KEY_INPUT_RIGHT };		//右移動
+	static constexpr int LEFT_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_A, KEY_INPUT_LEFT };		//左移動
+	static constexpr int JUMP_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_SPACE, KEY_INPUT_RETURN };	//ジャンプ
+	static constexpr int TACKLE_MOVE_KEY[PLAYER_MAX] = { KEY_INPUT_W, KEY_INPUT_UP };		//攻撃
 
 	//カメラ位置
 	static constexpr VECTOR LOCAL_CAMERA_POS = { 0, 150, -200 };
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="manager"></param>シーン管理クラス
 	GameScene(SceneManager& manager);
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~GameScene() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load() override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init() override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="input"></param>入力管理クラス
 	void Update(InputManager& input) override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release() override;
 
-	//共通描画
+	/// <summary>
+	/// 共通描画
+	/// </summary>
 	void CommonDraw() override;
 
 private:	

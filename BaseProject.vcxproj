@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Stage\TitleStage.cpp" />
     <ClCompile Include="Src\Scene\MovieScene.cpp" />
     <ClCompile Include="Src\Object\Hinder\HinderManager.cpp" />
     <ClCompile Include="Src\Object\Hinder\HinderObject.cpp" />
@@ -71,6 +72,7 @@
     <ClCompile Include="Src\Object\TitleMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Stage\TitleStage.h" />
     <ClInclude Include="Src\Scene\MovieScene.h" />
     <ClInclude Include="Src\Object\Hinder\HinderManager.h" />
     <ClInclude Include="Src\Object\Hinder\HinderObject.h" />

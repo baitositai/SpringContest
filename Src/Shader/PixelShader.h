@@ -32,24 +32,45 @@ public:
 		MAX
 	};
 
-	//初期化処理
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
 
-	//解放処理
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Destroy();
 
-	//画像通常描画
+	/// <summary>
+	/// 画像の通常描画
+	/// </summary>
+	/// <param name="pos"></param>位置
+	/// <param name="handle"></param>画像
 	void DrawGraph(
 		const Vector2& pos, 
 		const int& handle);
 
-	//サイズ指定描画（通常）
+	/// <summary>
+	/// サイズ指定描画
+	/// </summary>
+	/// <param name="pos"></param>座標
+	/// <param name="size"></param>サイズ
+	/// <param name="handle"></param>画像
 	void DrawExtendGraphToShader(
 		const Vector2& pos,
 		const Vector2& size, 
 		const int& handle);
 
-	//サイズ指定描画
+	/// <summary>
+	/// シェーダーを利用したサイズ指定描画
+	/// </summary>
+	/// <param name="pos"></param>座標
+	/// <param name="size"></param>サイズ
+	/// <param name="handle"></param>画像
+	/// <param name="type"></param>シェーダー種類
+	/// <param name="buf"></param>バッファー
+	/// <param name="subBuf"></param>サブバッファー
 	void DrawExtendGraphToShader(
 		const Vector2& pos, 
 		const Vector2& size,

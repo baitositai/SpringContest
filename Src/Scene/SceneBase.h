@@ -25,28 +25,46 @@ public:
 	//シーンマネージャー
 	SceneManager& sceneManager_;
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="scene"></param>シーン管理クラス
 	SceneBase(SceneManager& scene);
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~SceneBase() = 0;
 
-	// 読み込み処理
+	/// <summary>
+	/// 読みこみ
+	/// </summary>
 	virtual void Load() = 0;
 
-	// 初期化処理
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	virtual void Init() = 0;
 
-	// 更新ステップ
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="input"></param>入力管理クラス
 	virtual void Update(InputManager& input) = 0;
 
-	// 描画処理
+	/// <summary>
+	/// 描画
+	/// </summary>
 	virtual void Draw() = 0;
 
-	// 共通描画処理(対戦用)
+	/// <summary>
+	/// 画面共通描画
+	/// </summary>
 	virtual void CommonDraw() = 0;
 
-	// 解放処理
+	/// <summary>
+	/// 解放
+	/// </summary>
 	virtual void Release() = 0;
 
 protected:
@@ -57,7 +75,10 @@ protected:
 	//ローディング経過時間
 	float loadingTime_;
 
+	//更新を管理
 	std::function<void(InputManager&)> updateFunc_;
+
+	//描画ヲ管理
 	std::function<void(void)> drawFunc_;
 	
 	//「now loading......」の描画

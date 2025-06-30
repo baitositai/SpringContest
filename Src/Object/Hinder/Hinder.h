@@ -20,13 +20,34 @@ public:
 	//スコア獲得目安量
 	static constexpr int ACHIEVEMENT_SCORE = 5000;
 
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Hinder();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Hinder() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 	/// <summary>

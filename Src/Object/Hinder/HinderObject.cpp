@@ -5,7 +5,7 @@
 HinderObject::HinderObject()
 {
 	//初期化
-	omus_.clear();
+	objs_.clear();
 
 	int i = -1;
 	imgs_ = &i;
@@ -19,16 +19,16 @@ void HinderObject::Load()
 
 void HinderObject::Init()
 {
-	omus_.clear();
+	objs_.clear();
 }
 
 void HinderObject::Update()
 {
 	//中身がない場合処理を抜ける
-	if (omus_.empty()) { return; }
+	if (objs_.empty()) { return; }
 
 	//位置更新
-	for (Object& omu : omus_)
+	for (Object& omu : objs_)
 	{
 		//移動
 		omu.pos_.x += omu.vec_.x;
@@ -62,9 +62,9 @@ void HinderObject::Update()
 void HinderObject::Draw()
 {
 	//中身がない場合処理を抜ける
-	if (omus_.empty()) { return; }
+	if (objs_.empty()) { return; }
 
-	for (Object& omu : omus_)
+	for (Object& omu : objs_)
 	{
 		//描画
 		DrawGraph(
@@ -90,7 +90,7 @@ void HinderObject::AddObject(const int num)
 		//画像種類を決める
 		omu.type_ = GetRand(HINDER_NUM_X * HINDER_NUM_Y - 1);
 		//追加
-		omus_.emplace_back(omu);
+		objs_.emplace_back(omu);
 	}
 }
 

@@ -59,15 +59,34 @@ public:
 	static constexpr COLOR_U8 COLOR_LB = { 255, 255, 0, 255 };	//左下
 	static constexpr COLOR_U8 COLOR_RB = { 255, 255, 0, 255 };	//右下
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	TitleMesh();
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~TitleMesh() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 private:

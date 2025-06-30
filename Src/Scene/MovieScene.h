@@ -19,21 +19,47 @@ public:
 	//ムービーの初期位置
 	static constexpr VECTOR DEFAULT_PLAYER_POS = { 0,0,0 };
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="manager"></param>シーン管理クラス
 	MovieScene(SceneManager& manager);
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~MovieScene() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load() override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init() override;
-	void Update(InputManager& input) override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="ins"></param>入力管理クラス
+	void Update(InputManager& ins) override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release() override;
 
-	//共通描画
+	/// <summary>
+	/// 共通描画
+	/// </summary>
 	void CommonDraw() override;
-
 private:
 
 	//動画

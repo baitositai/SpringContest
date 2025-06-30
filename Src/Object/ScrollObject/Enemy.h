@@ -39,20 +39,57 @@ public:
 		DEATH
 	};
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Enemy();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Enemy();
 
+	/// <summary>
+	/// モデル初期化
+	/// </summary>
 	void InitModel() override;
+
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load() override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update()override;
+
+	/// <summary>
+	/// 諸突後の更新
+	/// </summary>
+	/// <param name=""></param>
 	void UpdateHit(void) override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;	
+
+	/// <summary>
+	/// 衝突後の処理
+	/// </summary>
+	/// <param name="player"></param>プレイヤー
 	void OnCollision(Player& player) override;
 
-	//アニメーションの初期化処理
+	/// <summary>
+	/// アニメーション初期化
+	/// </summary>
+	/// <param name=""></param>
 	void InitAnimation(void);
 
-	//衝突アニメーション関係の初期化
+	/// <summary>
+	/// アニメーションの初期化
+	/// </summary>
 	void ResetHitAnim();
 
 private:

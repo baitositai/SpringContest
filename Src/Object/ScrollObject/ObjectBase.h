@@ -17,6 +17,7 @@ public:
 	//爆発エフェクト相対座標
 	static constexpr VECTOR EXPLOSION_POS = { 0.0f, 0.0f, 0.0f };
 
+	//状態
 	enum class STATE
 	{
 		NONE,
@@ -24,16 +25,39 @@ public:
 		HIT,
 	};
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	ObjectBase();
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~ObjectBase() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	virtual void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	virtual void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	virtual void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	virtual void Draw();	
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release();
 	
 	/// <summary>
@@ -48,13 +72,22 @@ public:
 	/// <param name="player"></param>プレイヤー
 	virtual void OnCollision(Player& player) = 0;
 
-	//トランスフォームを返す
+	/// <summary>
+	/// トランスフォームを返す
+	/// </summary>
+	/// <returns></returns>
 	inline const Transform& GetTransform() const { return transform_; }
 
-	//状態を返す
+	/// <summary>
+	/// 状態を返す
+	/// </summary>
+	/// <returns></returns>状態
 	inline const STATE& GetState()const { return state_; }
 
-	//半径を返す
+	/// <summary>
+	/// 半径を返す
+	/// </summary>
+	/// <returns></returns>半径
 	inline const float& GetRadius()const { return radius_; }
 
 protected:

@@ -139,7 +139,7 @@ void Player::Release()
 	SoundManager::GetInstance().Stop(SoundManager::SOUND::TACKLE_SE);
 }
 
-void Player::AddLife(const int& life)
+void Player::AddLife(const int life)
 {
 	life_ += life;
 
@@ -153,7 +153,7 @@ void Player::AddLife(const int& life)
 	}
 }
 
-void Player::AddPower(const int& pow)
+void Player::AddPower(const int pow)
 {
 	pow_ += pow;
 	//ÉpÉèÅ[Ç™ç≈ëÂÇÃéû
@@ -162,7 +162,7 @@ void Player::AddPower(const int& pow)
 	}
 }
 
-void Player::ChangeAliveState(const ALIVE_STATE& state)
+void Player::ChangeAliveState(const ALIVE_STATE state)
 {
 	aliveState_ = state;
 
@@ -170,7 +170,7 @@ void Player::ChangeAliveState(const ALIVE_STATE& state)
 	aliveStateChanges_[aliveState_]();
 }
 
-void Player::SetKey(const int& right, const int& left, const int& jump, const int& tackle)
+void Player::SetKey(const int right, const int left, const int jump, const int tackle)
 {
 	key_.right_ = right;
 	key_.left_ = left;
@@ -350,7 +350,7 @@ void Player::DebagDraw()
 	DrawFormatString(0, INTERVAL * i, Utility::BLACK, "POW = %d", pow_);
 }
 
-void Player::ChangeState(STATE state)
+void Player::ChangeState(const STATE state)
 {
 	// èÛë‘ïœçX
 	state_ = state;

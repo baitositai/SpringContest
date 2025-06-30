@@ -83,57 +83,124 @@ public:
 		DEATH
 	};
 
-	//引数で初期位置を取得
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Player();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Player() = default;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
 	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 解放
+	/// </summary>
 	void Release();
 
-	//体力を加える
-	void AddLife(const int &life);
+	/// <summary>
+	/// 体力を加える
+	/// </summary>
+	/// <param name="life"></param>追加ライフ
+	void AddLife(const int life);
 
-	//力を加える
-	void AddPower(const int& pow);	
+	/// <summary>
+	/// パワーを加える
+	/// </summary>
+	/// <param name="pow"></param>追加パワー
+	void AddPower(const int pow);	
 	
-	//状態の変更
-	void ChangeState(STATE state);
+	/// <summary>
+	/// 状態の変更
+	/// </summary>
+	/// <param name="state"></param>変更先の状態
+	void ChangeState(const STATE state);
 
-	//生存状態の変更
-	void ChangeAliveState(const ALIVE_STATE & state);
+	/// <summary>
+	/// 生存時の状態の変更
+	/// </summary>
+	/// <param name="state"></param>変更先の状態
+	void ChangeAliveState(const ALIVE_STATE state);
 
-	//操作キーの設定
+	/// <summary>
+	/// キーの設定
+	/// </summary>
+	/// <param name="right"></param>右移動
+	/// <param name="left"></param>左移動
+	/// <param name="jump"></param>ジャンプ
+	/// <param name="tackle"></param>攻撃
 	void SetKey(
-		const int& right, 
-		const int& left, 
-		const int& jump, 
-		const int& tackle);
+		const int right, 
+		const int left, 
+		const int jump, 
+		const int tackle);
 
-	//体力を返す
+	/// <summary>
+	/// ライフを返す
+	/// </summary>
+	/// <returns></returns>ライフ
 	inline const int& GetLife() const { return life_; }
 
-	//力を返す
+	/// <summary>
+	/// パワーを返す
+	/// </summary>
+	/// <returns></returns>パワー
 	inline const int& GetPower() const { return pow_; }
 	
-	//衝突判定用半径を返す
+	/// <summary>
+	/// 衝突判定用半径を返す
+	/// </summary>
+	/// <returns></returns>半径
 	inline const float& GetRadius() const { return radius_; }
 
-	//タックル時間を返す
+	/// <summary>
+	/// タックル時間を返す
+	/// </summary>
+	/// <returns></returns>タックル時間
 	inline const float& GetTackleTime() const { return tackleTime_; }
 
-	//状態を返す
+	/// <summary>
+	/// 状態を返す
+	/// </summary>
+	/// <returns></returns>状態
 	inline const STATE& GetState() const { return state_; }
 
-	//生存状態を返す
+	/// <summary>
+	/// 生存状態を返す
+	/// </summary>
+	/// <returns></returns>生存状態
 	inline const ALIVE_STATE& GetAliveState() const { return aliveState_; }
 
-	//トランスフォームを返す
+	/// <summary>
+	/// トランスフォームを返す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns></returns>トランスフォーム
 	inline const Transform& GetTransform(void) const { return trans_; }
 
-	//デバッグ描画
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
 	void DebagDraw(); 
 
 private:
